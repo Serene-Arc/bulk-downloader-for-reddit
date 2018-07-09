@@ -144,7 +144,8 @@ def LinkDesigner(LINK):
         if "restrict_sr" in attributes["search"]:
             
             if not (attributes["search"]["restrict_sr"] == 0 or \
-                    attributes["search"]["restrict_sr"] == "off"):
+                    attributes["search"]["restrict_sr"] == "off" or \
+                    attributes["search"]["restrict_sr"] == ""):
 
                 if "subreddit" in attributes:
                     MODE["subreddit"] = attributes["subreddit"]
