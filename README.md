@@ -21,7 +21,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   - [Examples](#examples)
 - [FAQ](#faq)
 - [Changelog](#changelog)
-  - [release-1.0.0](#release-100)
+  - [10/07/2018](#10-07-2018)
 
 ## Requirements
 - Python 3.x*
@@ -167,5 +167,6 @@ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
 - Try `python3` or `python` or `py -3` as python have real issues about naming their program
 
 ## Changelog
-### v1.0.0
-- Initial release
+### 10/07/2018
+- Added support for *self* post
+- Now getting posts is quicker
