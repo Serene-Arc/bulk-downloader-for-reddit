@@ -10,19 +10,11 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [Configuring the APIs](#configuring-the-apis)
   - [Creating an imgur app](#creating-an-imgur-app)
 - [Program Modes](#program-modes)
-  - [saved mode](#saved-mode)
-  - [submitted mode](#submitted-mode)
-  - [upvoted mode](#upvoted-mode)
-  - [subreddit mode](#subreddit-mode)
-  - [multireddit mode](#multireddit-mode)
-  - [link mode](#link-mode)
-  - [log read mode](#log-read-mode)
 - [Running the script](#running-the-script)
   - [Using the command line arguments](#using-the-command-line-arguments)
   - [Examples](#examples)
 - [FAQ](#faq)
 - [Changelog](#changelog)
-  - [10/07/2018](#10-07-2018)
 
 ## What it can do?
 ### It...
@@ -34,6 +26,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - puts every post to its subreddit's folder
 - saves reusable a copy of posts' details that are found so that they can be re-downloaded again
 - logs failed ones in a file to so that you can try to download them later
+- can be run with double-clicking on Windows (but I don't recommend it)
 
 ## Requirements
 - Python 3.x*
@@ -61,38 +54,27 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 
 ## Program Modes
 All the program modes are activated with command-line arguments as shown [here](#using-the-command-line-arguments)  
-### saved mode
-In saved mode, the program gets posts from given user's saved posts.
-### submitted mode
-In submitted mode, the program gets posts from given user's submitted posts.
-### upvoted mode
-In submitted mode, the program gets posts from given user's upvoted posts.
-### subreddit mode
-In subreddit mode, the program gets posts from given subreddits* that is sorted by given type and limited by given number.  
-  
-Multiple subreddits can be given
-  
-*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
-### multireddit mode
-In multireddit mode, the program gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
-### link mode
-In link mode, the program gets posts from given reddit link.  
-  
-You may customize the behaviour with `--sort`, `--time`, `--limit`.
-  
-*You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).*
-  
-## log read mode
-Two log files are created each time *script.py* runs.
-- **POSTS** Saves all the posts without filtering.
-- **FAILED** Keeps track of posts that are tried to be downloaded but failed.
-  
-In log mode, the program takes a log file which created by itself, reads posts and tries downloading them again.
-
-Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
+- **saved mode**
+  - Gets posts from given user's saved posts.
+- **submitted mode**
+  - Gets posts from given user's submitted posts.
+- **upvoted mode**
+  - Gets posts from given user's upvoted posts.
+- **subreddit mode**
+  - Gets posts from given subreddit or subreddits that is sorted by given type and limited by given number.
+  - You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).
+- **multireddit mode**
+  - Gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
+- **link mode**
+  - Gets posts from given reddit link.  
+  - You may customize the behaviour with `--sort`, `--time`, `--limit`.
+  - You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).
+- **log read mode**
+  - Takes a log file which created by itself (json files), reads posts and tries downloading them again.
+  - Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
 
 ## Running the script
-**WARNING** *DO NOT* let more than *1* instance of script run as it interferes with IMGUR Request Rate.  
+**DO NOT** let more than one instance of the script run as it interferes with IMGUR Request Rate.  
   
 ### Using the command line arguments
 If no arguments are passed program will prompt you for arguments below which means you may start up the script with double-clicking on it (at least on Windows for sure).
@@ -101,7 +83,7 @@ Open up the [terminal](https://www.reddit.com/r/NSFW411/comments/8vtnl8/meta_i_m
   
 Run the script.py file from terminal with command-line arguments. Here is the help page:  
   
-**ATTENTION** Use `.\` for current directory and `..\` for upper directory when using short directories, otherwise it might act weird.
+Use `.\` for current directory and `..\` for upper directory when using short directories, otherwise it might act weird.
 
 ```console
 $ py -3 script.py --help
