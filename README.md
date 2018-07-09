@@ -7,7 +7,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 
 - [What it can do?](#what-it-can-do)
 - [Requirements](#requirements)
-- [Configuring the APIs](#configuring-the-apis)
+- [Setting up the script](#setting-up-the-script)
   - [Creating an imgur app](#creating-an-imgur-app)
 - [Program Modes](#program-modes)
 - [Running the script](#running-the-script)
@@ -37,7 +37,7 @@ You have to check "**Add Python 3 to PATH**" option when installing in order it 
 
 *\*Although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version*
 
-## Configuring the APIs
+## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.
 
 ### Creating an imgur app
