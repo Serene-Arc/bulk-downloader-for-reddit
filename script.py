@@ -462,10 +462,10 @@ def download(submissions):
                 downloadedCount -= 1
                 duplicates += 1
 
-            # except Exception as exception:
-            #     print(exception)
-            #     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
-            #     downloadedCount -= 1
+            except Exception as exception:
+                print(exception)
+                FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+                downloadedCount -= 1
 
         else:
             print("No match found, skipping...")
