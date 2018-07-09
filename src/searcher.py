@@ -324,16 +324,15 @@ def redditSearcher(posts,SINGLE_POST=False):
         except AttributeError:
             pass
 
-        postsFile.add({subCount:[details]})
-        details = checkIfMatching(submission)
+        result = checkIfMatching(submission)
 
-        if details is not None:
-            if not details["postType"] == "self":
-                orderCount += 1
-                printSubmission(submission,subCount,orderCount)
-                subList.append(details)
-            else:
-                postsFile.add({subCount:[details]})
+        if result is not None:
+            details = result
+            orderCount += 1
+            printSubmission(submission,subCount,orderCount)
+            subList.append(details)
+
+        postsFile.add({subCount:[details]})
 
     else:
         for submission in posts:
