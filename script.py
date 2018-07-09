@@ -11,7 +11,7 @@ import sys
 import time
 from pathlib import Path, PurePath
 
-from src.downloader import Direct, Gfycat, Imgur
+from src.downloader import Direct, Gfycat, Imgur, Self
 from src.parser import LinkDesigner
 from src.searcher import getPosts
 from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
@@ -451,7 +451,22 @@ def download(submissions):
                 print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
-                
+        
+        elif submissions[i]['postType'] == 'self':
+            print("SELF")
+            try:
+                Self(directory,submissions[i])
+
+            except FileAlreadyExistsError:
+                print("It already exists")
+                downloadedCount -= 1
+                duplicates += 1
+
+            # except Exception as exception:
+            #     print(exception)
+            #     FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            #     downloadedCount -= 1
+
         else:
             print("No match found, skipping...")
             downloadedCount -= 1
