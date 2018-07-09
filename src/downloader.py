@@ -1,3 +1,4 @@
+import io
 import os
 import sys
 import urllib.request
@@ -16,7 +17,7 @@ except ModuleNotFoundError:
     install("imgurpython")
     from imgurpython import *
 
-
+VanillaPrint = print
 print = printToFile
 
 def dlProgress(count, blockSize, totalSize):
@@ -294,3 +295,45 @@ class Direct:
             tempDir = directory / (POST['postId']+".tmp")
 
             getFile(fileDir,tempDir,POST['postURL'])
+
+class Self:
+    def __init__(self,directory,post):
+        if not os.path.exists(directory): os.makedirs(directory)
+
+        title = nameCorrector(post['postTitle'])
+        print(title+"_"+post['postId']+".md")
+
+        fileDir = title+"_"+post['postId']+".md"
+        fileDir = directory / fileDir
+        
+        if Path.is_file(fileDir):
+            raise FileAlreadyExistsError
+            
+        try:
+            self.writeToFile(fileDir,post)
+        except FileNotFoundError:
+            fileDir = post['postId']+".md"
+            fileDir = directory / fileDir
+
+            self.writeToFile(fileDir,post)
+    
+    @staticmethod
+    def writeToFile(directory,post):
+
+        content = ("## ["
+                   + post["postTitle"]
+                   + "]("
+                   + post["postURL"]
+                   + ")\n"
+                   + post["postContent"]
+                   + "\n\n---\n\n"
+                   + "submitted by [u/"
+                   + post["postSubmitter"]
+                   + "](https://www.reddit.com/user/"
+                   + post["postSubmitter"]
+                   + ")")
+
+        with io.open(directory,"w",encoding="utf-8") as FILE:
+            VanillaPrint(content,file=FILE)
+        
+        print("Downloaded")

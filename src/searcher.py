@@ -308,6 +308,10 @@ def redditSearcher(posts,SINGLE_POST=False):
     imgurCount = 0
     global directCount
     directCount = 0
+    global selfCount
+    selfCount = 0
+
+    allPosts = {}
 
     postsFile = createLogFile("POSTS")
 
@@ -356,13 +360,15 @@ def redditSearcher(posts,SINGLE_POST=False):
                 printSubmission(submission,subCount,orderCount)
                 subList.append(details)
 
-            postsFile.add({subCount:[details]})
+            allPosts = {**allPosts,**details}
+        
+        postsFile.add(allPosts)
 
     if not len(subList) == 0:    
         print(
             "\nTotal of {} submissions found!\n"\
-            "{} GFYCATs, {} IMGURs and {} DIRECTs\n"
-            .format(len(subList),gfycatCount,imgurCount,directCount)
+            "{} GFYCATs, {} IMGURs, {} DIRECTs and {} SELF POSTS\n"
+            .format(len(subList),gfycatCount,imgurCount,directCount,selfCount)
         )
         return subList
     else:
@@ -372,6 +378,7 @@ def checkIfMatching(submission):
     global gfycatCount
     global imgurCount
     global directCount
+    global selfCount
 
     try:
         details = {'postId':submission.id,
@@ -397,13 +404,15 @@ def checkIfMatching(submission):
             imgurCount += 1
             return details
 
-    elif isDirectLink(submission.url) is True:
+    elif isDirectLink(submission.url):
         details['postType'] = 'direct'
         directCount += 1
         return details
 
     elif submission.is_self:
         details['postType'] = 'self'
+        details['postContent'] = submission.selftext
+        selfCount += 1
         return details
 
 def printSubmission(SUB,validNumber,totalNumber):
