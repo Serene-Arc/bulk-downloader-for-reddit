@@ -308,8 +308,14 @@ class Self:
         
         if Path.is_file(fileDir):
             raise FileAlreadyExistsError
+            
+        try:
+            self.writeToFile(fileDir,post)
+        except FileNotFoundError:
+            fileDir = post['postId']+".md"
+            fileDir = directory / fileDir
 
-        self.writeToFile(fileDir,post)
+            self.writeToFile(fileDir,post)
     
     @staticmethod
     def writeToFile(directory,post):
