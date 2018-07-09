@@ -233,8 +233,13 @@ class Gfycat:
 
         fileDir = directory / (title+"_"+POST['postId']+POST['postExt'])
         tempDir = directory / (title+"_"+POST['postId']+".tmp")
+        try:
+            getFile(fileDir,tempDir,POST['mediaURL'])
+        except FileNameTooLong:
+            fileDir = directory / (POST['postId']+POST['postExt'])
+            tempDir = directory / (POST['postId']+".tmp")
 
-        getFile(fileDir,tempDir,POST['mediaURL'])
+            getFile(fileDir,tempDir,POST['mediaURL'])
       
     def getLink(self, url, query='<source id="mp4Source" src=', lineNumber=105):
         """Extract direct link to the video from page's source
@@ -282,4 +287,10 @@ class Direct:
         tempDir = title+"_"+POST['postId']+".tmp"
         tempDir = directory / tempDir
 
-        getFile(fileDir,tempDir,POST['postURL'])
+        try:
+            getFile(fileDir,tempDir,POST['postURL'])
+        except FileNameTooLong:
+            fileDir = directory / (POST['postId']+POST['postExt'])
+            tempDir = directory / (POST['postId']+".tmp")
+
+            getFile(fileDir,tempDir,POST['postURL'])
