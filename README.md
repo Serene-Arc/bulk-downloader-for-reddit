@@ -5,6 +5,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 
 ## Table of Contents
 
+- [What it can do?](#what-it-can-do)
 - [Requirements](#requirements)
 - [Configuring the APIs](#configuring-the-apis)
   - [Creating an imgur app](#creating-an-imgur-app)
@@ -22,6 +23,17 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [FAQ](#faq)
 - [Changelog](#changelog)
   - [10/07/2018](#10-07-2018)
+
+## What it can do?
+### It...
+- can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
+- sorts post by hot, top, new and so on
+- downloads imgur albums, gfycat links, [self posts](#i-can-t-open-the-self-posts-) and any link to a direct image
+- skips the existing ones
+- puts post titles to file's name
+- puts every post to its subreddit's folder
+- saves reusable a copy of posts' details that are found so that they can be re-downloaded again
+- logs failed ones in a file to so that you can try to download them later
 
 ## Requirements
 - Python 3.x*
@@ -165,6 +177,9 @@ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
 ## FAQ
 ### I can't startup the script no matter what.
 - Try `python3` or `python` or `py -3` as python have real issues about naming their program
+
+### I can't open the self posts.
+- Self posts are held at subreddit as Markdown. So, the script downloads them as Markdown in order not to lose their stylings. However, there is a great Chrome extension [here](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with Chrome.
 
 ## Changelog
 ### 10/07/2018
