@@ -213,7 +213,7 @@ def checkConflicts():
         print("You cannot search in upvoted posts")
         quit()
 
-    if upvoted+subreddit == 1 and user == 0:
+    if upvoted+submitted == 1 and user == 0:
         print("No redditor name given")
         quit()
 
