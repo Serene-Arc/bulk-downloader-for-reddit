@@ -479,8 +479,6 @@ def main():
 
     checkConflicts()
 
-    mode = prepareAttributes()
-       
     print(sys.argv)
 
     if GLOBAL.arguments.log is not None:
