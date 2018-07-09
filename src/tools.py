@@ -23,8 +23,8 @@ class GLOBAL:
     config = None
     arguments = None
     directory = None
-    reddit_client_id = "Jx3iqqGkSmE5sg"
-    reddit_client_secret = "PFzVAVRLN78JI48e3bQ5KsgLZp4"
+    reddit_client_id = "BSyphDdxYZAgVQ"
+    reddit_client_secret = "bfqNJaRh8NMh-9eAr-t4TRz-Blk"
     printVanilla = print
 
 class jsonFile:
