@@ -29,14 +29,12 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - can be run with double-clicking on Windows (but I don't recommend it)
 
 ## Requirements
-- Python 3.x*
+- Python >3.6
 
 You can install Python 3 here: [https://www.python.org/downloads/](https://www.python.org/downloads/)  
   
 You have to check "**Add Python 3 to PATH**" option when installing in order it to run correctly.
-
-*\*Although the latest version of python is suggested, you can use 3.6.5 since it runs perfectly on that version*
-
+  
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.
 
