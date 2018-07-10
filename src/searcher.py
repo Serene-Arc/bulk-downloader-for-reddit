@@ -360,7 +360,7 @@ def redditSearcher(posts,SINGLE_POST=False):
                 printSubmission(submission,subCount,orderCount)
                 subList.append(details)
 
-            allPosts = {**allPosts,**details}
+            allPosts[subCount] = [details]
         
         postsFile.add(allPosts)
 
