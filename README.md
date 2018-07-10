@@ -12,7 +12,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - [Program Modes](#program-modes)
 - [Running the script](#running-the-script)
   - [Using the command line arguments](#using-the-command-line-arguments)
-  - [Examples](#examples)
+- [Examples](#examples)
 - [FAQ](#faq)
 - [Changelog](#changelog)
 
@@ -62,13 +62,13 @@ All the program modes are activated with command-line arguments as shown [here](
   - Gets posts from given user's upvoted posts.
 - **subreddit mode**
   - Gets posts from given subreddit or subreddits that is sorted by given type and limited by given number.
-  - You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).
+  - You may also use search in this mode. See [`python script.py --help`](#using-the-command-line-arguments).
 - **multireddit mode**
   - Gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
 - **link mode**
   - Gets posts from given reddit link.  
   - You may customize the behaviour with `--sort`, `--time`, `--limit`.
-  - You may also use search in this mode. See [`py -3 script.py --help`](#using-the-command-line-arguments).
+  - You may also use search in this mode. See [`python script.py --help`](#using-the-command-line-arguments).
 - **log read mode**
   - Takes a log file which created by itself (json files), reads posts and tries downloading them again.
   - Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
@@ -86,7 +86,7 @@ Run the script.py file from terminal with command-line arguments. Here is the he
 Use `.\` for current directory and `..\` for upper directory when using short directories, otherwise it might act weird.
 
 ```console
-$ py -3 script.py --help
+$ python script.py --help
 usage: script.py [-h] [--link link] [--saved] [--submitted] [--upvoted]
                  [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user redditor]
@@ -124,43 +124,51 @@ optional arguments:
                         downloading later
 ```  
 
-### Examples
+## Examples
 
-#### Don't include `py -3 script.py` part if you start the script by double-clicking
+- **Don't include `python script.py` part if you start the script by double-clicking**
+- **Use `python3` instead of `python` if you are using *MacOS* or *Linux***  
 
 ```console
-py -3 script.py .\\NEW_FOLDER --sort new --time all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
+python script.py .\\NEW_FOLDER --sort new --time all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --link "https://www.reddit.com/r/learnprogramming/comments/7mjw12/"
+python script.py .\\NEW_FOLDER --link "https://www.reddit.com/r/learnprogramming/comments/7mjw12/"
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
+python script.py .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --user [USER_NAME] --submitted --limit 10
+python script.py .\\NEW_FOLDER --user [USER_NAME] --submitted --limit 10
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
+python script.py .\\NEW_FOLDER --multireddit good_subs --user [USER_NAME] --sort top --time week --limit 250
 ```
 
 ```console
-py -3 script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
+python script.py .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
-py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
+python script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
 ```
 
 ## FAQ
 ### I can't startup the script no matter what.
-- Try `python3` or `python` or `py -3` as python have real issues about naming their program
+- Try these:
+  - **`python`**
+  - **`python3`**
+  - **`python3.7`**
+  - **`python3.6`**
+  - **`py -3`**  
+    
+Python have real issues about naming their program
 
-### I can't open the self posts.
+### I can't open the self post files.
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings. However, there is a great Chrome extension [here](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with Chrome.
 
 ## Changelog
