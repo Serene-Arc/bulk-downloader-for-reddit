@@ -19,12 +19,12 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 ## What it can do?
 ### It...
 - can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
-- sorts post by hot, top, new and so on
+- sorts posts by hot, top, new and so on
 - downloads imgur albums, gfycat links, [self posts](#i-cant-open-the-self-posts) and any link to a direct image
 - skips the existing ones
 - puts post titles to file's name
 - puts every post to its subreddit's folder
-- saves reusable a copy of posts' details that are found so that they can be re-downloaded again
+- saves a reusable copy of posts' details that are found so that they can be re-downloaded again
 - logs failed ones in a file to so that you can try to download them later
 - can be run with double-clicking on Windows (but I don't recommend it)
 
