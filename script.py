@@ -347,6 +347,7 @@ def download(submissions):
 
         if postExists(submissions[i]):
             result = False
+            print(submissions[i]['postType'].upper())
             print("It already exists")
             duplicates += 1
             downloadedCount -= 1
