@@ -164,6 +164,6 @@ py -3 script.py C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER\\FAILED.json
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings. However, there is a great Chrome extension [here](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with Chrome.
 
 ## Changelog
-### [10/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/975246c7f0a407e2f9cdadc4047d203d045da00e)
+### [10/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/ffe3839aee6dc1a552d95154d817aefc2b66af81)
 - Added support for *self* post
 - Now getting posts is quicker
