@@ -311,7 +311,7 @@ def postExists(POST):
     title = nameCorrector(POST['postTitle'])
     FILENAME = title + "_" + POST['postId']
     PATH = GLOBAL.directory / POST["postSubreddit"]
-    possibleExtensions = [".jpg",".png",".mp4",".gif",".webm"]
+    possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md"]
 
     for i in range(2):
         for extension in possibleExtensions:
