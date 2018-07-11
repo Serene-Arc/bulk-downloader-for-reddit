@@ -150,63 +150,32 @@ def checkConflicts():
     if not, raise errors
     """
 
-    if GLOBAL.arguments.saved is False:
-        saved = 0
-    else: 
-        saved = 1
-
-    if GLOBAL.arguments.subreddit is None:
-        subreddit = 0
-    else:
-        subreddit = 1
-
-    if GLOBAL.arguments.submitted is False:
-        submitted = 0
-    else:
-        submitted = 1
-    
-    if GLOBAL.arguments.search is None:
-        search = 0
-    else:
-        search = 1
-
-    if GLOBAL.arguments.log is None:
-        log = 0
-    else:
-        log = 1
-
-    if GLOBAL.arguments.link is None:
-        link = 0
-    else:
-        link = 1
-
     if GLOBAL.arguments.user is None:
         user = 0
     else:
         user = 1
 
-    if GLOBAL.arguments.upvoted is False:
-        upvoted = 0
-    else:
-        upvoted = 1
+    modes = ["saved","subreddit","submitted","search","log","link","upvoted"]
 
-    if not saved+subreddit+log+link+submitted+upvoted == 1:
+    values = {x: 0 if x is None or x is False else 1 for x in modes}
+
+    if not sum(values[x] for x in values) == 1:
         print("Program mode is invalid")
         quit()
     
-    if search+subreddit == 2:
+    if values["search"]+values["saved"] == 2:
         print("You cannot search in your saved posts")
         quit()
 
-    if search+submitted == 2:
+    if values["search"]+values["submitted"] == 2:
         print("You cannot search in submitted posts")
         quit()
 
-    if search+upvoted == 2:
+    if values["search"]+values["upvoted"] == 2:
         print("You cannot search in upvoted posts")
         quit()
 
-    if upvoted+submitted == 1 and user == 0:
+    if values["upvoted"]+values["submitted"] == 1 and user == 0:
         print("No redditor name given")
         quit()
 
