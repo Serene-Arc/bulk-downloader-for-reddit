@@ -15,13 +15,8 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - logs failed ones in a file to so that you can try to download them later
 - can be run with double-clicking on Windows (but I don't recommend it)
 
-## Requirements
-- Python >3.6
+## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 
-You can install Python 3 here: [https://www.python.org/downloads/](https://www.python.org/downloads/)  
-  
-You have to check "**Add Python 3 to PATH**" option when installing in order it to run correctly.
-  
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.
 
@@ -39,9 +34,11 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 
 ## Running the script
   
-For **Windows** users, there is an *EXE* file to run easily. **Linux** and **MacOS** users have to run it from the *source code* through terminal.
+For **Windows** users, there is an *EXE* file to run easily. 
+  
+**Linux** and **MacOS** users have to install Python 3 and run it from the *source code* through terminal.
 
-To get further information about that and **command-line arguments**, see **[`python script.py --help`](docs/help_page.md)**
+To get further information about that and **using command-line arguments to run the script**, see **[`python script.py --help`](docs/help_page.md)**
 
 ## FAQ
 ### I can't open the self post files.
