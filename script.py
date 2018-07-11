@@ -210,28 +210,113 @@ def checkConflicts():
         print("No redditor name given")
         quit()
 
-def postFromLog(fileName):
-    """Analyze a log file and return a list of dictionaries containing
-    submissions
-    """
-    if Path.is_file(Path(fileName)):
-        content = jsonFile(fileName).read()
-    else:
-        print("File not found")
-        quit()
+class PromptUser():
+    @staticmethod
+    def chooseFrom(choices):
+        print()
+        choicesByIndex = list(str(x) for x in range(len(choices)+1))
+        for i in range(len(choices)):
+            print("{indent}[{order}] {mode}".format(
+                indent=" "*4,order=i+1,mode=choices[i]
+            ))
+        print(" "*4+"[0] exit\n")
+        choice = input("> ")
+        while not choice.lower() in choices+choicesByIndex:
+            print("Invalid input\n")
+            programModeIndex = input("> ")
 
-    try:
-        del content["HEADER"]
-    except KeyError:
-        pass
+        if choice == "0":
+            quit()
+        elif choice in choicesByIndex:
+            return choices[int(choice)-1]
+        else:
+            return choice
+    
+    def __init__(self):
+        print("select program mode:")
+        programModes = [
+            "search","subreddit","multireddit",
+            "submitted","upvoted","saved","log"
+        ]
+        programMode = self.chooseFrom(programModes)
 
-    posts = []
+        if programMode == "search":
+            GLOBAL.arguments.search = input("\nquery: ")
+            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
 
-    for post in content:
-        if not content[post][-1]['postType'] == None:
-            posts.append(content[post][-1])
+            print("\nselect sort type:")
+            sortTypes = [
+                "relevance","top","new"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
 
-    return posts
+            print("\nselect time filter:")
+            timeFilters = [
+                "hour","day","week","month","year","all"
+            ]
+            timeFilter = self.chooseFrom(timeFilters)
+            GLOBAL.arguments.time = timeFilter
+
+        if programMode == "subreddit":
+            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+            if " " in GLOBAL.arguments.subreddit:
+                GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
+
+            print("\nselect sort type:")
+            sortTypes = [
+                "hot","top","new","rising","controversial"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
+
+            if sortType in ["top","controversial"]:
+                print("\nselect time filter:")
+                timeFilters = [
+                    "hour","day","week","month","year","all"
+                ]
+                timeFilter = self.chooseFrom(timeFilters)
+                GLOBAL.arguments.time = timeFilter
+            else:
+                GLOBAL.arguments.time = "all"
+
+        elif programMode == "multiredit":
+            GLOBAL.arguments.user = input("\nredditor: ")
+            GLOBAL.arguments.subreddit = input("\nmultireddit: ")
+            
+            print("\nselect sort type:")
+            sortTypes = [
+                "hot","top","new","rising","controversial"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
+
+            if sortType in ["top","controversial"]:
+                print("\nselect time filter:")
+                timeFilters = [
+                    "hour","day","week","month","year","all"
+                ]
+                timeFilter = self.chooseFrom(timeFilters)
+                GLOBAL.arguments.time = timeFilter
+            else:
+                GLOBAL.arguments.time = "all"
+        
+        elif programMode == "submitted":
+            GLOBAL.arguments.submitted = True
+            GLOBAL.arguments.user = input("\nredditor: ")
+        
+        elif programMode == "upvoted":
+            GLOBAL.arguments.upvoted = True
+            GLOBAL.arguments.user = input("\nredditor: ")
+        
+        elif programMode == "saved":
+            GLOBAL.arguments.saved = True
+            GLOBAL.arguments.user = input("\nredditor: ")
+        
+        elif programMode == "log":
+            GLOBAL.arguments.log = input("\nlog file directory:")
+
+        GLOBAL.arguments.limit = int(input("\nlimit: "))
 
 def prepareAttributes():
     ATTRIBUTES = {}
@@ -299,115 +384,28 @@ def prepareAttributes():
 
     return ATTRIBUTES
 
-class PromptUser():
-    @staticmethod
-    def chooseFrom(choices):
-        print()
-        choicesByIndex = list(str(x) for x in range(len(choices)+1))
-        for i in range(len(choices)):
-            print("{indent}[{order}] {mode}".format(
-                indent=" "*4,order=i+1,mode=choices[i]
-            ))
-        print(" "*4+"[0] exit\n")
-        choice = input("> ")
-        while not choice.lower() in choices+choicesByIndex:
-            print("Invalid input\n")
-            programModeIndex = input("> ")
+def postFromLog(fileName):
+    """Analyze a log file and return a list of dictionaries containing
+    submissions
+    """
+    if Path.is_file(Path(fileName)):
+        content = jsonFile(fileName).read()
+    else:
+        print("File not found")
+        quit()
 
-        if choice == "0":
-            quit()
-        elif choice in choicesByIndex:
-            return choices[int(choice)-1]
-        else:
-            return choice
-    
-    def __init__(self):
-        print("Select program mode:")
-        programModes = [
-            "search","subreddit","multireddit",
-            "submitted","upvoted","saved","log"
-        ]
-        programMode = self.chooseFrom(programModes)
+    try:
+        del content["HEADER"]
+    except KeyError:
+        pass
 
-        if programMode == "search":
-            GLOBAL.arguments.search = input("\nquery: ")
-            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+    posts = []
 
-            print("\nSelect sort type:")
-            sortTypes = [
-                "relevance","top","new"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
+    for post in content:
+        if not content[post][-1]['postType'] == None:
+            posts.append(content[post][-1])
 
-            print("\nSelect time filter:")
-            timeFilters = [
-                "hour","day","week","month","year","all"
-            ]
-            timeFilter = self.chooseFrom(timeFilters)
-            GLOBAL.arguments.time = timeFilter
-
-        if programMode == "subreddit":
-            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
-            if " " in GLOBAL.arguments.subreddit:
-                GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
-
-            print("\nSelect sort type:")
-            sortTypes = [
-                "hot","top","new","rising","controversial"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
-
-            if sortType in ["top","controversial"]:
-                print("\nSelect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
-                ]
-                timeFilter = self.chooseFrom(timeFilters)
-                GLOBAL.arguments.time = timeFilter
-            else:
-                GLOBAL.arguments.time = "all"
-
-        
-        elif programMode == "multiredit":
-            GLOBAL.arguments.user = input("\nredditor: ")
-            GLOBAL.arguments.subreddit = input("\nmultireddit: ")
-            
-            print("\nSelect sort type:")
-            sortTypes = [
-                "hot","top","new","rising","controversial"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
-
-            if sortType in ["top","controversial"]:
-                print("\nSelect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
-                ]
-                timeFilter = self.chooseFrom(timeFilters)
-                GLOBAL.arguments.time = timeFilter
-            else:
-                GLOBAL.arguments.time = "all"
-
-        
-        elif programMode == "submitted":
-            GLOBAL.arguments.submitted = True
-            GLOBAL.arguments.user = input("\nredditor: ")
-        
-        elif programMode == "upvoted":
-            GLOBAL.arguments.upvoted = True
-            GLOBAL.arguments.user = input("\nredditor: ")
-        
-        elif programMode == "saved":
-            GLOBAL.arguments.saved = True
-            GLOBAL.arguments.user = input("\nredditor: ")
-        
-        elif programMode == "log":
-            GLOBAL.arguments.log = input("\nlog file directory:")
-
-        GLOBAL.arguments.limit = int(input("\nlimit: "))
+    return posts
 
 def postExists(POST):
     """Figure out a file's name and checks if the file already exists"""
@@ -595,9 +593,10 @@ def main():
 
     if len(sys.argv) == 1:
         PromptUser()
-    GLOBAL.config = getConfig(Path(PurePath(__file__).parent / 'config.json'))
+    else:
+        checkConflicts()
 
-    checkConflicts()
+    GLOBAL.config = getConfig(Path(PurePath(__file__).parent / 'config.json'))
 
     print(sys.argv)
 
