@@ -5,6 +5,7 @@ import urllib.request
 from pathlib import Path
 
 import imgurpython
+from multiprocessing import Queue
 
 from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError,
                         FileNameTooLong, ImgurLoginError,
@@ -175,7 +176,7 @@ class Imgur:
         """Initialize imgur api"""
 
         config = GLOBAL.config
-        return ImgurClient(
+        return imgurpython.ImgurClient(
             config['imgur_client_id'],
             config['imgur_client_secret']
         )
@@ -209,7 +210,7 @@ class Imgur:
                     'type':'album'}
 
     def get_credits():
-        return Imgur.initImgur().get_credits()
+        return self.initImgur().get_credits()
 
 class Gfycat:
     def __init__(self,directory,POST):
