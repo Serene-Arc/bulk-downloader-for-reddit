@@ -210,8 +210,8 @@ class PromptUser:
         programMode = self.chooseFrom(programModes)
 
         if programMode == "search":
-            GLOBAL.arguments.search = input("query: ")
-            GLOBAL.arguments.subreddit = input("subreddit: ")
+            GLOBAL.arguments.search = input("\nquery: ")
+            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
 
             print("\nselect sort type:")
             sortTypes = [
@@ -228,7 +228,7 @@ class PromptUser:
             GLOBAL.arguments.time = timeFilter
 
         if programMode == "subreddit":
-            GLOBAL.arguments.subreddit = input("subreddit: ")
+            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
             if " " in GLOBAL.arguments.subreddit:
                 GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
 
@@ -250,8 +250,8 @@ class PromptUser:
                 GLOBAL.arguments.time = "all"
 
         elif programMode == "multireddit":
-            GLOBAL.arguments.user = input("redditor: ")
-            GLOBAL.arguments.subreddit = input("multireddit: ")
+            GLOBAL.arguments.user = input("\nredditor: ")
+            GLOBAL.arguments.subreddit = input("\nmultireddit: ")
             
             print("\nselect sort type:")
             sortTypes = [
@@ -272,7 +272,7 @@ class PromptUser:
         
         elif programMode == "submitted":
             GLOBAL.arguments.submitted = True
-            GLOBAL.arguments.user = input("redditor: ")
+            GLOBAL.arguments.user = input("\nredditor: ")
 
             print("\nselect sort type:")
             sortTypes = [
@@ -293,20 +293,20 @@ class PromptUser:
         
         elif programMode == "upvoted":
             GLOBAL.arguments.upvoted = True
-            GLOBAL.arguments.user = input("redditor: ")
+            GLOBAL.arguments.user = input("\nredditor: ")
         
         elif programMode == "saved":
             GLOBAL.arguments.saved = True
         
         elif programMode == "log":
             while True:
-                GLOBAL.arguments.log = input("log file directory:")
+                GLOBAL.arguments.log = input("\nlog file directory:")
                 if Path(GLOBAL.arguments.log ).is_file():
                     break 
 
         while True:
             try:
-                GLOBAL.arguments.limit = int(input("limit: "))
+                GLOBAL.arguments.limit = int(input("\nlimit: "))
                 break
             except ValueError:
                 pass
