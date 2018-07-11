@@ -19,6 +19,15 @@ class FileNameTooLong(Exception):
 class InvalidRedditLink(Exception):
     pass
 
+class ProgramModeError(Exception):
+    pass
+
+class SearchModeError(Exception):
+    pass
+
+class RedditorNameError(Exception):
+    pass
+
 class NoMatchingSubmissionFound(Exception):
     pass
 

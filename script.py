@@ -160,24 +160,19 @@ def checkConflicts():
     values = {x: 0 if x is None or x is False else 1 for x in modes}
 
     if not sum(values[x] for x in values) == 1:
-        print("Program mode is invalid")
-        quit()
+        raise ProgramModeError("Invalid program mode")
     
     if values["search"]+values["saved"] == 2:
-        print("You cannot search in your saved posts")
-        quit()
+        raise SearchModeError("You cannot search in your saved posts")
 
     if values["search"]+values["submitted"] == 2:
-        print("You cannot search in submitted posts")
-        quit()
+        raise SearchModeError("You cannot search in submitted posts")
 
     if values["search"]+values["upvoted"] == 2:
-        print("You cannot search in upvoted posts")
-        quit()
+        raise SearchModeError("You cannot search in upvoted posts")
 
     if values["upvoted"]+values["submitted"] == 1 and user == 0:
-        print("No redditor name given")
-        quit()
+        raise RedditorNameError("No redditor name given")
 
 class PromptUser:
     @staticmethod
@@ -280,7 +275,6 @@ class PromptUser:
         
         elif programMode == "saved":
             GLOBAL.arguments.saved = True
-            GLOBAL.arguments.user = input("\nredditor: ")
         
         elif programMode == "log":
             GLOBAL.arguments.log = input("\nlog file directory:")
@@ -562,10 +556,13 @@ def main():
 
     print(" ".join(sys.argv))
 
-    if len(sys.argv) == 1:
-        PromptUser()
-    else:
+    try:
         checkConflicts()
+    except ProgramModeError as err:
+        PromptUser()
+    except Exception as err:
+        print(err)
+        quit()
 
     GLOBAL.config = getConfig("config.json")
 
