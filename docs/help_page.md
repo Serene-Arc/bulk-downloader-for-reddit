@@ -39,7 +39,6 @@ optional arguments:
 
 ## Examples
 
-- **Don't include `python script.py` part if you start the script by double-clicking**
 - **Use `python3` instead of `python` if you are using *MacOS* or *Linux***  
 
 ```console

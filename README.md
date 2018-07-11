@@ -37,9 +37,11 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   
 \* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
-## Running the script with command line arguments
+## Running the script
   
-See **[`python script.py --help`](docs/help_page.md)**
+For **Windows** users, there is an *EXE* file to run easily. **Linux** and **MacOS** users have to run it from the *source code* through terminal.
+
+To get further information about that and **command-line arguments**, see **[`python script.py --help`](docs/help_page.md)**
 
 ## FAQ
 ### I can't open the self post files.
