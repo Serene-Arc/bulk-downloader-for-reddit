@@ -43,6 +43,10 @@ optional arguments:
 - **Use `python3` instead of `python` if you are using *MacOS* or *Linux***  
 
 ```console
+python script.py
+```
+
+```console
 python script.py .\\NEW_FOLDER --sort new --time all --limit 10 --link "https://www.reddit.com/r/gifs/search?q=dogs&restrict_sr=on&type=link&sort=new&t=month"
 ```
 
