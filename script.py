@@ -84,7 +84,9 @@ def parseArguments(arguments=[]):
                         help="Gets upvoted posts of --user")
 
     parser.add_argument("--log",
-                        help="Triggers log read mode and takes a log file",
+                        help="Takes a log file which created by itself " \
+                             "(json files), reads posts and tries downloadin" \
+                             "g them again.",
                         # type=argparse.FileType('r'),
                         metavar="LOG FILE")
 
