@@ -4,8 +4,9 @@ from cx_Freeze import setup, Executable
 
 setup(
     name = "Bulk Downloader for Reddit",
-    version = "1.0.1",
+    version = "1.1.0",
     description = "Bulk Downloader for Reddit",
+    author = "Ali Parlakci",
     executables = [Executable("script.py")],
     options = {"build_exe": {"packages":["idna","imgurpython", "praw", "requests"]}})
 
