@@ -560,6 +560,8 @@ def main():
     else:
         GLOBAL.directory = Path(input("download directory: "))
 
+    print(" ".join(sys.argv))
+
     if len(sys.argv) == 1:
         PromptUser()
     else:
@@ -567,7 +569,6 @@ def main():
 
     GLOBAL.config = getConfig("config.json")
 
-    print(sys.argv)
 
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)
