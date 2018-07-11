@@ -15,6 +15,8 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - logs failed ones in a file to so that you can try to download them later
 - can be run with double-clicking on Windows (but I don't recommend it)
 
+## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
+
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.
 
