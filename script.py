@@ -6,17 +6,19 @@ saved posts from a reddit account. It is written in Python 3.
 """
 
 import argparse
+import logging
 import os
 import sys
 import time
+from io import StringIO
 from pathlib import Path, PurePath
 
 from src.downloader import Direct, Gfycat, Imgur, Self
+from src.errors import *
 from src.parser import LinkDesigner
 from src.searcher import getPosts
 from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
                        printToFile)
-from src.errors import *
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
@@ -157,7 +159,12 @@ def checkConflicts():
 
     modes = ["saved","subreddit","submitted","search","log","link","upvoted"]
 
-    values = {x: 0 if x is None or x is False else 1 for x in modes}
+    values = {
+        x: 0 if getattr(GLOBAL.arguments,x) is None or \
+                getattr(GLOBAL.arguments,x) is False \
+             else 1 \
+             for x in modes
+    }
 
     if not sum(values[x] for x in values) == 1:
         raise ProgramModeError("Invalid program mode")
@@ -632,11 +639,22 @@ def main():
         download(POSTS)
 
 if __name__ == "__main__":
+
+    log_stream = StringIO()    
+    logging.basicConfig(stream=log_stream, level=logging.INFO)
+
     try:
         VanillaPrint = print
         print = printToFile
         GLOBAL.RUN_TIME = time.time()
         main()
     except KeyboardInterrupt:
+        if GLOBAL.directory is None:
+            GLOBAL.directory = Path(".\\")
         print("\nQUITTING...")
         quit()
+    except Exception as exception:
+        logging.error("Runtime error!", exc_info=full_exc_info(sys.exc_info()))
+        print(log_stream.getvalue())
+
+    input("Press enter to quit\n")
