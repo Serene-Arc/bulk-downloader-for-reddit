@@ -3,14 +3,7 @@ import random
 import socket
 import webbrowser
 
-try:
-    import praw
-except ModuleNotFoundError:
-    print("\nPRAW not found on your computer, installing...\n")
-    from src.tools import install
-    install("praw")
-    import praw
-
+import praw
 from prawcore.exceptions import NotFound, ResponseException, Forbidden
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile

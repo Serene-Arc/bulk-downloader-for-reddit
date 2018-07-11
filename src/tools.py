@@ -2,19 +2,10 @@ import io
 import json
 import sys
 import time
-
-try:
-    from pip import main as pipmain
-except:
-    from pip._internal import main as pipmain
-
 from os import makedirs, path, remove
 from pathlib import Path
 
 from src.errors import FileNotFoundError
-
-def install(package):
-    pipmain(['install', package])
 
 class GLOBAL:
     """Declare global variables"""

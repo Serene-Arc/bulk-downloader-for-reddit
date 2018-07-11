@@ -4,18 +4,12 @@ import sys
 import urllib.request
 from pathlib import Path
 
+import imgurpython
+
 from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError,
                         FileNameTooLong, ImgurLoginError,
                         NotADownloadableLinkError)
 from src.tools import GLOBAL, nameCorrector, printToFile
-
-try:
-    from imgurpython import *
-except ModuleNotFoundError:
-    print("\nimgurpython not found on your computer, installing...\n")
-    from src.tools import install
-    install("imgurpython")
-    from imgurpython import *
 
 VanillaPrint = print
 print = printToFile
