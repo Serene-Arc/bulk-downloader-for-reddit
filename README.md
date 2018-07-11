@@ -169,7 +169,9 @@ Python have real issues about naming their program
 
 ## Changelog
 ### [11/07/2018]()
-- Improve UX and UI
+- Improvements on UX and UI
+- Added logging errors to CONSOLE_LOG.txt
+- Using current directory if directory has not been given yet.
 ### [10/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/ffe3839aee6dc1a552d95154d817aefc2b66af81)
 - Added support for *self* post
 - Now getting posts is quicker
