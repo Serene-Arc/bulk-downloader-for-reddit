@@ -24,12 +24,6 @@ __version__ = "1.0.1"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
-def debug(*post):
-    GLOBAL.config = getConfig('config.json')
-    GLOBAL.directory = Path(".\\debug\\")
-    download([*post])
-    quit()
-
 def getConfig(configFileName):
     """Read credentials from config.json file"""
 
@@ -66,7 +60,7 @@ def parseArguments(arguments=[]):
                                      description="This program downloads " \
                                                  "media from reddit " \
                                                  "posts")
-    parser.add_argument("directory",
+    parser.add_argument("--directory",
                         help="Specifies the directory where posts will be " \
                         "downloaded to",
                         metavar="DIRECTORY")
@@ -131,7 +125,6 @@ def parseArguments(arguments=[]):
     parser.add_argument("--limit",
                         help="default: unlimited",
                         metavar="Limit",
-                        default=None,
                         type=int)
 
     parser.add_argument("--time",
@@ -285,7 +278,8 @@ def prepareAttributes():
             ATTRIBUTES["time"] = GLOBAL.arguments.time
 
     elif GLOBAL.arguments.subreddit is not None:
-        GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
+        if type(GLOBAL.arguments.subreddit) == list:    
+            GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
 
         ATTRIBUTES["subreddit"] = GLOBAL.arguments.subreddit
 
@@ -304,6 +298,116 @@ def prepareAttributes():
     ATTRIBUTES["limit"] = GLOBAL.arguments.limit
 
     return ATTRIBUTES
+
+class PromptUser():
+    @staticmethod
+    def chooseFrom(choices):
+        print()
+        choicesByIndex = list(str(x) for x in range(len(choices)+1))
+        for i in range(len(choices)):
+            print("{indent}[{order}] {mode}".format(
+                indent=" "*4,order=i+1,mode=choices[i]
+            ))
+        print(" "*4+"[0] exit\n")
+        choice = input("> ")
+        while not choice.lower() in choices+choicesByIndex:
+            print("Invalid input\n")
+            programModeIndex = input("> ")
+
+        if choice == "0":
+            quit()
+        elif choice in choicesByIndex:
+            return choices[int(choice)-1]
+        else:
+            return choice
+    
+    def __init__(self):
+        print("Select program mode:")
+        programModes = [
+            "search","subreddit","multireddit",
+            "submitted","upvoted","saved","log"
+        ]
+        programMode = self.chooseFrom(programModes)
+
+        if programMode == "search":
+            GLOBAL.arguments.search = input("\nquery: ")
+            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+
+            print("\nSelect sort type:")
+            sortTypes = [
+                "relevance","top","new"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
+
+            print("\nSelect time filter:")
+            timeFilters = [
+                "hour","day","week","month","year","all"
+            ]
+            timeFilter = self.chooseFrom(timeFilters)
+            GLOBAL.arguments.time = timeFilter
+
+        if programMode == "subreddit":
+            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+            if " " in GLOBAL.arguments.subreddit:
+                GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
+
+            print("\nSelect sort type:")
+            sortTypes = [
+                "hot","top","new","rising","controversial"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
+
+            if sortType in ["top","controversial"]:
+                print("\nSelect time filter:")
+                timeFilters = [
+                    "hour","day","week","month","year","all"
+                ]
+                timeFilter = self.chooseFrom(timeFilters)
+                GLOBAL.arguments.time = timeFilter
+            else:
+                GLOBAL.arguments.time = "all"
+
+        
+        elif programMode == "multiredit":
+            GLOBAL.arguments.user = input("\nredditor: ")
+            GLOBAL.arguments.subreddit = input("\nmultireddit: ")
+            
+            print("\nSelect sort type:")
+            sortTypes = [
+                "hot","top","new","rising","controversial"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
+
+            if sortType in ["top","controversial"]:
+                print("\nSelect time filter:")
+                timeFilters = [
+                    "hour","day","week","month","year","all"
+                ]
+                timeFilter = self.chooseFrom(timeFilters)
+                GLOBAL.arguments.time = timeFilter
+            else:
+                GLOBAL.arguments.time = "all"
+
+        
+        elif programMode == "submitted":
+            GLOBAL.arguments.submitted = True
+            GLOBAL.arguments.user = input("\nredditor: ")
+        
+        elif programMode == "upvoted":
+            GLOBAL.arguments.upvoted = True
+            GLOBAL.arguments.user = input("\nredditor: ")
+        
+        elif programMode == "saved":
+            GLOBAL.arguments.saved = True
+            GLOBAL.arguments.user = input("\nredditor: ")
+        
+        elif programMode == "log":
+            GLOBAL.arguments.log = input("\nlog file directory:")
+
+        GLOBAL.arguments.limit = int(input("\nlimit: "))
 
 def postExists(POST):
     """Figure out a file's name and checks if the file already exists"""
@@ -482,15 +586,15 @@ def download(submissions):
         print(" Total of {} links downloaded!".format(downloadedCount))
 
 def main():
-    if sys.argv[-1].endswith(__file__):
-        GLOBAL.arguments = parseArguments(input("> ").split())
-    else:
-        GLOBAL.arguments = parseArguments()
+    GLOBAL.arguments = parseArguments()
+
     if GLOBAL.arguments.directory is not None:
         GLOBAL.directory = Path(GLOBAL.arguments.directory)
     else:
-        print("Invalid directory")
-        quit()
+        GLOBAL.directory = Path(input("download directory: "))
+
+    if len(sys.argv) == 1:
+        PromptUser()
     GLOBAL.config = getConfig(Path(PurePath(__file__).parent / 'config.json'))
 
     checkConflicts()
