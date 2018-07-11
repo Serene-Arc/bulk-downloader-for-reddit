@@ -208,9 +208,9 @@ class Imgur:
         elif identity['type'] == 'album':
             return {'object':self.imgurClient.get_album(identity['id']),
                     'type':'album'}
-
+    @staticmethod
     def get_credits():
-        return self.initImgur().get_credits()
+        return Imgur.initImgur().get_credits()
 
 class Gfycat:
     def __init__(self,directory,POST):
