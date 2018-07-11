@@ -157,7 +157,12 @@ def checkConflicts():
 
     modes = ["saved","subreddit","submitted","search","log","link","upvoted"]
 
-    values = {x: 0 if x is None or x is False else 1 for x in modes}
+    values = {
+        x: 0 if getattr(GLOBAL.arguments,x) is None or \
+                getattr(GLOBAL.arguments,x) is False \
+             else 1 \
+             for x in modes
+    }
 
     if not sum(values[x] for x in values) == 1:
         raise ProgramModeError("Invalid program mode")
