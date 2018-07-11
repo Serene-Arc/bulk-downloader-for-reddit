@@ -51,7 +51,6 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 \*Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
 ## Program Modes
-All the program modes are activated with command-line arguments as shown [here](#using-the-command-line-arguments)  
 - **saved mode**
   - Gets posts from given user's saved posts.
 - **submitted mode**
@@ -60,19 +59,18 @@ All the program modes are activated with command-line arguments as shown [here](
   - Gets posts from given user's upvoted posts.
 - **subreddit mode**
   - Gets posts from given subreddit or subreddits that is sorted by given type and limited by given number.
-  - You may also use search in this mode. See [`python script.py --help`](#using-the-command-line-arguments).
 - **multireddit mode**
   - Gets posts from given user's given multireddit that is sorted by given type and limited by given number.  
 - **link mode**
   - Gets posts from given reddit link.  
   - You may customize the behaviour with `--sort`, `--time`, `--limit`.
-  - You may also use search in this mode. See [`python script.py --help`](#using-the-command-line-arguments).
+  - This mode is only accessible via command-line arguments. See **[`python script.py --help`](#using-the-command-line-arguments)**
 - **log read mode**
   - Takes a log file which created by itself (json files), reads posts and tries downloading them again.
   - Running log read mode for FAILED.json file once after the download is complete is **HIGHLY** recommended as unexpected problems may occur.
 
 ## Running the script
-**DO NOT** let more than one instance of the script run as it interferes with IMGUR Request Rate.  
+Letting more than one instance of the script run is **not** suggested as it interferes with IMGUR Request Rate.  
   
 ### Using the command line arguments
 If no arguments are passed program will prompt you for arguments below which means you may start up the script with double-clicking on it (at least on Windows for sure).
@@ -170,6 +168,8 @@ Python have real issues about naming their program
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings. However, there is a great Chrome extension [here](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with Chrome.
 
 ## Changelog
+### [11/07/2018]()
+- Improve UX and UI
 ### [10/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/ffe3839aee6dc1a552d95154d817aefc2b66af81)
 - Added support for *self* post
 - Now getting posts is quicker
