@@ -205,8 +205,8 @@ class PromptUser:
         programMode = self.chooseFrom(programModes)
 
         if programMode == "search":
-            GLOBAL.arguments.search = input("\nquery: ")
-            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+            GLOBAL.arguments.search = input("query: ")
+            GLOBAL.arguments.subreddit = input("subreddit: ")
 
             print("\nselect sort type:")
             sortTypes = [
@@ -223,7 +223,7 @@ class PromptUser:
             GLOBAL.arguments.time = timeFilter
 
         if programMode == "subreddit":
-            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+            GLOBAL.arguments.subreddit = input("subreddit: ")
             if " " in GLOBAL.arguments.subreddit:
                 GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
 
@@ -244,9 +244,9 @@ class PromptUser:
             else:
                 GLOBAL.arguments.time = "all"
 
-        elif programMode == "multiredit":
-            GLOBAL.arguments.user = input("\nredditor: ")
-            GLOBAL.arguments.subreddit = input("\nmultireddit: ")
+        elif programMode == "multireddit":
+            GLOBAL.arguments.user = input("redditor: ")
+            GLOBAL.arguments.subreddit = input("multireddit: ")
             
             print("\nselect sort type:")
             sortTypes = [
@@ -267,19 +267,44 @@ class PromptUser:
         
         elif programMode == "submitted":
             GLOBAL.arguments.submitted = True
-            GLOBAL.arguments.user = input("\nredditor: ")
+            GLOBAL.arguments.user = input("redditor: ")
+
+            print("\nselect sort type:")
+            sortTypes = [
+                "hot","top","new","controversial"
+            ]
+            sortType = self.chooseFrom(sortTypes)
+            GLOBAL.arguments.sort = sortType
+
+            if sortType == "top":
+                print("\nselect time filter:")
+                timeFilters = [
+                    "hour","day","week","month","year","all"
+                ]
+                timeFilter = self.chooseFrom(timeFilters)
+                GLOBAL.arguments.time = timeFilter
+            else:
+                GLOBAL.arguments.time = "all"
         
         elif programMode == "upvoted":
             GLOBAL.arguments.upvoted = True
-            GLOBAL.arguments.user = input("\nredditor: ")
+            GLOBAL.arguments.user = input("redditor: ")
         
         elif programMode == "saved":
             GLOBAL.arguments.saved = True
         
         elif programMode == "log":
-            GLOBAL.arguments.log = input("\nlog file directory:")
+            while True:
+                GLOBAL.arguments.log = input("log file directory:")
+                if Path(GLOBAL.arguments.log ).is_file():
+                    break 
 
-        GLOBAL.arguments.limit = int(input("\nlimit: "))
+        while True:
+            try:
+                GLOBAL.arguments.limit = int(input("limit: "))
+                break
+            except ValueError:
+                pass
 
 def prepareAttributes():
     ATTRIBUTES = {}
@@ -554,7 +579,7 @@ def main():
     else:
         GLOBAL.directory = Path(input("download directory: "))
 
-    print(" ".join(sys.argv))
+    print("\n"," ".join(sys.argv),"\n")
 
     try:
         checkConflicts()
