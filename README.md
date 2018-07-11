@@ -49,7 +49,7 @@ To get further information about that and **command-line arguments**, see **[`py
   However, there is a great Chrome extension [here](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with Chrome.
 
 ## Changelog
-### [11/07/2018]()
+### [11/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/commit/fd507870e151689136423c52ca5ed93541f804cc)
 - Improvements on UX and UI
 - Added logging errors to CONSOLE_LOG.txt
 - Using current directory if directory has not been given yet.
