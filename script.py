@@ -210,7 +210,7 @@ def checkConflicts():
         print("No redditor name given")
         quit()
 
-class PromptUser():
+class PromptUser:
     @staticmethod
     def chooseFrom(choices):
         print()
@@ -596,7 +596,7 @@ def main():
     else:
         checkConflicts()
 
-    GLOBAL.config = getConfig(Path(PurePath(__file__).parent / 'config.json'))
+    GLOBAL.config = getConfig("config.json")
 
     print(sys.argv)
 
