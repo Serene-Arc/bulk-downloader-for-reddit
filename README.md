@@ -18,9 +18,11 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 
 ## How it works
   
-For **Windows** users, there is an executable file to run easily without installing a third party program. But if you are a paranoid like me, you can **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
+- For **Windows** and **Linux** users, there are executable files to run easily without installing a third party program. But if you are a paranoid like me, you can **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
+  - In Windows, double click on script.exe file
+  - In Linux, extract files to a folder and open terminal inside it. Type **`./script`**
   
-**Linux** and **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
+- **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
 Script also accepts **command-line arguments**, get further information from **[`python script.py --help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
