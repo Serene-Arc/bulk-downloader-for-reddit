@@ -3,19 +3,26 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   
 **PLEASE** post any issue you have with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
 
-## What can it do?
-### It...
-- can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
-- sorts posts by hot, top, new and so on
-- downloads imgur albums, gfycat links, [self posts](#i-cant-open-the-self-posts) and any link to a direct image
-- skips the existing ones
-- puts post titles to file's name
-- puts every post to its subreddit's folder
-- saves a reusable copy of posts' details that are found so that they can be re-downloaded again
-- logs failed ones in a file to so that you can try to download them later
-- can be run with double-clicking on Windows (but I don't recommend it)
+## What it can do
+- Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
+- Sorts posts by hot, top, new and so on
+- Downloads imgur albums, gfycat links, [self posts](#i-can-t-open-the-self-post-files-) and any link to a direct image
+- Skips the existing ones
+- Puts post titles to file's name
+- Puts every post to its subreddit's folder
+- Saves a reusable copy of posts' details that are found so that they can be re-downloaded again
+- Logs failed ones in a file to so that you can try to download them later
+- Can run with double-clicking on Windows
 
 ## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
+
+## How it works
+  
+For **Windows** users, there is an executable file to run easily without installing a third party program. But if you are a paranoid like me, you can **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
+  
+**Linux** and **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
+
+Script also accepts **command-line arguments**, get further information from **[`python script.py --help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.
@@ -32,18 +39,10 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   
 \* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
-## Running the script
-  
-For **Windows** users, there is an *EXE* file to run easily. 
-  
-**Linux** and **MacOS** users have to install Python 3 and run it from the *source code* through terminal.
-
-To get further information about that and **using command-line arguments to run the script**, see **[`python script.py --help`](docs/help_page.md)**
-
 ## FAQ
 ### I can't open the self post files.
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
-  However, there is a great Chrome extension [here](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with Chrome.
+  However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).
 
 ## Changelog
 ### [11/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/a28a7776ab826dea2a8d93873a94cd46db3a339b)
