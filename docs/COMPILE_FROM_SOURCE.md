@@ -18,7 +18,7 @@ Latest* version of **Python 3** is needed. See if it is already installed [here]
 Go inside the folder where script.py is located. If you are not familier with changing directories on command-prompt and terminal read *Changing Directories* in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything)
 
 ## Finding the correct prefix for Python
-Enter these lines to terminal windows until it prints out the version you have downloaded and installed:
+Enter these lines to terminal window until it prints out the version you have downloaded and installed:
 - `python --version`
 - `python3 --version`
 - `python3.7 --version`
