@@ -198,7 +198,7 @@ class PromptUser:
             print("Invalid input\n")
             programModeIndex = input("> ")
 
-        if choice == "0":
+        if choice == "0" or choice == "exit":
             sys.exit()
         elif choice in choicesByIndex:
             return choices[int(choice)-1]
@@ -232,10 +232,21 @@ class PromptUser:
             GLOBAL.arguments.time = timeFilter
 
         if programMode == "subreddit":
-            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
+
+            subredditInput = input("subreddit: ")
+            GLOBAL.arguments.subreddit = subredditInput
+
+            while not subredditInput == "":
+                subredditInput = input("subreddit: ")
+                GLOBAL.arguments.subreddit += "+" + subredditInput
+
             if " " in GLOBAL.arguments.subreddit:
                 GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
 
+            # DELETE THE PLUS (+) AT THE END
+            GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
+
+            print(GLOBAL.arguments.subreddit)
             print("\nselect sort type:")
             sortTypes = [
                 "hot","top","new","rising","controversial"
