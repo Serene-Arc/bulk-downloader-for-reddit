@@ -1,8 +1,8 @@
 # Using command-line arguments
 
-See **[compiling from source](COMPILE_FROM_SOURCE.md)** page first unless you are using the .exe file. If you are using the .exe file, see [using terminal](COMPILE_FROM_SOURCE.md#using-terminal) and come back.
+See **[compiling from source](COMPILE_FROM_SOURCE.md)** page first unless you are using an executable file. If you are using an executable file, see [using terminal](COMPILE_FROM_SOURCE.md#using-terminal) and come back.
 
-***Use*** `.\script.exe` ***if you are using the executable***.
+***Use*** `.\script.exe` ***or*** `./script` ***if you are using the executable***.
 ```console
 $ python script.py --help
 usage: script.py [-h] [--directory DIRECTORY] [--link link] [--saved]
@@ -50,7 +50,19 @@ python script.py
 ```
 
 ```console
-.\script.exe .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
+.\script.exe
+```
+
+```console
+python script.py
+```
+
+```console
+.\script.exe -- directory .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
+```
+
+```console
+./script --directory .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
@@ -83,4 +95,4 @@ python script.py --directory C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER
 
 # FAQ
 ## I can't startup the script no matter what.
-See **[finding the correct prefix for Python](COMPILE_FROM_SOURCE.md#finding-the-correct-prefix-for-python)**
+See **[finding the correct keyword for Python](COMPILE_FROM_SOURCE.md#finding-the-correct-keyword-for-python)**
