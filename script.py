@@ -199,7 +199,7 @@ class PromptUser:
             programModeIndex = input("> ")
 
         if choice == "0":
-            quit()
+            sys.exit()
         elif choice in choicesByIndex:
             return choices[int(choice)-1]
         else:
@@ -389,7 +389,7 @@ def postFromLog(fileName):
         content = jsonFile(fileName).read()
     else:
         print("File not found")
-        quit()
+        sys.exit()
 
     try:
         del content["HEADER"]
@@ -497,7 +497,7 @@ def download(submissions):
                         "Imgur login failed. Quitting the program "\
                         "as unexpected errors might occur."
                     )
-                    quit()
+                    sys.exit()
 
                 except Exception as exception:
                     print(exception)
@@ -596,7 +596,7 @@ def main():
         PromptUser()
     except Exception as err:
         print(err)
-        quit()
+        sys.exit()
 
     GLOBAL.config = getConfig("config.json")
 
@@ -604,38 +604,38 @@ def main():
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)
         download(postFromLog(logDir))
-        quit()
+        sys.exit()
 
     try:
         POSTS = getPosts(prepareAttributes())
     except InsufficientPermission:
         print("You do not have permission to do that")
-        quit()
+        sys.exit()
     except NoMatchingSubmissionFound:
         print("No matching submission was found")
-        quit()
+        sys.exit()
     except NoRedditSupoort:
         print("Reddit does not support that")
-        quit()
+        sys.exit()
     except NoPrawSupport:
         print("PRAW does not support that")
-        quit()
+        sys.exit()
     except MultiredditNotFound:
         print("Multireddit not found")
-        quit()
+        sys.exit()
     except InvalidSortingType:
         print("Invalid sorting type has given")
-        quit()
+        sys.exit()
     except InvalidRedditLink:
         print("Invalid reddit link")
-        quit()
+        sys.exit()
 
     if POSTS is None:
         print("I could not find any posts in that URL")
-        quit()
+        sys.exit()
 
     if GLOBAL.arguments.NoDownload:
-        quit()
+        sys.exit()
 
     else:
         download(POSTS)
@@ -654,7 +654,7 @@ if __name__ == "__main__":
         if GLOBAL.directory is None:
             GLOBAL.directory = Path(".\\")
         print("\nQUITTING...")
-        quit()
+        sys.exit()
     except Exception as exception:
         logging.error("Runtime error!", exc_info=full_exc_info(sys.exc_info()))
         print(log_stream.getvalue())
