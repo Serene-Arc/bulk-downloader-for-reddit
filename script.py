@@ -194,7 +194,7 @@ class PromptUser:
             ))
         print(" "*4+"[0] exit\n")
         choice = input("> ")
-        while not choice.lower() in choices+choicesByIndex:
+        while not choice.lower() in choices+choicesByIndex+["exit"]:
             print("Invalid input\n")
             programModeIndex = input("> ")
 
