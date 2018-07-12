@@ -47,9 +47,10 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).
 
 ## Changelog
-### [12/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/dd671fd7380d6b9bc7610df75e82b8a21c6eb4e9)
+### [12/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/50a77f6ba54c24f5647d5ea4e177400b71ff04a7)
 - Added binaries for Windows and Linux
 - Wait on KeyboardInterrupt
+- Accept multiple subreddit input
 - Fixed the bug that prevents choosing "[0] exit" with typing "exit"
 
 ### [11/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/a28a7776ab826dea2a8d93873a94cd46db3a339b)
