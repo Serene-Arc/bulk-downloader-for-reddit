@@ -15,7 +15,7 @@ Latest* version of **Python 3** is needed. See if it is already installed [here]
 - **On MacOS**: Look for an app called **Terminal**.
   
 ### Navigating to the directory where script is downloaded
-Go inside the folder where script.py is located. If you are not familier with changing directories on command-prompt and terminal read *Changing Directories* in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything)
+Go inside the folder where script.py is located. If you are not familiar with changing directories on command-prompt and terminal read *Changing Directories* in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything)
 
 ## Finding the correct keyword for Python
 Enter these lines to terminal window until it prints out the version you have downloaded and installed:
