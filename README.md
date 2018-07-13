@@ -6,7 +6,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 ## What it can do
 - Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
 - Sorts posts by hot, top, new and so on
-- Downloads imgur albums, gfycat links, [self posts](#i-cant-open-the-self-post-files) and any link to a direct image
+- Downloads imgur albums, gfycat links, [self posts](#how-do-i-open-self-post-files) and any link to a direct image
 - Skips the existing ones
 - Puts post titles to file's name
 - Puts every post to its subreddit's folder
@@ -42,9 +42,11 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 \* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
 ## FAQ
-### I can't open the self post files.
+### How do I open self post files?
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
-  However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).
+  However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).  
+
+  However, they are basically text files. You can also view them with any text editor such as Notepad on Windows, gedit on Linux or Text Editor on MacOS
 
 ## Changelog
 ### [13/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/9f831e1b784a770c82252e909462871401a05c11)
