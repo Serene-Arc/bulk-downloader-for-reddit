@@ -19,12 +19,12 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 ## How it works
   
 - For **Windows** and **Linux** users, there are executable files to run easily without installing a third party program. But if you are a paranoid like me, you can **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
-  - In Windows, double click on script.exe file
-  - In Linux, extract files to a folder and open terminal inside it. Type **`./script`**
+  - In Windows, double click on bulk-downloader-for-reddit file
+  - In Linux, extract files to a folder and open terminal inside it. Type **`./bulk-downloader-for-reddit`**
   
 - **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
-Script also accepts **command-line arguments**, get further information from **[`python script.py --help`](docs/COMMAND_LINE_ARGUMENTS.md)**
+Script also accepts **command-line arguments**, get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.

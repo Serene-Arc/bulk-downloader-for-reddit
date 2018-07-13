@@ -2,7 +2,7 @@
 
 See **[compiling from source](COMPILE_FROM_SOURCE.md)** page first unless you are using an executable file. If you are using an executable file, see [using terminal](COMPILE_FROM_SOURCE.md#using-terminal) and come back.
 
-***Use*** `.\script.exe` ***or*** `./script` ***if you are using the executable***.
+***Use*** `.\bulk-downloader-for-reddit.exe` ***or*** `./bulk-downloader-for-reddit` ***if you are using the executable***.
 ```console
 $ python script.py --help
 usage: script.py [-h] [--directory DIRECTORY] [--link link] [--saved]
@@ -50,7 +50,7 @@ python script.py
 ```
 
 ```console
-.\script.exe
+.\bulk-downloader-for-reddit.exe
 ```
 
 ```console
@@ -58,11 +58,11 @@ python script.py
 ```
 
 ```console
-.\script.exe -- directory .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
+.\bulk-downloader-for-reddit.exe -- directory .\\NEW_FOLDER --search cats --sort new --time all --subreddit gifs pics --NoDownload
 ```
 
 ```console
-./script --directory .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
+./bulk-downloader-for-reddit --directory .\\NEW_FOLDER\\ANOTHER_FOLDER --saved --limit 1000
 ```
 
 ```console
