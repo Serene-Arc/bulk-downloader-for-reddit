@@ -47,6 +47,9 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).
 
 ## Changelog
+### [13/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/9f831e1b784a770c82252e909462871401a05c11)
+- Change config.json file's path to home directory
+
 ### [12/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/50a77f6ba54c24f5647d5ea4e177400b71ff04a7)
 - Added binaries for Windows and Linux
 - Wait on KeyboardInterrupt
