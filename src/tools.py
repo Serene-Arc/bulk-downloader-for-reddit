@@ -14,6 +14,7 @@ class GLOBAL:
     config = None
     arguments = None
     directory = None
+    configDirectory = Path.home() / "Bulk Downloader for Reddit"
     reddit_client_id = "BSyphDdxYZAgVQ"
     reddit_client_secret = "bfqNJaRh8NMh-9eAr-t4TRz-Blk"
     printVanilla = print

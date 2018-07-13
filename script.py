@@ -609,8 +609,9 @@ def main():
         print(err)
         sys.exit()
 
-    GLOBAL.config = getConfig("config.json")
-
+    if not Path(GLOBAL.configDirectory).is_dir():
+        os.makedirs(GLOBAL.configDirectory)
+    GLOBAL.config = getConfig(GLOBAL.configDirectory / "config.json")
 
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)
