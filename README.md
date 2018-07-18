@@ -48,6 +48,10 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 
   However, they are basically text files. You can also view them with any text editor such as Notepad on Windows, gedit on Linux or Text Editor on MacOS
 
+### How can I change my credentials?
+- All of the user data is held in **config.json** file which is in a folder named "Bulk Downloader for Reddit" in your **Home** directory. You can edit 
+  them, there.
+
 ## Changelog
 ### [13/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/9f831e1b784a770c82252e909462871401a05c11)
 - Change config.json file's path to home directory
