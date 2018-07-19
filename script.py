@@ -539,7 +539,7 @@ def download(submissions):
                 downloadedCount -= 1
                 
             except NotADownloadableLinkError as exception:
-                print("Could not read the page source")
+                print(exception)
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
 

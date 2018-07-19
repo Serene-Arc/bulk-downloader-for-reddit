@@ -169,7 +169,9 @@ class Imgur:
             if duplicates == imagesLenght:
                 raise FileAlreadyExistsError
             elif howManyDownloaded < imagesLenght:
-                raise AlbumNotDownloadedCompletely
+                raise AlbumNotDownloadedCompletely(
+                    "Album Not Downloaded Completely"
+                )
     
     @staticmethod
     def initImgur():
@@ -217,9 +219,9 @@ class Gfycat:
         try:
             POST['mediaURL'] = self.getLink(POST['postURL'])
         except IndexError:
-            raise NotADownloadableLinkError
+            raise NotADownloadableLinkError("Could not read the page source")
         except Exception as exception:
-            raise NotADownloadableLinkError
+            raise NotADownloadableLinkError("Could not read the page source")
 
         POST['postExt'] = getExtension(POST['mediaURL'])
 
@@ -266,7 +268,7 @@ class Gfycat:
                 break
 
         if "".join(link) == "":
-            raise NotADownloadableLinkError
+            raise NotADownloadableLinkError("Could not read the page source")
 
         return "".join(link)
 

@@ -53,6 +53,9 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   them, there.
 
 ## Changelog
+### 19/07/2018
+- Added custom exception descriptions to FAILED.json file
+
 ### [13/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/9f831e1b784a770c82252e909462871401a05c11)
 - Change config.json file's path to home directory
 
