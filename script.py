@@ -22,7 +22,7 @@ from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
-__version__ = "1.1.2"
+__version__ = "1.2.0"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
