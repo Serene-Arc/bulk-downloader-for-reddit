@@ -53,7 +53,7 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   them, there.
 
 ## Changelog
-### [19/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/41cbb58db34f500a8a5ecc3ac4375bf6c3b275bb)
+### [19/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/50c4a8d6d7e21d9b44a6d6d00c1811cfe9c655b1)
 - Added v.redd.it support
 - Added custom exception descriptions to FAILED.json file
 - Fixed the bug that prevents downloading some gfycat URLs
