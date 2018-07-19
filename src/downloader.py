@@ -253,8 +253,7 @@ class Gfycat:
         if url[-1:] == '/':
             url = url[:-1]
 
-        if 'gifs' in url:
-            url = "https://gfycat.com/" + url.split('/')[-1]
+        url = "https://gfycat.com/" + url.split('/')[-1]
 
         pageSource = (urllib.request.urlopen(url).read().decode().split('\n'))
 
