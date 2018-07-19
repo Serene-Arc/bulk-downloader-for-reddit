@@ -36,7 +36,10 @@ def getExtension(link):
         if TYPE in parsed:
             return "."+parsed[-1]
     else:
-        return '.jpg'
+        if not "v.redd.it" in link:
+            return '.jpg'
+        else:
+            return '.mp4'
 
 def getFile(fileDir,tempDir,imageURL,indent=0):
     """Downloads given file to given directory.

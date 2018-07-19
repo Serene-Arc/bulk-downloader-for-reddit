@@ -397,8 +397,9 @@ def checkIfMatching(submission):
             imgurCount += 1
             return details
 
-    elif isDirectLink(submission.url):
+    elif isDirectLink(submission.url) is not None:
         details['postType'] = 'direct'
+        details['postURL'] = isDirectLink(submission.url)
         directCount += 1
         return details
 
@@ -435,7 +436,7 @@ def printSubmission(SUB,validNumber,totalNumber):
 
 def isDirectLink(URL):
     """Check if link is a direct image link.
-    If so, return True,
+    If so, return URL,
     if not, return False
     """
 
@@ -444,10 +445,13 @@ def isDirectLink(URL):
         URL = URL[:-1]
 
     if "i.reddituploads.com" in URL:
-        return True
+        return URL
+
+    elif "v.redd.it" in URL:
+        return URL+"/DASH_600_K"
 
     for extension in imageTypes:
         if extension in URL:
-            return True
+            return URL
     else:
         return False

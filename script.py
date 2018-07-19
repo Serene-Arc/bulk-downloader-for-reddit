@@ -246,7 +246,6 @@ class PromptUser:
             # DELETE THE PLUS (+) AT THE END
             GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
 
-            print(GLOBAL.arguments.subreddit)
             print("\nselect sort type:")
             sortTypes = [
                 "hot","top","new","rising","controversial"
