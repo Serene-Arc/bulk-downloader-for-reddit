@@ -55,6 +55,7 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 ## Changelog
 ### [20/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/e15f33b97ae24167243db64b41d52757dea3caad)
 - "0" input for no limit
+- Fixed the bug that recognizes none image direct links as image links
 
 ### [19/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/41cbb58db34f500a8a5ecc3ac4375bf6c3b275bb)
 - Added v.redd.it support
