@@ -320,7 +320,9 @@ class PromptUser:
 
         while True:
             try:
-                GLOBAL.arguments.limit = int(input("\nlimit: "))
+                GLOBAL.arguments.limit = int(input("\nlimit (0 for none): "))
+                if GLOBAL.arguments.limit == 0:
+                    GLOBAL.arguments.limit = None
                 break
             except ValueError:
                 pass
