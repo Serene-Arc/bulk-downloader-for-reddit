@@ -397,7 +397,7 @@ def checkIfMatching(submission):
             imgurCount += 1
             return details
 
-    elif isDirectLink(submission.url) is not None:
+    elif isDirectLink(submission.url) is not False:
         details['postType'] = 'direct'
         details['postURL'] = isDirectLink(submission.url)
         directCount += 1
