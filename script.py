@@ -143,6 +143,12 @@ def parseArguments(arguments=[]):
                              " for downloading later",
                         action="store_true",
                         default=False)
+    
+    parser.add_argument("--exclude",
+                        nargs="+",
+                        help="Do not download specified links",
+                        choices=["imgur","gfycat","direct","self"],
+                        type=str)
 
     if arguments == []:
         return parser.parse_args()
@@ -318,6 +324,32 @@ class PromptUser:
                 if Path(GLOBAL.arguments.log ).is_file():
                     break 
 
+        GLOBAL.arguments.exclude = []
+
+        sites = ["imgur","gfycat","direct","self"]
+                
+        excludeInput = input("exclude: ").lower()
+        if excludeInput in sites and excludeInput != "":
+            GLOBAL.arguments.exclude = [excludeInput]
+
+        while not excludeInput == "":
+            while True:
+                excludeInput = input("exclude: ").lower()
+                if not excludeInput in sites or excludeInput in GLOBAL.arguments.exclude:
+                    break
+                elif excludeInput == "":
+                    break
+                else:
+                    GLOBAL.arguments.exclude.append(excludeInput)
+
+        for i in range(len(GLOBAL.arguments.exclude)):
+            if " " in GLOBAL.arguments.exclude[i]:
+                inputWithWhitespace = GLOBAL.arguments.exclude[i]
+                del GLOBAL.arguments.exclude[i]
+                for siteInput in inputWithWhitespace.split():
+                    if siteInput in sites and siteInput not in GLOBAL.arguments.exclude:
+                        GLOBAL.arguments.exclude.append(siteInput)
+
         while True:
             try:
                 GLOBAL.arguments.limit = int(input("\nlimit (0 for none): "))
@@ -444,7 +476,7 @@ def download(submissions):
     downloadedCount = subsLenght
     duplicates = 0
     BACKUP = {}
-
+    ToBeDownloaded = GLOBAL.arguments.exclude
     FAILED_FILE = createLogFile("FAILED")
 
     for i in range(subsLenght):
@@ -466,7 +498,7 @@ def download(submissions):
 
         directory = GLOBAL.directory / submissions[i]['postSubreddit']
 
-        if submissions[i]['postType'] == 'imgur':
+        if submissions[i]['postType'] == 'imgur' and not 'imgur' in ToBeDownloaded:
             print("IMGUR",end="")
             
             while int(time.time() - lastRequestTime) <= 2:
@@ -529,7 +561,7 @@ def download(submissions):
                 )
                 downloadedCount -= 1
 
-        elif submissions[i]['postType'] == 'gfycat':
+        elif submissions[i]['postType'] == 'gfycat' and not 'gfycat' in ToBeDownloaded:
             print("GFYCAT")
             try:
                 Gfycat(directory,submissions[i])
@@ -549,7 +581,7 @@ def download(submissions):
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
 
-        elif submissions[i]['postType'] == 'direct':
+        elif submissions[i]['postType'] == 'direct' and not 'direct' in ToBeDownloaded:
             print("DIRECT")
             try:
                 Direct(directory,submissions[i])
@@ -564,7 +596,7 @@ def download(submissions):
                 FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
                 downloadedCount -= 1
         
-        elif submissions[i]['postType'] == 'self':
+        elif submissions[i]['postType'] == 'self' and not 'self' in ToBeDownloaded:
             print("SELF")
             try:
                 Self(directory,submissions[i])
