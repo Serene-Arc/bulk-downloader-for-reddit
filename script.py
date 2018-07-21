@@ -668,7 +668,10 @@ if __name__ == "__main__":
             GLOBAL.directory = Path(".\\")
         print("\nQUITTING...")
     except Exception as exception:
-        logging.error("Runtime error!", exc_info=full_exc_info(sys.exc_info()))
+        if GLOBAL.directory is None:
+            GLOBAL.directory = Path(".\\")
+        logging.error(sys.exc_info()[0].__name__,
+                      exc_info=full_exc_info(sys.exc_info()))
         print(log_stream.getvalue())
 
     input("Press enter to quit\n")
