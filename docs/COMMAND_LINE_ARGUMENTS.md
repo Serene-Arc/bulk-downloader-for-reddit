@@ -23,7 +23,8 @@ optional arguments:
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
   --upvoted             Gets upvoted posts of --user
-  --log LOG FILE        Triggers log read mode and takes a log file
+  --log LOG FILE        Takes a log file which created by itself (json files),
+                        reads posts and tries downloading them again.
   --subreddit SUBREDDIT [SUBREDDIT ...]
                         Triggers subreddit mode and takes subreddit's name
                         without r/. use "frontpage" for frontpage
@@ -39,6 +40,8 @@ optional arguments:
                         all
   --NoDownload          Just gets the posts and store them in a file for
                         downloading later
+  --exclude {imgur,gfycat,direct,self} [{imgur,gfycat,direct,self} ...]
+                        Do not download specified links
 ```
 
 # Examples
