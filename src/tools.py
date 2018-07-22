@@ -75,8 +75,10 @@ def createLogFile(TITLE):
     put given arguments inside \"HEADER\" key
     """
 
-    folderDirectory = GLOBAL.directory / str(time.strftime("%d-%m-%Y_%H-%M-%S",
-                                             time.localtime(GLOBAL.RUN_TIME)))
+    folderDirectory = GLOBAL.directory / "LOG_FILES" / \
+                      str(time.strftime(
+                          "%d-%m-%Y_%H-%M-%S",time.localtime(GLOBAL.RUN_TIME)
+                      ))
     logFilename = TITLE.upper()+'.json'
 
     if not path.exists(folderDirectory):
@@ -95,7 +97,7 @@ def printToFile(*args, **kwargs):
     
     TIME = str(time.strftime("%d-%m-%Y_%H-%M-%S",
                              time.localtime(GLOBAL.RUN_TIME)))
-    folderDirectory = GLOBAL.directory / TIME
+    folderDirectory = GLOBAL.directory / "LOG_FILES" / TIME
     print(*args,**kwargs)
 
     if not path.exists(folderDirectory):
