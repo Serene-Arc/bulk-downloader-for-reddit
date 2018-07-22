@@ -165,7 +165,10 @@ def checkConflicts():
     else:
         user = 1
 
-    modes = ["saved","subreddit","submitted","search","log","link","upvoted"]
+    modes = [
+        "saved","subreddit","submitted","search","log","link","upvoted",
+        "multireddit"
+    ]
 
     values = {
         x: 0 if getattr(GLOBAL.arguments,x) is None or \
@@ -271,7 +274,7 @@ class PromptUser:
 
         elif programMode == "multireddit":
             GLOBAL.arguments.user = input("\nredditor: ")
-            GLOBAL.arguments.subreddit = input("\nmultireddit: ")
+            GLOBAL.arguments.multireddit = input("\nmultireddit: ")
             
             print("\nselect sort type:")
             sortTypes = [
@@ -408,6 +411,9 @@ def prepareAttributes():
             GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
 
         ATTRIBUTES["subreddit"] = GLOBAL.arguments.subreddit
+
+    elif GLOBAL.arguments.multireddit is not None:
+        ATTRIBUTES["multireddit"] = GLOBAL.arguments.multireddit
 
     elif GLOBAL.arguments.saved is True:
         ATTRIBUTES["saved"] = True
