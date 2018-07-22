@@ -53,6 +53,9 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   them, there.
 
 ## Changelog
+### [22/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/b60ce8a71ebfa942634bc46c839aa06a92075d91)
+- Put log files in a folder named "LOG_FILES"
+
 ### [21/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/4a8c2377f9fb4d60ed7eeb8d50aaf9a26492462a)
 - Added exclude mode
 
