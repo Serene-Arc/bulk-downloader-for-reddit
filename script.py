@@ -476,7 +476,11 @@ def download(submissions):
     downloadedCount = subsLenght
     duplicates = 0
     BACKUP = {}
-    ToBeDownloaded = GLOBAL.arguments.exclude
+    if GLOBAL.arguments.exclude is not None:
+        ToBeDownloaded = GLOBAL.arguments.exclude
+    else:
+        ToBeDownloaded = []
+
     FAILED_FILE = createLogFile("FAILED")
 
     for i in range(subsLenght):
