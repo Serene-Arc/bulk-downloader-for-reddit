@@ -52,7 +52,7 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 - All of the user data is held in **config.json** file which is in a folder named "Bulk Downloader for Reddit" in your **Home** directory. You can edit 
   them, there.
 
-## Changelog
+## Changes on *master*
 ### [22/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/a67da461d2fcd70672effcb20c8179e3224091bb)
 - Put log files in a folder named "LOG_FILES"
 - Fixed the bug that makes multireddit mode unusable
