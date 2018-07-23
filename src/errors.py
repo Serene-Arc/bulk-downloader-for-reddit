@@ -81,3 +81,9 @@ class InvalidSortingType(Exception):
 
 class FileNotFoundError(Exception):
     pass
+
+class NoSuitablePost(Exception):
+    pass
+
+class ImgurLimitError(Exception):
+    pass
