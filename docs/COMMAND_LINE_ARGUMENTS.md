@@ -40,8 +40,6 @@ optional arguments:
                         all
   --NoDownload          Just gets the posts and store them in a file for
                         downloading later
-  --exclude {imgur,gfycat,direct,self} [{imgur,gfycat,direct,self} ...]
-                        Do not download specified links
 ```
 
 # Examples

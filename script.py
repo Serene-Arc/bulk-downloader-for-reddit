@@ -144,11 +144,6 @@ def parseArguments(arguments=[]):
                         action="store_true",
                         default=False)
     
-    parser.add_argument("--exclude",
-                        nargs="+",
-                        help="Do not download specified links",
-                        choices=["imgur","gfycat","direct","self"],
-                        type=str)
 
     if arguments == []:
         return parser.parse_args()
@@ -253,7 +248,8 @@ class PromptUser:
                 GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
 
             # DELETE THE PLUS (+) AT THE END
-            GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
+            if not subredditInput.lower() == "frontpage":
+                GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
 
             print("\nselect sort type:")
             sortTypes = [
@@ -326,32 +322,6 @@ class PromptUser:
                 GLOBAL.arguments.log = input("\nlog file directory:")
                 if Path(GLOBAL.arguments.log ).is_file():
                     break 
-
-        GLOBAL.arguments.exclude = []
-
-        sites = ["imgur","gfycat","direct","self"]
-                
-        excludeInput = input("exclude: ").lower()
-        if excludeInput in sites and excludeInput != "":
-            GLOBAL.arguments.exclude = [excludeInput]
-
-        while not excludeInput == "":
-            while True:
-                excludeInput = input("exclude: ").lower()
-                if not excludeInput in sites or excludeInput in GLOBAL.arguments.exclude:
-                    break
-                elif excludeInput == "":
-                    break
-                else:
-                    GLOBAL.arguments.exclude.append(excludeInput)
-
-        for i in range(len(GLOBAL.arguments.exclude)):
-            if " " in GLOBAL.arguments.exclude[i]:
-                inputWithWhitespace = GLOBAL.arguments.exclude[i]
-                del GLOBAL.arguments.exclude[i]
-                for siteInput in inputWithWhitespace.split():
-                    if siteInput in sites and siteInput not in GLOBAL.arguments.exclude:
-                        GLOBAL.arguments.exclude.append(siteInput)
 
         while True:
             try:
@@ -472,15 +442,14 @@ def postExists(POST):
     else:
         return False
 
-def downloadPost(SUBMISSION,EXCLUDE):
+def downloadPost(SUBMISSION):
     directory = GLOBAL.directory / SUBMISSION['postSubreddit']
 
     global lastRequestTime
 
     downloaders = {"imgur":Imgur,"gfycat":Gfycat,"direct":Direct,"self":Self}
 
-    if SUBMISSION['postType'] in downloaders and \
-       not SUBMISSION['postType'] in EXCLUDE:
+    if SUBMISSION['postType'] in downloaders:
 
         print(SUBMISSION['postType'].upper())
 
@@ -542,11 +511,6 @@ def download(submissions):
     downloadedCount = subsLenght
     duplicates = 0
 
-    if GLOBAL.arguments.exclude is not None:
-        DoNotDownload = GLOBAL.arguments.exclude
-    else:
-        DoNotDownload = []
-
     FAILED_FILE = createLogFile("FAILED")
 
     for i in range(subsLenght):
@@ -566,7 +530,7 @@ def download(submissions):
             continue
 
         try:
-            downloadPost(submissions[i],DoNotDownload)
+            downloadPost(submissions[i])
         
         except FileAlreadyExistsError:
             print("It already exists")
@@ -636,7 +600,7 @@ def main():
         logDir = Path(GLOBAL.arguments.log)
         download(postFromLog(logDir))
         sys.exit()
-
+    
     try:
         POSTS = getPosts(prepareAttributes())
     except InsufficientPermission:
