@@ -242,10 +242,10 @@ class PromptUser:
 
         if programMode == "subreddit":
 
-            subredditInput = input("subreddit: ")
+            subredditInput = input("subreddit (enter frontpage for frontpage): ")
             GLOBAL.arguments.subreddit = subredditInput
 
-            while not subredditInput == "":
+            while not (subredditInput == "" or subredditInput.lower() == "frontpage"):
                 subredditInput = input("subreddit: ")
                 GLOBAL.arguments.subreddit += "+" + subredditInput
 
