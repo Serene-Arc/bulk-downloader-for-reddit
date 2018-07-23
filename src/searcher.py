@@ -299,6 +299,8 @@ def redditSearcher(posts,SINGLE_POST=False):
     gfycatCount = 0
     global imgurCount
     imgurCount = 0
+    global eromeCount
+    eromeCount = 0
     global directCount
     directCount = 0
     global selfCount
@@ -360,8 +362,15 @@ def redditSearcher(posts,SINGLE_POST=False):
     if not len(subList) == 0:    
         print(
             "\nTotal of {} submissions found!\n"\
-            "{} GFYCATs, {} IMGURs, {} DIRECTs and {} SELF POSTS\n"
-            .format(len(subList),gfycatCount,imgurCount,directCount,selfCount)
+            "{} GFYCATs, {} IMGURs, {} EROMEs, {} DIRECTs and {} SELF POSTS\n"
+            .format(
+                len(subList),
+                gfycatCount,
+                imgurCount,
+                eromeCount,
+                directCount,
+                selfCount
+            )
         )
         return subList
     else:
@@ -370,6 +379,7 @@ def redditSearcher(posts,SINGLE_POST=False):
 def checkIfMatching(submission):
     global gfycatCount
     global imgurCount
+    global eromeCount
     global directCount
     global selfCount
 
@@ -383,19 +393,20 @@ def checkIfMatching(submission):
     except AttributeError:
         return None
 
-    if ('gfycat' in submission.domain) or \
-        ('imgur' in submission.domain):
+    if 'gfycat' in submission.domain:
+        details['postType'] = 'gfycat'
+        gfycatCount += 1
+        return details
 
-        if 'gfycat' in submission.domain:
-            details['postType'] = 'gfycat'
-            gfycatCount += 1
-            return details
+    elif 'imgur' in submission.domain:
+        details['postType'] = 'imgur'
+        imgurCount += 1
+        return details
 
-        elif 'imgur' in submission.domain:
-            details['postType'] = 'imgur'
-            
-            imgurCount += 1
-            return details
+    elif 'erome' in submission.domain:
+        details['postType'] = 'erome'
+        eromeCount += 1
+        return details
 
     elif isDirectLink(submission.url) is not False:
         details['postType'] = 'direct'

@@ -13,7 +13,7 @@ import time
 from io import StringIO
 from pathlib import Path, PurePath
 
-from src.downloader import Direct, Gfycat, Imgur, Self
+from src.downloader import Direct, Gfycat, Imgur, Self, Erome
 from src.errors import *
 from src.parser import LinkDesigner
 from src.searcher import getPosts
@@ -322,7 +322,6 @@ class PromptUser:
                 GLOBAL.arguments.log = input("\nlog file directory:")
                 if Path(GLOBAL.arguments.log ).is_file():
                     break 
-
         while True:
             try:
                 GLOBAL.arguments.limit = int(input("\nlimit (0 for none): "))
@@ -447,7 +446,9 @@ def downloadPost(SUBMISSION):
 
     global lastRequestTime
 
-    downloaders = {"imgur":Imgur,"gfycat":Gfycat,"direct":Direct,"self":Self}
+    downloaders = {
+        "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":Self
+    }
 
     if SUBMISSION['postType'] in downloaders:
 
@@ -571,8 +572,6 @@ def download(submissions):
 
     else:
         print(" Total of {} links downloaded!".format(downloadedCount))
-
-    return None
 
 def main():
     GLOBAL.arguments = parseArguments()
