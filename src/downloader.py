@@ -4,6 +4,7 @@ import sys
 import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.error import HTTPError
 
 import imgurpython
 from multiprocessing import Queue
@@ -72,15 +73,10 @@ def getFile(fileDir,tempDir,imageURL,indent=0):
 
 class Erome:
     def __init__(self,directory,post):
-        # try:
-        #     IMAGES = self.getLinks(post['postURL'])
-        # except IndexError:
-        #     # raise NotADownloadableLinkError("Could not read the page source")
-        #     pass
-        # except Exception as exception:
-        #     pass
-        #     # raise NotADownloadableLinkError("Could not read the page source")
-        IMAGES = self.getLinks(post['postURL'])
+        try:
+            IMAGES = self.getLinks(post['postURL'])
+        except urllib.error.HTTPError:
+            raise NotADownloadableLinkError("Not a downloadable link")
 
         imagesLenght = len(IMAGES)
         howManyDownloaded = imagesLenght
