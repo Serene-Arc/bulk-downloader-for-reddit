@@ -53,8 +53,9 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   them, there.
 
 ## Changes on *master*
-### [23/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/bcae177b1e2d4e951db0fad26863b956fa920132)
+### [23/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7314e17125aa78fd4e6b28e26fda7ec7db7e0147)
 - Split download() funtion
+- Added erome support
 - Remove exclude feature
 - Bug fix
 
