@@ -546,12 +546,26 @@ def download(submissions):
             sys.exit()
 
         except ImgurLimitError as exception:
-            FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            FAILED_FILE.add({int(i+1):[
+                "{class_name}: {info}".format(
+                    class_name=exception.__class__.__name__,info=str(exception)
+                ),
+                submissions[i]
+            ]})
             downloadedCount -= 1
 
         except NotADownloadableLinkError as exception:
-            print(exception)
-            FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            print(
+                "{class_name}: {info}".format(
+                    class_name=exception.__class__.__name__,info=str(exception)
+                )
+            )
+            FAILED_FILE.add({int(i+1):[
+                "{class_name}: {info}".format(
+                    class_name=exception.__class__.__name__,info=str(exception)
+                ),
+                submissions[i]
+            ]})
             downloadedCount -= 1
 
         except NoSuitablePost:
@@ -560,8 +574,17 @@ def download(submissions):
         
         except Exception as exception:
             # raise exception
-            print(exception)
-            FAILED_FILE.add({int(i+1):[str(exception),submissions[i]]})
+            print(
+                "{class_name}: {info}".format(
+                    class_name=exception.__class__.__name__,info=str(exception)
+                )
+            )
+            FAILED_FILE.add({int(i+1):[
+                "{class_name}: {info}".format(
+                    class_name=exception.__class__.__name__,info=str(exception)
+                ),
+                submissions[i]
+            ]})
             downloadedCount -= 1
 
     if duplicates:
@@ -587,9 +610,6 @@ def main():
         checkConflicts()
     except ProgramModeError as err:
         PromptUser()
-    except Exception as err:
-        print(err)
-        sys.exit()
 
     if not Path(GLOBAL.configDirectory).is_dir():
         os.makedirs(GLOBAL.configDirectory)
