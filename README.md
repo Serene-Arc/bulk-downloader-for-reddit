@@ -12,7 +12,6 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - Puts every post to its subreddit's folder
 - Saves a reusable copy of posts' details that are found so that they can be re-downloaded again
 - Logs failed ones in a file to so that you can try to download them later
-- Can run with double-clicking on Windows
 
 ## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 

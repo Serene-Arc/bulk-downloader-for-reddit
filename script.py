@@ -423,21 +423,36 @@ def postFromLog(fileName):
 
     return posts
 
-def postExists(POST):
+def isPostExists(POST):
     """Figure out a file's name and checks if the file already exists"""
 
     title = nameCorrector(POST['postTitle'])
-    FILENAME = title + "_" + POST['postId']
     PATH = GLOBAL.directory / POST["postSubreddit"]
+
     possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md"]
 
-    for i in range(2):
-        for extension in possibleExtensions:
-            FILE_PATH = PATH / (FILENAME+extension)
-            if FILE_PATH.exists():
-                return True
-        else:
-            FILENAME = POST['postId']
+    for extension in possibleExtensions:
+
+        OLD_FILE_PATH = PATH / (
+            title
+            + "_" + POST['postId']
+            + extension
+        )
+        FILE_PATH = PATH / (
+            POST["postSubmitter"] 
+            + "_" + title 
+            + "_" + POST['postId'] 
+            + extension
+        )
+
+        SHORT_FILE_PATH = PATH / (POST['postId']+extension)
+
+        if OLD_FILE_PATH.exists() or \
+           FILE_PATH.exists() or \
+           SHORT_FILE_PATH.exists():
+           
+            return True
+
     else:
         return False
 
@@ -523,7 +538,7 @@ def download(submissions):
             )
         )
 
-        if postExists(submissions[i]):
+        if isPostExists(submissions[i]):
             print(submissions[i]['postType'].upper())
             print("It already exists")
             duplicates += 1
