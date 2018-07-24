@@ -41,6 +41,13 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 \* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
 ## FAQ
+### How downloaded files' names are formatted?
+- Images that are not belong to an album or self posts are formatted as **`[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`**.
+  You can use *reddit id* to go to post's reddit page by going to link **reddit.com/[REDDIT ID]**
+  
+- An image in an imgur album is formatted as **`[ITEM NUMBER]_[IMAGE TITLE]_[IMGUR ID]`**
+  Similarly, you can use *imgur id* to go to image's imgur page by going to link **imgur.com/[IMGUR ID]**.
+
 ### How do I open self post files?
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
   However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).  
