@@ -52,8 +52,9 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   them, there.
 
 ## Changes on *master*
-### [24/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/21533bb78ce24359eb638991f3ec79a572a4a555)
-- Deleted # char from file names
+### [24/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7a68ff3efac9939f9574c2cef6184b92edb135f4)
+- Added OP's name to file names (backwards compatible)
+- Deleted # char from file names (backwards compatible)
 - Imroved exception handling
 
 ### [23/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7314e17125aa78fd4e6b28e26fda7ec7db7e0147)
