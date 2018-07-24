@@ -87,13 +87,13 @@ class Erome:
             extension = getExtension(IMAGES[0])
 
             title = nameCorrector(post['postTitle'])
-            print(title+"_" +post['postId']+extension)
+            print(post["postSubmitter"]+"_"+title+"_"+post['postId']+extension)
 
             fileDir = directory / (
-                title+"_"+POST["postSubmitter"]+"_"+POST['postId']+extension
+                POST["postSubmitter"]+"_"+title+"_"+POST['postId']+extension
             )
             tempDir = directory / (
-                title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".tmp"
+                POST["postSubmitter"]+"_"+title+"_"+POST['postId']+".tmp"
             )
 
             imageURL = "https:" + IMAGES[0]
@@ -107,10 +107,10 @@ class Erome:
 
         else:
             title = nameCorrector(post['postTitle'])
-            print(title+"_"+post['postId'],end="\n\n")
+            print(post["postSubmitter"]+"_"+title+"_"+post['postId'],end="\n\n")
 
             folderDir = directory / (
-                title + "_" + post["postSubmitter"] + "_" + post['postId']
+                post["postSubmitter"] + "_" + title + "_" + post['postId']
             )
 
             try:
@@ -216,18 +216,18 @@ class Imgur:
             post['postExt'] = getExtension(post['mediaURL'])
 
             title = nameCorrector(post['postTitle'])
-            print(title+"_" +post['postId']+post['postExt'])
+            print(post["postSubmitter"]+"_"+title+"_"+post['postId']+post['postExt'])
 
             fileDir = directory / (
-                title 
-                + "_" + post["postSubmitter"] 
+                post["postSubmitter"]
+                + "_" + title
                 + "_" + post['postId'] 
                 + post['postExt']
             )
 
             tempDir = directory / (
-                title 
-                + "_" + post["postSubmitter"] 
+                post["postSubmitter"]
+                + "_" + title 
                 + "_" + post['postId'] 
                 + ".tmp"
             )
@@ -247,10 +247,10 @@ class Imgur:
             duplicates = 0
 
             title = nameCorrector(post['postTitle'])
-            print(title+"_"+post['postId'],end="\n\n")
+            print(post["postSubmitter"]+"_"+title+"_"+post['postId'],end="\n\n")
 
             folderDir = directory / (
-                title + "_" + post["postSubmitter"] + "_" + post['postId']
+                post["postSubmitter"] + "_" + title + "_" + post['postId']
             )
 
             try:
@@ -369,13 +369,13 @@ class Gfycat:
 
         if not os.path.exists(directory): os.makedirs(directory)
         title = nameCorrector(POST['postTitle'])
-        print(title+"_"+POST['postId']+POST['postExt'])
+        print(POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt'])
 
         fileDir = directory / (
-            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+POST['postExt']
+            POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt']
         )
         tempDir = directory / (
-            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".tmp"
+            POST["postSubmitter"]+"_"+title+"_"+POST['postId']+".tmp"
         )
         
         try:
@@ -423,13 +423,13 @@ class Direct:
         POST['postExt'] = getExtension(POST['postURL'])
         if not os.path.exists(directory): os.makedirs(directory)
         title = nameCorrector(POST['postTitle'])
-        print(title+"_"+POST['postId']+POST['postExt'])
+        print(POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt'])
 
         fileDir = directory / (
-            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+POST['postExt']
+            POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt']
         )
         tempDir = directory / (
-            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".tmp"
+            POST["postSubmitter"]+"_"+title+"_"+POST['postId']+".tmp"
         )
 
         try:
@@ -445,10 +445,10 @@ class Self:
         if not os.path.exists(directory): os.makedirs(directory)
 
         title = nameCorrector(post['postTitle'])
-        print(title+"_"+post['postId']+".md")
+        print(post["postSubmitter"]+"_"+title+"_"+post['postId']+".md")
 
         fileDir = directory / (
-            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".md"
+            post["postSubmitter"]+"_"+title+"_"+post['postId']+".md"
         )
         
         if Path.is_file(fileDir):
@@ -472,7 +472,11 @@ class Self:
                    + ")\n"
                    + post["postContent"]
                    + "\n\n---\n\n"
-                   + "submitted by [u/"
+                   + "submitted to [r/"
+                   + post["postSubreddit"]
+                   + "](https://www.reddit.com/r/"
+                   + post["postSubreddit"]
+                   + ") by [u/"
                    + post["postSubmitter"]
                    + "](https://www.reddit.com/user/"
                    + post["postSubmitter"]
