@@ -132,7 +132,7 @@ def nameCorrector(string):
     if len(string.split('\n')) > 1:
         string = "".join(string.split('\n'))
     
-    BAD_CHARS = ['\\','/',':','*','?','"','<','>','|','.',]
+    BAD_CHARS = ['\\','/',':','*','?','"','<','>','|','.','#']
     
     if any(x in string for x in BAD_CHARS):
         for char in string:

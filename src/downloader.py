@@ -142,9 +142,16 @@ class Erome:
                     howManyDownloaded -= 1
 
                 except Exception as exception:
-                    raise exception
+                    # raise exception
                     print("\n  Could not get the file")
-                    print("  " + str(exception) + "\n")
+                    print(
+                        "  "
+                        + "{class_name}: {info}".format(
+                            class_name=exception.__class__.__name__,
+                            info=str(exception)
+                        )
+                        + "\n"
+                    )
                     exceptionType = exception
                     howManyDownloaded -= 1
 
@@ -304,7 +311,14 @@ class Imgur:
 
                 except Exception as exception:
                     print("\n  Could not get the file")
-                    print("  " + str(exception) + "\n")
+                    print(
+                        "  "
+                        + "{class_name}: {info}".format(
+                            class_name=exception.__class__.__name__,
+                            info=str(exception)
+                        )
+                        + "\n"
+                    )
                     exceptionType = exception
                     howManyDownloaded -= 1
 
