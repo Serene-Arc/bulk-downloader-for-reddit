@@ -91,10 +91,10 @@ class Erome:
             print(post["postSubmitter"]+"_"+title+"_"+post['postId']+extension)
 
             fileDir = directory / (
-                POST["postSubmitter"]+"_"+title+"_"+POST['postId']+extension
+                post["postSubmitter"]+"_"+title+"_"+post['postId']+extension
             )
             tempDir = directory / (
-                POST["postSubmitter"]+"_"+title+"_"+POST['postId']+".tmp"
+                post["postSubmitter"]+"_"+title+"_"+post['postId']+".tmp"
             )
 
             imageURL = "https:" + IMAGES[0]
