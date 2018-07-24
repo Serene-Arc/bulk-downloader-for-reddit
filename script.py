@@ -448,9 +448,12 @@ def postExists(POST):
 
         SHORT_FILE_PATH = PATH / (POST['postId']+extension)
 
-        if OLD_FILE_PATH.exists() FILE_PATH.exists() or SHORT_FILE_PATH.exists():
+        if OLD_FILE_PATH.exists() or \
+           FILE_PATH.exists() or \
+           SHORT_FILE_PATH.exists():
+           
             return True
-            
+
     else:
         return False
 
