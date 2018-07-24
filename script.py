@@ -467,7 +467,7 @@ def downloadPost(SUBMISSION):
 
     if SUBMISSION['postType'] in downloaders:
 
-        print(SUBMISSION['postType'].upper())
+        print(SUBMISSION['postType'].upper(),end=" ")
 
         if SUBMISSION['postType'] == "imgur":
             
@@ -484,11 +484,11 @@ def downloadPost(SUBMISSION):
                             + " Seconds") 
 
             print(
-                "Client: {} - User: {} - Reset {}".format(
+                "==> Client: {} - User: {} - Reset {}".format(
                     credit['ClientRemaining'],
                     credit['UserRemaining'],
                     USER_RESET
-                )
+                ),end=""
             )
 
             if not (credit['UserRemaining'] == 0 or \
@@ -509,6 +509,7 @@ def downloadPost(SUBMISSION):
 
                 raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
 
+        print()
         downloaders[SUBMISSION['postType']] (directory,SUBMISSION)
 
     else:
