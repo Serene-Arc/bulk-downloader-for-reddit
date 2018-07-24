@@ -89,11 +89,12 @@ class Erome:
             title = nameCorrector(post['postTitle'])
             print(title+"_" +post['postId']+extension)
 
-            fileDir = title + "_" + post['postId'] + extension
-            fileDir = directory / fileDir
-
-            tempDir = title + "_" + post['postId'] + '.tmp'
-            tempDir = directory / tempDir
+            fileDir = directory / (
+                title+"_"+POST["postSubmitter"]+"_"+POST['postId']+extension
+            )
+            tempDir = directory / (
+                title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".tmp"
+            )
 
             imageURL = "https:" + IMAGES[0]
 
@@ -108,7 +109,9 @@ class Erome:
             title = nameCorrector(post['postTitle'])
             print(title+"_"+post['postId'],end="\n\n")
 
-            folderDir = directory / (title+"_"+post['postId'])
+            folderDir = directory / (
+                title + "_" + post["postSubmitter"] + "_" + post['postId']
+            )
 
             try:
                 if not os.path.exists(folderDir):
@@ -215,11 +218,20 @@ class Imgur:
             title = nameCorrector(post['postTitle'])
             print(title+"_" +post['postId']+post['postExt'])
 
-            fileDir = title + "_" + post['postId'] + post['postExt']
-            fileDir = directory / fileDir
+            fileDir = directory / (
+                title 
+                + "_" + post["postSubmitter"] 
+                + "_" + post['postId'] 
+                + post['postExt']
+            )
 
-            tempDir = title + "_" + post['postId'] + '.tmp'
-            tempDir = directory / tempDir
+            tempDir = directory / (
+                title 
+                + "_" + post["postSubmitter"] 
+                + "_" + post['postId'] 
+                + ".tmp"
+            )
+
             try:
                 getFile(fileDir,tempDir,post['mediaURL'])
             except FileNameTooLong:
@@ -237,7 +249,9 @@ class Imgur:
             title = nameCorrector(post['postTitle'])
             print(title+"_"+post['postId'],end="\n\n")
 
-            folderDir = directory / (title+"_"+post['postId'])
+            folderDir = directory / (
+                title + "_" + post["postSubmitter"] + "_" + post['postId']
+            )
 
             try:
                 if not os.path.exists(folderDir):
@@ -357,8 +371,13 @@ class Gfycat:
         title = nameCorrector(POST['postTitle'])
         print(title+"_"+POST['postId']+POST['postExt'])
 
-        fileDir = directory / (title+"_"+POST['postId']+POST['postExt'])
-        tempDir = directory / (title+"_"+POST['postId']+".tmp")
+        fileDir = directory / (
+            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+POST['postExt']
+        )
+        tempDir = directory / (
+            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".tmp"
+        )
+        
         try:
             getFile(fileDir,tempDir,POST['mediaURL'])
         except FileNameTooLong:
@@ -406,11 +425,12 @@ class Direct:
         title = nameCorrector(POST['postTitle'])
         print(title+"_"+POST['postId']+POST['postExt'])
 
-        fileDir = title+"_"+POST['postId']+POST['postExt']
-        fileDir = directory / fileDir
-
-        tempDir = title+"_"+POST['postId']+".tmp"
-        tempDir = directory / tempDir
+        fileDir = directory / (
+            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+POST['postExt']
+        )
+        tempDir = directory / (
+            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".tmp"
+        )
 
         try:
             getFile(fileDir,tempDir,POST['postURL'])
@@ -427,8 +447,9 @@ class Self:
         title = nameCorrector(post['postTitle'])
         print(title+"_"+post['postId']+".md")
 
-        fileDir = title+"_"+post['postId']+".md"
-        fileDir = directory / fileDir
+        fileDir = directory / (
+            title+"_"+POST["postSubmitter"]+"_"+POST['postId']+".md"
+        )
         
         if Path.is_file(fileDir):
             raise FileAlreadyExistsError

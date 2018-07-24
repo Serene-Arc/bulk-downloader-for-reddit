@@ -427,17 +427,30 @@ def postExists(POST):
     """Figure out a file's name and checks if the file already exists"""
 
     title = nameCorrector(POST['postTitle'])
-    FILENAME = title + "_" + POST['postId']
+    FILENAME = title + "_" + POST['postId'] + "_" + POST["postSubmitter"]
     PATH = GLOBAL.directory / POST["postSubreddit"]
+
     possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md"]
 
-    for i in range(2):
-        for extension in possibleExtensions:
-            FILE_PATH = PATH / (FILENAME+extension)
-            if FILE_PATH.exists():
-                return True
-        else:
-            FILENAME = POST['postId']
+    for extension in possibleExtensions:
+
+        OLD_FILE_PATH = PATH / (
+            title
+            + "_" + POST['postId']
+            + extension
+        )
+        FILE_PATH = PATH / (
+            title 
+            + "_" + POST['postId'] 
+            + "_" + POST["postSubmitter"] 
+            + extension
+        )
+
+        SHORT_FILE_PATH = PATH / (POST['postId']+extension)
+
+        if OLD_FILE_PATH.exists() FILE_PATH.exists() or SHORT_FILE_PATH.exists():
+            return True
+            
     else:
         return False
 
