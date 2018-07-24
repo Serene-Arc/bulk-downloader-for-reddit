@@ -61,13 +61,14 @@ def getFile(fileDir,tempDir,imageURL,indent=0):
                                            tempDir,
                                            reporthook=dlProgress)
                 os.rename(tempDir,fileDir)
-                print(" "*indent+"Downloaded"+" "*10)
-                break
             except ConnectionResetError as exception:
                 print(" "*indent + str(exception))
                 print(" "*indent + "Trying again\n")
             except FileNotFoundError:
                 raise FileNameTooLong
+            else:
+                print(" "*indent+"Downloaded"+" "*10)
+                break
     else:
         raise FileAlreadyExistsError
 
