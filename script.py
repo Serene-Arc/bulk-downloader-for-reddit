@@ -62,7 +62,7 @@ def parseArguments(arguments=[]):
                                      description="This program downloads " \
                                                  "media from reddit " \
                                                  "posts")
-    parser.add_argument("--directory",
+    parser.add_argument("--directory","-d",
                         help="Specifies the directory where posts will be " \
                         "downloaded to",
                         metavar="DIRECTORY")
@@ -141,6 +141,11 @@ def parseArguments(arguments=[]):
     parser.add_argument("--NoDownload",
                         help="Just gets the posts and store them in a file" \
                              " for downloading later",
+                        action="store_true",
+                        default=False)
+    
+    parser.add_argument("--verbose","-v",
+                        help="Verbose Mode",
                         action="store_true",
                         default=False)
     

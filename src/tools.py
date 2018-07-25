@@ -102,11 +102,12 @@ def printToFile(*args, **kwargs):
 
     if not path.exists(folderDirectory):
         makedirs(folderDirectory)
-        
-    with io.open(
-        folderDirectory / "CONSOLE_LOG.txt","a",encoding="utf-8"
-    ) as FILE:
-        print(*args, file=FILE, **kwargs) 
+    
+    if not "file" in kwargs:
+        with io.open(
+            folderDirectory / "CONSOLE_LOG.txt","a",encoding="utf-8"
+        ) as FILE:
+            print(*args, file=FILE, **kwargs) 
 
 def nameCorrector(string):
     """Swap strange characters from given string 

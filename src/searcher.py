@@ -1,4 +1,5 @@
 import os
+import sys
 import random
 import socket
 import webbrowser
@@ -306,6 +307,7 @@ def redditSearcher(posts,SINGLE_POST=False):
 
     allPosts = {}
 
+    print("GETTING POSTS")
     postsFile = createLogFile("POSTS")
 
     if SINGLE_POST:
@@ -326,40 +328,53 @@ def redditSearcher(posts,SINGLE_POST=False):
         if result is not None:
             details = result
             orderCount += 1
-            printSubmission(submission,subCount,orderCount)
+            if GLOBAL.arguments.verbose:
+                printSubmission(submission,subCount,orderCount)
             subList.append(details)
 
         postsFile.add({subCount:[details]})
 
     else:
-        for submission in posts:
-            subCount += 1
+        try:
+            for submission in posts:
+                subCount += 1
 
-            try:
-                details = {'postId':submission.id,
-                           'postTitle':submission.title,
-                           'postSubmitter':str(submission.author),
-                           'postType':None,
-                           'postURL':submission.url,
-                           'postSubreddit':submission.subreddit.display_name}
-            except AttributeError:
-                continue
+                if subCount % 100 == 0 and not GLOBAL.arguments.verbose:
+                    sys.stdout.write("• ")
+                    sys.stdout.flush()
 
-            result = checkIfMatching(submission)
+                if subCount % 1000 == 0:
+                    sys.stdout.write("\n")
+                    sys.stdout.flush()
 
-            if result is not None:
-                details = result
-                orderCount += 1
-                printSubmission(submission,subCount,orderCount)
-                subList.append(details)
+                try:
+                    details = {'postId':submission.id,
+                            'postTitle':submission.title,
+                            'postSubmitter':str(submission.author),
+                            'postType':None,
+                            'postURL':submission.url,
+                            'postSubreddit':submission.subreddit.display_name}
+                except AttributeError:
+                    continue
 
-            allPosts[subCount] = [details]
+                result = checkIfMatching(submission)
+
+                if result is not None:
+                    details = result
+                    orderCount += 1
+                    if GLOBAL.arguments.verbose:
+                        printSubmission(submission,subCount,orderCount)
+                    subList.append(details)
+
+                allPosts[subCount] = [details]
+        except KeyboardInterrupt:
+            print("\nKeyboardInterrupt",end="")
         
         postsFile.add(allPosts)
 
     if not len(subList) == 0:    
         print(
-            "\nTotal of {} submissions found!\n"\
+            "\n\nTotal of {} submissions found!\n"\
             "{} GFYCATs, {} IMGURs, {} EROMEs, {} DIRECTs and {} SELF POSTS\n"
             .format(
                 len(subList),
