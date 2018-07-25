@@ -41,6 +41,12 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 \* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
 ## FAQ
+### What are the dots resemble when getting posts?
+- Each dot means that 100 posts are scanned. 
+  
+### Getting posts is taking too long.
+- You can press Ctrl+C to interrupt it and start downloading.
+  
 ### How downloaded files' names are formatted?
 - Images that are not belong to an album or self posts are formatted as **`[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`**.
   You can use *reddit id* to go to post's reddit page by going to link **reddit.com/[REDDIT ID]**
