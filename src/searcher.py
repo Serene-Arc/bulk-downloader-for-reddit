@@ -374,16 +374,10 @@ def redditSearcher(posts,SINGLE_POST=False):
 
     if not len(subList) == 0:    
         print(
-            "\n\nTotal of {} submissions found!\n"\
-            "{} GFYCATs, {} IMGURs, {} EROMEs, {} DIRECTs and {} SELF POSTS\n"
-            .format(
-                len(subList),
-                gfycatCount,
-                imgurCount,
-                eromeCount,
-                directCount,
-                selfCount
-            )
+            f"\n\nTotal of {len(subList)} submissions found!\n"\
+            f"{gfycatCount} GFYCATs, {imgurCount} IMGURs, " \
+            f"{eromeCount} EROMEs, {directCount} DIRECTs " \
+            f"and {selfCount} SELF POSTS"
         )
         return subList
     else:
