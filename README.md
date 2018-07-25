@@ -41,7 +41,7 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 \* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
 
 ## FAQ
-### What are the dots resemble when getting posts?
+### What do the dots resemble when getting posts?
 - Each dot means that 100 posts are scanned. 
   
 ### Getting posts is taking too long.
