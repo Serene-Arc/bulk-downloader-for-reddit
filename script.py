@@ -465,9 +465,8 @@ def downloadPost(SUBMISSION):
         "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":Self
     }
 
+    print()
     if SUBMISSION['postType'] in downloaders:
-
-        print(SUBMISSION['postType'].upper(),end=" ")
 
         if SUBMISSION['postType'] == "imgur":
             
@@ -483,13 +482,14 @@ def downloadPost(SUBMISSION):
                             + str(int(IMGUR_RESET_TIME%60)) \
                             + " Seconds") 
 
-            print(
-                "==> Client: {} - User: {} - Reset {}".format(
-                    credit['ClientRemaining'],
-                    credit['UserRemaining'],
-                    USER_RESET
-                ),end=""
-            )
+            if credit['ClientRemaining'] < 25 or credit['UserRemaining'] < 25:
+                print(
+                    "==> Client: {} - User: {} - Reset {}".format(
+                        credit['ClientRemaining'],
+                        credit['UserRemaining'],
+                        USER_RESET
+                    ),end=""
+                )
 
             if not (credit['UserRemaining'] == 0 or \
                     credit['ClientRemaining'] == 0):
@@ -509,7 +509,6 @@ def downloadPost(SUBMISSION):
 
                 raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
 
-        print()
         downloaders[SUBMISSION['postType']] (directory,SUBMISSION)
 
     else:
@@ -531,17 +530,13 @@ def download(submissions):
     FAILED_FILE = createLogFile("FAILED")
 
     for i in range(subsLenght):
-        print("\n({}/{})".format(i+1,subsLenght))
         print(
-            "https://reddit.com/r/{subreddit}/comments/{id}".format(
-                subreddit=submissions[i]['postSubreddit'],
-                id=submissions[i]['postId']
-            )
+            f"\n({i+1}/{subsLenght}) ({submissions[i]['postType'].upper()}) " \
+            f"(r/{submissions[i]['postSubreddit']})",end=""
         )
 
         if isPostExists(submissions[i]):
-            print(submissions[i]['postType'].upper())
-            print("It already exists")
+            print("\nIt already exists")
             duplicates += 1
             downloadedCount -= 1
             continue
@@ -684,7 +679,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         if GLOBAL.directory is None:
             GLOBAL.directory = Path(".\\")
-        print("\nQUITTING...")
         
     except Exception as exception:
         if GLOBAL.directory is None:

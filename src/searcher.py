@@ -125,7 +125,7 @@ def getPosts(args):
         if args["user"] == "me":
             args["user"] = str(reddit.user.me())
 
-    print("\nGETTING POSTS\n.\n.\n.\n")
+    # print("\nGETTING POSTS\n.\n.\n.\n")
 
     if not "search" in args:
         if args["sort"] == "top" or args["sort"] == "controversial":
