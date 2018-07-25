@@ -471,7 +471,7 @@ def downloadPost(SUBMISSION):
 
         if SUBMISSION['postType'] == "imgur":
             
-            if int(time.time() - lastRequestTime) <= 2:
+            while int(time.time() - lastRequestTime) <= 2:
                 pass
 
             credit = Imgur.get_credits()
@@ -496,7 +496,7 @@ def downloadPost(SUBMISSION):
 
                 """This block of code is needed
                 """
-                if int(time.time() - lastRequestTime) <= 2:
+                while int(time.time() - lastRequestTime) <= 2:
                     pass
 
                 lastRequestTime = time.time()
