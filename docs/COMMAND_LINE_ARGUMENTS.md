@@ -10,13 +10,13 @@ usage: script.py [-h] [--directory DIRECTORY] [--link link] [--saved]
                  [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user redditor]
                  [--search query] [--sort SORT TYPE] [--limit Limit]
-                 [--time TIME_LIMIT] [--NoDownload]
+                 [--time TIME_LIMIT] [--NoDownload] [--verbose]
 
 This program downloads media from reddit posts
 
 optional arguments:
   -h, --help            show this help message and exit
-  --directory DIRECTORY
+  --directory DIRECTORY, -d DIRECTORY
                         Specifies the directory where posts will be downloaded
                         to
   --link link, -l link  Get posts from link
@@ -40,6 +40,7 @@ optional arguments:
                         all
   --NoDownload          Just gets the posts and store them in a file for
                         downloading later
+  --verbose, -v         Verbose Mode
 ```
 
 # Examples
