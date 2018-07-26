@@ -46,7 +46,7 @@ It should redirect you to a page which shows your **imgur_client_id** and **imgu
 ### Getting posts is taking too long.
 - You can press Ctrl+C to interrupt it and start downloading.
   
-### How downloaded files' names are formatted?
+### How are filenames formatted?
 - Self posts and images that are not belong to an album are formatted as **`[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`**.
   You can use *reddit id* to go to post's reddit page by going to link **reddit.com/[REDDIT ID]**
   
