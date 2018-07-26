@@ -23,6 +23,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   
 - **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
+### Additional options
 Script also accepts additional options via command-line arguments, get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
@@ -36,9 +37,9 @@ Because this is not a commercial app, you need to create an imgur developer app 
 * Correct CHAPTCHA
 * Click **submit** button  
   
-It should redirect to a page which shows your **imgur_client_id** and **imgur_client_secret**
+It should redirect you to a page which shows your **imgur_client_id** and **imgur_client_secret**
   
-\* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*
+\* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*. If this does not work, it is safe to proceed with **OAuth 2 authorization without a callback URL**.
 
 ## FAQ
 ### What do the dots resemble when getting posts?
@@ -48,7 +49,7 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 - You can press Ctrl+C to interrupt it and start downloading.
   
 ### How downloaded files' names are formatted?
-- Images that are not belong to an album or self posts are formatted as **`[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`**.
+- Self posts and images that are not belong to an album are formatted as **`[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`**.
   You can use *reddit id* to go to post's reddit page by going to link **reddit.com/[REDDIT ID]**
   
 - An image in an imgur album is formatted as **`[ITEM NUMBER]_[IMAGE TITLE]_[IMGUR ID]`**
