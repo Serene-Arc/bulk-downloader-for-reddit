@@ -1,16 +1,14 @@
 # Compiling from source code
 ## Requirements
 ### Python 3 Interpreter
-Latest* version of **Python 3** is needed. See if it is already installed [here](#finding-the-correct-keyword-for-python). If not, download the matching release for your platform [here](https://www.python.org/downloads/) and install it. If you are a *Windows* user, selecting **Add Python 3 to PATH** option is mandatory.   
+Latest* version of **Python 3** is needed. See if it is already installed [here](#finding-the-correct-keyword-for-python). If not, download the matching release for your platform [here](https://www.python.org/downloads/) and install it. If you are a *Windows* user, selecting **Add Python 3 to PATH** option when installing the software is mandatory.   
   
 \* *Use Python 3.6.5 if you encounter an issue*
 ## Using terminal
 ### To open it...
-- **On Windows 8/8.1/10**: Press the File tab on **Windows Explorer**, click on **Open Windows PowerShell** or **Open Windows Command Prompt** or look for *Command Prompt* or *PowerShell* in *Start Menu*.
+-  **On Windows**: Press **Shift+Right Click**, select **Open Powershell window here** or **Open Command Prompt window here**
   
-- **On Windows 7**: Press **WindowsKey+R**, type **cmd** and hit Enter or look for *Command Prompt* or *PowerShell* in *Start Menu*.
-  
-- **On Linux**: Right-click in a folder and select **Open Terminal** or press **Ctrl+Alt+T** or look for **Terminal** in the programs.
+- **On Linux**: Right-click in a folder and select **Open Terminal** or press **Ctrl+Alt+T**.
   
 - **On MacOS**: Look for an app called **Terminal**.
   
