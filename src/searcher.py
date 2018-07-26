@@ -305,7 +305,7 @@ def redditSearcher(posts,SINGLE_POST=False):
 
     allPosts = {}
 
-    print("\nGETTING POSTS",end=" ")
+    print("\nGETTING POSTS")
     if GLOBAL.arguments.verbose: print("\n")
     postsFile = createLogFile("POSTS")
 
