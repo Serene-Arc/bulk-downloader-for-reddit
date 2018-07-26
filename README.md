@@ -14,10 +14,7 @@ Downloads media from reddit posts.
 - Logs failed ones in a file to so that you can try to download them later
 
 ## How it works
-  
 - For **Windows** and **Linux** users, there are executable files to run easily without installing a third party program. But if you are a paranoid like me, you can **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
-  - In Windows, double click on bulk-downloader-for-reddit file
-  - In Linux, extract files to a folder and open terminal inside it. Type **`./bulk-downloader-for-reddit`**
   
 - **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
