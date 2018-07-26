@@ -126,8 +126,6 @@ def getPosts(args):
         if args["user"] == "me":
             args["user"] = str(reddit.user.me())
 
-    # print("\nGETTING POSTS\n.\n.\n.\n")
-
     if not "search" in args:
         if args["sort"] == "top" or args["sort"] == "controversial":
             keyword_params = {
@@ -159,7 +157,7 @@ def getPosts(args):
                     sort=args["sort"],
                     subreddit=args["subreddit"],
                     time=args["time"]
-                ).upper()
+                ).upper(),noPrint=True
             )            
             return redditSearcher(
                 reddit.subreddit(args["subreddit"]).search(
@@ -187,7 +185,7 @@ def getPosts(args):
             "saved posts\nuser:{username}\nlimit={limit}\n".format(
                 username=reddit.user.me(),
                 limit=args["limit"]
-            ).upper()
+            ).upper(),noPrint=True
         )
         return redditSearcher(reddit.user.me().saved(limit=args["limit"]))
 
@@ -202,7 +200,7 @@ def getPosts(args):
                     sort=args["sort"],
                     subreddit=args["subreddit"],
                     time=args["time"]
-                ).upper()
+                ).upper(),noPrint=True
             )
             return redditSearcher(
                 getattr(reddit.front,args["sort"]) (**keyword_params)
@@ -216,7 +214,7 @@ def getPosts(args):
                     sort=args["sort"],
                     subreddit=args["subreddit"],
                     time=args["time"]
-                ).upper()
+                ).upper(),noPrint=True
             )
             return redditSearcher(
                 getattr(
@@ -234,7 +232,7 @@ def getPosts(args):
                 sort=args["sort"],
                 multireddit=args["multireddit"],
                 time=args["time"]
-            ).upper()
+            ).upper(),noPrint=True
         )
         try:
             return redditSearcher(
@@ -255,7 +253,7 @@ def getPosts(args):
                 sort=args["sort"],
                 user=args["user"],
                 time=args["time"]
-            ).upper()
+            ).upper(),noPrint=True
         )
         return redditSearcher(
             getattr(
@@ -268,7 +266,7 @@ def getPosts(args):
             "upvoted posts of {user}\nlimit: {limit}\n".format(
                 user=args["user"],
                 limit=args["limit"]
-            ).upper()
+            ).upper(),noPrint=True
         )
         try:
             return redditSearcher(
@@ -278,7 +276,7 @@ def getPosts(args):
             raise InsufficientPermission
 
     elif "post" in args:
-        print("post: {post}\n".format(post=args["post"]).upper())
+        print("post: {post}\n".format(post=args["post"]).upper(),noPrint=True)
         return redditSearcher(
             reddit.submission(url=args["post"]),SINGLE_POST=True
         )
@@ -307,7 +305,8 @@ def redditSearcher(posts,SINGLE_POST=False):
 
     allPosts = {}
 
-    print("GETTING POSTS")
+    print("\nGETTING POSTS",end=" ")
+    if GLOBAL.arguments.verbose: print("\n")
     postsFile = createLogFile("POSTS")
 
     if SINGLE_POST:
@@ -344,7 +343,7 @@ def redditSearcher(posts,SINGLE_POST=False):
                     sys.stdout.flush()
 
                 if subCount % 1000 == 0:
-                    sys.stdout.write("\n")
+                    sys.stdout.write("\n"+" "*14)
                     sys.stdout.flush()
 
                 try:
@@ -372,13 +371,18 @@ def redditSearcher(posts,SINGLE_POST=False):
         
         postsFile.add(allPosts)
 
-    if not len(subList) == 0:    
-        print(
-            f"\n\nTotal of {len(subList)} submissions found!\n"\
-            f"{gfycatCount} GFYCATs, {imgurCount} IMGURs, " \
-            f"{eromeCount} EROMEs, {directCount} DIRECTs " \
-            f"and {selfCount} SELF POSTS"
-        )
+    if not len(subList) == 0:
+        if GLOBAL.arguments.NoDownload or GLOBAL.arguments.verbose:
+            print(
+                f"\n\nTotal of {len(subList)} submissions found!"
+            )
+            print(
+                f"{gfycatCount} GFYCATs, {imgurCount} IMGURs, " \
+                f"{eromeCount} EROMEs, {directCount} DIRECTs " \
+                f"and {selfCount} SELF POSTS",noPrint=True
+            )
+        else:
+            print()
         return subList
     else:
         raise NoMatchingSubmissionFound

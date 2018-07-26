@@ -536,8 +536,8 @@ def download(submissions):
 
     for i in range(subsLenght):
         print(
-            f"\n({i+1}/{subsLenght}) ({submissions[i]['postType'].upper()}) " \
-            f"(r/{submissions[i]['postSubreddit']})",end=""
+            f"\n({i+1}/{subsLenght}) – {submissions[i]['postType'].upper()} " \
+            f"– r/{submissions[i]['postSubreddit']}",end=""
         )
 
         if isPostExists(submissions[i]):
@@ -620,7 +620,7 @@ def main():
     else:
         GLOBAL.directory = Path(input("download directory: "))
 
-    print("\n"," ".join(sys.argv),"\n")
+    print("\n"," ".join(sys.argv),"\n",noPrint=True)
 
     try:
         checkConflicts()

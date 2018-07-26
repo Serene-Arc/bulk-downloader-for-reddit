@@ -90,7 +90,7 @@ def createLogFile(TITLE):
 
     return FILE
 
-def printToFile(*args, **kwargs):
+def printToFile(*args, noPrint=False,**kwargs):
     """Print to both CONSOLE and 
     CONSOLE LOG file in a folder time stampt in the name
     """
@@ -98,7 +98,12 @@ def printToFile(*args, **kwargs):
     TIME = str(time.strftime("%d-%m-%Y_%H-%M-%S",
                              time.localtime(GLOBAL.RUN_TIME)))
     folderDirectory = GLOBAL.directory / "LOG_FILES" / TIME
-    print(*args,**kwargs)
+
+    if not noPrint or \
+       GLOBAL.arguments.verbose or \
+       "file" in kwargs:
+       
+       print(*args,**kwargs)
 
     if not path.exists(folderDirectory):
         makedirs(folderDirectory)
