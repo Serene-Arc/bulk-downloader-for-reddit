@@ -65,9 +65,14 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
   them, there.
 
 ## Changes on *master*
+### [26/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/1623722138bad80ae39ffcd5fb38baf80680deac)
+- Improved verbose mode
+- Minimalized the console output
+- Added quit option for auto quitting the program after process finished
+
 ### [25/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/1623722138bad80ae39ffcd5fb38baf80680deac)
 - Added verbose mode
-- Stylize the console output
+- Stylized the console output
 
 ### [24/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7a68ff3efac9939f9574c2cef6184b92edb135f4)
 - Added OP's name to file names (backwards compatible)
@@ -75,19 +80,19 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 - Improved exception handling
 
 ### [23/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7314e17125aa78fd4e6b28e26fda7ec7db7e0147)
-- Split download() function
+- Splited download() function
 - Added erome support
-- Remove exclude feature
-- Bug fix
+- Removed exclude feature
+- Bug fixes
 
-### [22/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/a67da461d2fcd70672effcb20c8179e3224091bb)
+### [22/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/6e7463005051026ad64006a8580b0b5dc9536b8c)
 - Put log files in a folder named "LOG_FILES"
 - Fixed the bug that makes multireddit mode unusable
 
 ### [21/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/4a8c2377f9fb4d60ed7eeb8d50aaf9a26492462a)
 - Added exclude mode
 
-### [20/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/commit/7548a010198fb693841ca03654d2c9bdf5742139)
+### [20/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7548a010198fb693841ca03654d2c9bdf5742139)
 - "0" input for no limit
 - Fixed the bug that recognizes none image direct links as image links
 
@@ -97,7 +102,7 @@ It should redirect to a page which shows your **imgur_client_id** and **imgur_cl
 - Fixed the bug that prevents downloading some gfycat URLs
 
 ### [13/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/9f831e1b784a770c82252e909462871401a05c11)
-- Change config.json file's path to home directory
+- Changed config.json file's path to home directory
 
 ### [12/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/50a77f6ba54c24f5647d5ea4e177400b71ff04a7)
 - Added binaries for Windows and Linux
