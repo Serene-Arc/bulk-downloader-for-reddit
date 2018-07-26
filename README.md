@@ -21,8 +21,8 @@ Downloads media from reddit posts.
   
 - **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
-### Additional options
-Script also accepts additional options via command-line arguments, get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
+## Additional options
+Script also accepts additional options via command-line arguments such as *quitting the program after it finishes*, *enabling verbose mode* or *saving the posts without downloading them for later use*. Get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.
