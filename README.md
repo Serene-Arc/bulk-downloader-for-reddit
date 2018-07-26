@@ -69,7 +69,7 @@ It should redirect you to a page which shows your **imgur_client_id** and **imgu
 ### [26/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/1623722138bad80ae39ffcd5fb38baf80680deac)
 - Improved verbose mode
 - Minimalized the console output
-- Added quit option for auto quitting the program after process finished
+- Added quit option for auto quitting the program after process finishes
 
 ### [25/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/1623722138bad80ae39ffcd5fb38baf80680deac)
 - Added verbose mode
