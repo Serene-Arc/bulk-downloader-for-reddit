@@ -1,7 +1,7 @@
 # Bulk Downloader for Reddit
-This program downloads imgur, gfycat and direct image and video links of saved posts from a reddit account. It is written in Python 3.
-  
-**PLEASE** post any issue you have with the script to [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) tab. Since I don't have any testers or contributers I need your feedback.
+Downloads media from reddit posts.
+
+## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 
 ## What it can do
 - Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
@@ -12,8 +12,6 @@ This program downloads imgur, gfycat and direct image and video links of saved p
 - Puts every post to its subreddit's folder
 - Saves a reusable copy of posts' details that are found so that they can be re-downloaded again
 - Logs failed ones in a file to so that you can try to download them later
-
-## [Download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 
 ## How it works
   
