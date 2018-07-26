@@ -68,7 +68,7 @@ def parseArguments(arguments=[]):
                         metavar="DIRECTORY")
         
     parser.add_argument("--NoDownload",
-                        help="Just gets the posts and store them in a file" \
+                        help="Just gets the posts and stores them in a file" \
                              " for downloading later",
                         action="store_true",
                         default=False)
@@ -79,7 +79,7 @@ def parseArguments(arguments=[]):
                         default=False)
     
     parser.add_argument("--quit","-q",
-                        help="Quit afer the proccess finishes",
+                        help="Auto quit afer the process finishes",
                         action="store_true",
                         default=False)
 

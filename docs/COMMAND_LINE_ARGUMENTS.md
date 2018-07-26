@@ -19,10 +19,10 @@ optional arguments:
   --directory DIRECTORY, -d DIRECTORY
                         Specifies the directory where posts will be downloaded
                         to
-  --NoDownload          Just gets the posts and store them in a file for
+  --NoDownload          Just gets the posts and stores them in a file for
                         downloading later
   --verbose, -v         Verbose Mode
-  --quit, -q            Quit afer the proccess finishes
+  --quit, -q            Auto quit afer the process finishes
   --link link, -l link  Get posts from link
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
