@@ -22,23 +22,15 @@ Downloads media from reddit posts.
 - **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
 ## Additional options
-Script also accepts additional options via command-line arguments such as *quitting the program after it finishes*, *enabling verbose mode* or *saving the posts without downloading them for later use*. Get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
+Script also accepts additional options via command-line arguments. Get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
-Because this is not a commercial app, you need to create an imgur developer app in order API to work.
-
-### Creating an imgur app
-* Go to https://api.imgur.com/oauth2/addclient
-* Enter a name into the **Application Name** field.
-* Pick **Anonymous usage without user authorization** as an **Authorization type**\*
-* Enter your email into the Email field.
-* Correct CHAPTCHA
-* Click **submit** button  
+  You need to create an imgur developer app in order API to work.
   
-It should redirect you to a page which shows your **imgur_client_id** and **imgur_client_secret**
+  Go to https://api.imgur.com/oauth2/addclient and fill the form (It does not really matter how you fill it).
   
-\* Select **OAuth 2 authorization without a callback URL** first then select **Anonymous usage without user authorization** if it says *Authorization callback URL: required*. If this does not work, it is safe to proceed with **OAuth 2 authorization without a callback URL**.
-
+  It should redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**.
+  
 ## FAQ
 ### What do the dots resemble when getting posts?
 - Each dot means that 100 posts are scanned. 
