@@ -5,12 +5,12 @@ See **[compiling from source](COMPILE_FROM_SOURCE.md)** page first unless you ar
 ***Use*** `.\bulk-downloader-for-reddit.exe` ***or*** `./bulk-downloader-for-reddit` ***if you are using the executable***.
 ```console
 $ python script.py --help
-usage: script.py [-h] [--directory DIRECTORY] [--link link] [--saved]
-                 [--submitted] [--upvoted] [--log LOG FILE]
-                 [--subreddit SUBREDDIT [SUBREDDIT ...]]
+usage: script.py [-h] [--directory DIRECTORY] [--NoDownload] [--verbose]
+                 [--quit] [--link link] [--saved] [--submitted] [--upvoted]
+                 [--log LOG FILE] [--subreddit SUBREDDIT [SUBREDDIT ...]]
                  [--multireddit MULTIREDDIT] [--user redditor]
                  [--search query] [--sort SORT TYPE] [--limit Limit]
-                 [--time TIME_LIMIT] [--NoDownload] [--verbose]
+                 [--time TIME_LIMIT]
 
 This program downloads media from reddit posts
 
@@ -19,6 +19,10 @@ optional arguments:
   --directory DIRECTORY, -d DIRECTORY
                         Specifies the directory where posts will be downloaded
                         to
+  --NoDownload          Just gets the posts and store them in a file for
+                        downloading later
+  --verbose, -v         Verbose Mode
+  --quit, -q            Quit afer the proccess finishes
   --link link, -l link  Get posts from link
   --saved               Triggers saved mode
   --submitted           Gets posts of --user
@@ -38,9 +42,6 @@ optional arguments:
   --limit Limit         default: unlimited
   --time TIME_LIMIT     Either hour, day, week, month, year or all. default:
                         all
-  --NoDownload          Just gets the posts and store them in a file for
-                        downloading later
-  --verbose, -v         Verbose Mode
 ```
 
 # Examples

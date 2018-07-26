@@ -23,7 +23,7 @@ This program downloads imgur, gfycat and direct image and video links of saved p
   
 - **MacOS** users have to **[compile it from source code](docs/COMPILE_FROM_SOURCE.md)**.
 
-Script also accepts **command-line arguments**, get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
+Script also accepts additional options via command-line arguments, get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
 Because this is not a commercial app, you need to create an imgur developer app in order API to work.

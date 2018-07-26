@@ -66,6 +66,22 @@ def parseArguments(arguments=[]):
                         help="Specifies the directory where posts will be " \
                         "downloaded to",
                         metavar="DIRECTORY")
+        
+    parser.add_argument("--NoDownload",
+                        help="Just gets the posts and store them in a file" \
+                             " for downloading later",
+                        action="store_true",
+                        default=False)
+    
+    parser.add_argument("--verbose","-v",
+                        help="Verbose Mode",
+                        action="store_true",
+                        default=False)
+    
+    parser.add_argument("--quit","-q",
+                        help="Quit afer the proccess finishes",
+                        action="store_true",
+                        default=False)
 
     parser.add_argument("--link","-l",
                         help="Get posts from link",
@@ -137,18 +153,6 @@ def parseArguments(arguments=[]):
                         choices=["all","hour","day","week","month","year"],
                         metavar="TIME_LIMIT",
                         type=str)
-    
-    parser.add_argument("--NoDownload",
-                        help="Just gets the posts and store them in a file" \
-                             " for downloading later",
-                        action="store_true",
-                        default=False)
-    
-    parser.add_argument("--verbose","-v",
-                        help="Verbose Mode",
-                        action="store_true",
-                        default=False)
-    
 
     if arguments == []:
         return parser.parse_args()
@@ -696,4 +700,4 @@ if __name__ == "__main__":
                       exc_info=full_exc_info(sys.exc_info()))
         print(log_stream.getvalue())
 
-    input("\nPress enter to quit\n")
+    if not GLOBAL.arguments.quit: input("\nPress enter to quit\n")
