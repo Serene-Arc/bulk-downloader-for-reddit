@@ -486,15 +486,19 @@ def downloadPost(SUBMISSION):
                             + " Minutes " \
                             + str(int(IMGUR_RESET_TIME%60)) \
                             + " Seconds") 
-
+            
             if credit['ClientRemaining'] < 25 or credit['UserRemaining'] < 25:
-                print(
-                    "==> Client: {} - User: {} - Reset {}".format(
-                        credit['ClientRemaining'],
-                        credit['UserRemaining'],
-                        USER_RESET
-                    ),end=""
-                )
+                printCredit = {"noPrint":False}
+            else:
+                printCredit = {"noPrint":True}
+
+            print(
+                "==> Client: {} - User: {} - Reset {}\n".format(
+                    credit['ClientRemaining'],
+                    credit['UserRemaining'],
+                    USER_RESET
+                ),end="",**printCredit
+            )
 
             if not (credit['UserRemaining'] == 0 or \
                     credit['ClientRemaining'] == 0):
