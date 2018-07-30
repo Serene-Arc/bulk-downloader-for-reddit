@@ -53,7 +53,7 @@ Script also accepts additional options via command-line arguments. Get further i
   them, there.
 
 ## Changes on *master*
-### [30/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/7ccf2fb7f9475a5d1de64b191900f3c0b3eb12fc)
+### [30/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/af294929510f884d92b25eaa855c29fc4fb6dcaa)
 - Now opens web browser and goes to Imgur when prompts for Imgur credentials
 
 ### [26/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/1623722138bad80ae39ffcd5fb38baf80680deac)
