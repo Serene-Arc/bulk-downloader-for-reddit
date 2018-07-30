@@ -10,10 +10,11 @@ import logging
 import os
 import sys
 import time
+import webbrowser
 from io import StringIO
 from pathlib import Path, PurePath
 
-from src.downloader import Direct, Gfycat, Imgur, Self, Erome
+from src.downloader import Direct, Erome, Gfycat, Imgur, Self
 from src.errors import *
 from src.parser import LinkDesigner
 from src.searcher import getPosts
@@ -38,20 +39,34 @@ def getConfig(configFileName):
         if "reddit_refresh_token" in content:
             if content["reddit_refresh_token"] == "":
                 FILE.delete("reddit_refresh_token")
+
+        if all(True if not content.get(key,"") == "" else False for key in keys):
+            print(
+                "Go to this URL and fill the form: " \
+                "https://api.imgur.com/oauth2/addclient\n" \
+                "Enter the client id and client secret here:"
+            )
+            webbrowser.open("https://api.imgur.com/oauth2/addclient",new=2)
+
         for key in keys:
             try:
                 if content[key] == "":
                     raise KeyError
             except KeyError:
-                print(key,": ")
-                FILE.add({key:input()})
+                FILE.add({key:input("  "+key+": ")})
         return jsonFile(configFileName).read()
 
     else:
         FILE = jsonFile(configFileName)
         configDictionary = {}
+        print(
+            "Go to this URL and fill the form: " \
+            "https://api.imgur.com/oauth2/addclient\n" \
+            "Enter the client id and client secret here:"
+            )
+        webbrowser.open("https://api.imgur.com/oauth2/addclient",new=2)
         for key in keys:
-            configDictionary[key] = input(key + ": ")
+            configDictionary[key] = input("  "+key+": ")
         FILE.add(configDictionary)
         return FILE.read()
 
