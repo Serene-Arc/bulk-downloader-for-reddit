@@ -40,7 +40,7 @@ def getConfig(configFileName):
             if content["reddit_refresh_token"] == "":
                 FILE.delete("reddit_refresh_token")
 
-        if all(True if not content.get(key,"") == "" else False for key in keys):
+        if not all(False if content.get(key,"") == "" else True for key in keys):
             print(
                 "Go to this URL and fill the form: " \
                 "https://api.imgur.com/oauth2/addclient\n" \
