@@ -367,7 +367,7 @@ def redditSearcher(posts,SINGLE_POST=False):
 
                 allPosts[subCount] = [details]
         except KeyboardInterrupt:
-            print("\nKeyboardInterrupt",end="")
+            print("\nKeyboardInterrupt",noPrint=True)
         
         postsFile.add(allPosts)
 
