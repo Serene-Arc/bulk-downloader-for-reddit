@@ -22,11 +22,7 @@ Downloads media from reddit posts.
 Script also accepts additional options via command-line arguments. Get further information from **[`--help`](docs/COMMAND_LINE_ARGUMENTS.md)**
 
 ## Setting up the script
-  You need to create an imgur developer app in order API to work.
-  
-  Go to https://api.imgur.com/oauth2/addclient and fill the form (It does not really matter how you fill it).
-  
-  It should redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**.
+  You need to create an imgur developer app in order API to work. Go to https://api.imgur.com/oauth2/addclient and fill the form (It does not really matter how you fill it). It should redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**.
   
 ## FAQ
 ### What do the dots resemble when getting posts?
