@@ -49,6 +49,9 @@ Script also accepts additional options via command-line arguments. Get further i
   them, there.
 
 ## Changes on *master*
+### [04/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/426089d0f35212148caff0082708a87017757bde)
+- Disabled printing post types to console
+
 ### [30/07/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/af294929510f884d92b25eaa855c29fc4fb6dcaa)
 - Now opens web browser and goes to Imgur when prompts for Imgur credentials
 
