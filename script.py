@@ -558,10 +558,9 @@ def download(submissions):
     FAILED_FILE = createLogFile("FAILED")
 
     for i in range(subsLenght):
-        print(
-            f"\n({i+1}/{subsLenght}) – {submissions[i]['postType'].upper()} " \
-            f"– r/{submissions[i]['postSubreddit']}",end=""
-        )
+        print(f"\n({i+1}/{subsLenght}) – r/{submissions[i]['postSubreddit']}",
+              end="")
+        print(f" – {submissions[i]['postType'].upper()}",end="",noPrint=True)
 
         if isPostExists(submissions[i]):
             print("\nIt already exists")
