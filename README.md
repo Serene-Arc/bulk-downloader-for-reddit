@@ -50,7 +50,7 @@ Script also accepts additional options via command-line arguments. Get further i
 
 ## Changes on *master*
 ### [06/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/210238d0865febcb57fbd9f0b0a7d3da9dbff384)
-- Sending headers when requesting a file in order not to be rejected by server.
+- Sending headers when requesting a file in order not to be rejected by server
 
 ### [04/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/426089d0f35212148caff0082708a87017757bde)
 - Disabled printing post types to console
