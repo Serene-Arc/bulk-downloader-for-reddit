@@ -455,6 +455,9 @@ def isPostExists(POST):
 
     possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md"]
 
+    """If you change the filenames, don't forget to add them here.
+    Please don't remove existing ones
+    """
     for extension in possibleExtensions:
 
         OLD_FILE_PATH = PATH / (
@@ -481,6 +484,8 @@ def isPostExists(POST):
         return False
 
 def downloadPost(SUBMISSION):
+
+    """Download directory is declared here for each file"""
     directory = GLOBAL.directory / SUBMISSION['postSubreddit']
 
     global lastRequestTime

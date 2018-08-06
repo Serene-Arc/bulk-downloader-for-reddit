@@ -102,6 +102,8 @@ class Erome:
             
             extension = getExtension(IMAGES[0])
 
+            """Filenames are declared here"""
+
             title = nameCorrector(post['postTitle'])
             print(post["postSubmitter"]+"_"+title+"_"+post['postId']+extension)
 
@@ -237,8 +239,11 @@ class Imgur:
                 post['mediaURL'] = content['object'].link
 
             post['postExt'] = getExtension(post['mediaURL'])
-
+            
             title = nameCorrector(post['postTitle'])
+
+            """Filenames are declared here"""
+
             print(post["postSubmitter"]+"_"+title+"_"+post['postId']+post['postExt'])
 
             fileDir = directory / (
@@ -296,6 +301,8 @@ class Imgur:
                             + nameCorrector(str(images[i]['title']))
                             + "_"
                             + images[i]['id'])
+
+                """Filenames are declared here"""
 
                 fileDir = folderDir / (fileName + images[i]['Ext'])
                 tempDir = folderDir / (fileName + ".tmp")
@@ -396,9 +403,12 @@ class Gfycat:
             raise NotADownloadableLinkError("Could not read the page source")
 
         POST['postExt'] = getExtension(POST['mediaURL'])
-
+        
         if not os.path.exists(directory): os.makedirs(directory)
         title = nameCorrector(POST['postTitle'])
+
+        """Filenames are declared here"""
+
         print(POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt'])
 
         fileDir = directory / (
@@ -453,6 +463,9 @@ class Direct:
         POST['postExt'] = getExtension(POST['postURL'])
         if not os.path.exists(directory): os.makedirs(directory)
         title = nameCorrector(POST['postTitle'])
+
+        """Filenames are declared here"""
+
         print(POST["postSubmitter"]+"_"+title+"_"+POST['postId']+POST['postExt'])
 
         fileDir = directory / (
@@ -475,6 +488,9 @@ class Self:
         if not os.path.exists(directory): os.makedirs(directory)
 
         title = nameCorrector(post['postTitle'])
+
+        """Filenames are declared here"""
+
         print(post["postSubmitter"]+"_"+title+"_"+post['postId']+".md")
 
         fileDir = directory / (
@@ -494,7 +510,8 @@ class Self:
     
     @staticmethod
     def writeToFile(directory,post):
-
+        
+        """Self posts are formatted here"""
         content = ("## ["
                    + post["postTitle"]
                    + "]("
