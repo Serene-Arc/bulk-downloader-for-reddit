@@ -385,10 +385,7 @@ def prepareAttributes():
 
         GLOBAL.arguments.link = GLOBAL.arguments.link.strip("\"")
 
-        try:
-            ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
-        except InvalidRedditLink:
-            raise InvalidRedditLink
+        ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
 
         if GLOBAL.arguments.search is not None:
             ATTRIBUTES["search"] = GLOBAL.arguments.search
@@ -418,7 +415,7 @@ def prepareAttributes():
         ATTRIBUTES["submitted"] = True
 
         if GLOBAL.arguments.sort == "rising":
-            raise InvalidSortingType
+            raise InvalidSortingType("Invalid sorting type has given")
     
     ATTRIBUTES["limit"] = GLOBAL.arguments.limit
 
@@ -665,27 +662,8 @@ def main():
     
     try:
         POSTS = getPosts(prepareAttributes())
-    except InsufficientPermission:
-        print("You do not have permission to do that")
-        sys.exit()
-    except NoMatchingSubmissionFound:
-        print("No matching submission was found")
-        sys.exit()
-    except NoRedditSupoort:
-        print("Reddit does not support that")
-        sys.exit()
-    except NoPrawSupport:
-        print("PRAW does not support that")
-        sys.exit()
-    except MultiredditNotFound:
-        print("Multireddit not found")
-        sys.exit()
-    except InvalidSortingType:
-        print("Invalid sorting type has given")
-        sys.exit()
-    except InvalidRedditLink:
-        print("Invalid reddit link")
-        sys.exit()
+    except Exception as exception:
+        print(f"{exception.__class__.__name__}: {exception}")
 
     if POSTS is None:
         print("I could not find any posts in that URL")

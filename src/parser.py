@@ -29,7 +29,7 @@ def LinkParser(LINK):
     ShortLink = False
 
     if not "reddit.com" in LINK:
-        raise InvalidRedditLink
+        raise InvalidRedditLink("Invalid reddit link")
 
     SplittedLink = LINK.split("/")
 

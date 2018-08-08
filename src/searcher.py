@@ -9,7 +9,7 @@ from prawcore.exceptions import NotFound, ResponseException, Forbidden
 
 from src.tools import GLOBAL, createLogFile, jsonFile, printToFile
 from src.errors import (NoMatchingSubmissionFound, NoPrawSupport,
-                        NoRedditSupoort, MultiredditNotFound,
+                        NoRedditSupport, MultiredditNotFound,
                         InvalidSortingType, RedditLoginFailed,
                         InsufficientPermission)
 
@@ -115,7 +115,7 @@ def getPosts(args):
     reddit = beginPraw(config)
 
     if args["sort"] == "best":
-        raise NoPrawSupport
+        raise NoPrawSupport("PRAW does not support that")
 
     if "subreddit" in args:
         if "search" in args:
@@ -145,7 +145,7 @@ def getPosts(args):
 
     if "search" in args:
         if args["sort"] in ["hot","rising","controversial"]:
-            raise InvalidSortingType
+            raise InvalidSortingType("Invalid sorting type has given")
 
         if "subreddit" in args:
             print (
@@ -169,16 +169,16 @@ def getPosts(args):
             )
 
         elif "multireddit" in args:
-            raise NoPrawSupport
+            raise NoPrawSupport("PRAW does not support that")
         
         elif "user" in args:
-            raise NoPrawSupport
+            raise NoPrawSupport("PRAW does not support that")
 
         elif "saved" in args:
-            raise NoRedditSupoort
+            raise ("Reddit does not support that")
     
     if args["sort"] == "relevance":
-        raise InvalidSortingType
+        raise InvalidSortingType("Invalid sorting type has given")
 
     if "saved" in args:
         print(
@@ -243,7 +243,7 @@ def getPosts(args):
                 ) (**keyword_params)
             )
         except NotFound:
-            raise MultiredditNotFound
+            raise MultiredditNotFound("Multireddit not found")
 
     elif "submitted" in args:
         print (
@@ -273,7 +273,7 @@ def getPosts(args):
                 reddit.redditor(args["user"]).upvoted(limit=args["limit"])
             )
         except Forbidden:
-            raise InsufficientPermission
+            raise InsufficientPermission("You do not have permission to do that")
 
     elif "post" in args:
         print("post: {post}\n".format(post=args["post"]).upper(),noPrint=True)
@@ -385,7 +385,7 @@ def redditSearcher(posts,SINGLE_POST=False):
             print()
         return subList
     else:
-        raise NoMatchingSubmissionFound
+        raise NoMatchingSubmissionFound("No matching submission was found")
 
 def checkIfMatching(submission):
     global gfycatCount

@@ -67,7 +67,7 @@ class NoMatchingSubmissionFound(Exception):
 class NoPrawSupport(Exception):
     pass
 
-class NoRedditSupoort(Exception):
+class NoRedditSupport(Exception):
     pass
 
 class MultiredditNotFound(Exception):
