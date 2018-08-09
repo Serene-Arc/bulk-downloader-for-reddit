@@ -184,9 +184,10 @@ def checkConflicts():
     else:
         user = 1
 
+    search = 1 if GLOBAL.arguments.search else 0
+
     modes = [
-        "saved","subreddit","submitted","search","log","link","upvoted",
-        "multireddit"
+        "saved","subreddit","submitted","log","link","upvoted","multireddit"
     ]
 
     values = {
@@ -199,14 +200,17 @@ def checkConflicts():
     if not sum(values[x] for x in values) == 1:
         raise ProgramModeError("Invalid program mode")
     
-    if values["search"]+values["saved"] == 2:
+    if search+values["saved"] == 2:
         raise SearchModeError("You cannot search in your saved posts")
 
-    if values["search"]+values["submitted"] == 2:
+    if search+values["submitted"] == 2:
         raise SearchModeError("You cannot search in submitted posts")
 
-    if values["search"]+values["upvoted"] == 2:
+    if search+values["upvoted"] == 2:
         raise SearchModeError("You cannot search in upvoted posts")
+
+    if search+values["log"] == 2:
+        raise SearchModeError("You cannot search in log files")
 
     if values["upvoted"]+values["submitted"] == 1 and user == 0:
         raise RedditorNameError("No redditor name given")

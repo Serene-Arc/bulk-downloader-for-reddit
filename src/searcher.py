@@ -144,7 +144,7 @@ def getPosts(args):
             }
 
     if "search" in args:
-        if args["sort"] in ["hot","rising","controversial"]:
+        if GLOBAL.arguments.sort in ["hot","rising","controversial"]:
             raise InvalidSortingType("Invalid sorting type has given")
 
         if "subreddit" in args:
