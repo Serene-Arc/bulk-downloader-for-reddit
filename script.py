@@ -660,10 +660,7 @@ def main():
         download(postFromLog(logDir))
         sys.exit()
     
-    try:
-        POSTS = getPosts(prepareAttributes())
-    except Exception as exception:
-        print(f"{exception.__class__.__name__}: {exception}")
+    POSTS = getPosts(prepareAttributes())
 
     if POSTS is None:
         print("I could not find any posts in that URL")
