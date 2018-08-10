@@ -663,8 +663,15 @@ def main():
         logDir = Path(GLOBAL.arguments.log)
         download(postFromLog(logDir))
         sys.exit()
-    
-    POSTS = getPosts(prepareAttributes())
+
+    try:
+        POSTS = getPosts(prepareAttributes())
+    except Exception as exc:
+        logging.error(sys.exc_info()[0].__name__,
+                      exc_info=full_exc_info(sys.exc_info()))
+        print(log_stream.getvalue(),noPrint=True)
+        print(exc)
+        sys.exit()
 
     if POSTS is None:
         print("I could not find any posts in that URL")
