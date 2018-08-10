@@ -48,6 +48,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
 
             self.client = self.recieve_connection()
             data = self.client.recv(1024).decode('utf-8')
+            str(data)
             param_tokens = data.split(' ', 2)[1].split('?', 1)[1].split('&')
             params = {
                 key: value for (key, value) in [token.split('=') \
@@ -93,6 +94,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
             reddit = authorizedInstance[0]
             refresh_token = authorizedInstance[1]
             jsonFile(GLOBAL.configDirectory / "config.json").add({
+                "reddit_username":str(reddit.user.me()),
                 "reddit_refresh_token":refresh_token
             })
     else:
@@ -102,6 +104,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
         reddit = authorizedInstance[0]
         refresh_token = authorizedInstance[1]
         jsonFile(GLOBAL.configDirectory / "config.json").add({
+            "reddit_username":str(reddit.user.me()),
             "reddit_refresh_token":refresh_token
         })
     return reddit
