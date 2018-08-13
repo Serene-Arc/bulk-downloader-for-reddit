@@ -1,4 +1,7 @@
 # Changes on *master*
+## [13/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/3448ba15a95ee9c693b93e8b658f8e64be553470)
+- Added alternative location of current directory for config file
+
 ## [10/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/8f1ff10a5e11464575284210dbba4a0d387bc1c3)
 - Added reddit username to config file
 
