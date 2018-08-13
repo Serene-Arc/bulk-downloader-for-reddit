@@ -23,9 +23,7 @@ def dlProgress(count, blockSize, totalSize):
 
     downloadedMbs = int(count*blockSize*(10**(-6)))
     fileSize = int(totalSize*(10**(-6)))
-    sys.stdout.write("{}Mb/{}Mb".format(downloadedMbs,fileSize))
-    sys.stdout.write("\r")
-    # sys.stdout.write("\b"*len("\r{}Mb/{}Mb".format(downloadedMbs,fileSize)))
+    sys.stdout.write("{}Mb/{}Mb\r".format(downloadedMbs,fileSize))
     sys.stdout.flush()
 
 def getExtension(link):
