@@ -569,7 +569,8 @@ def download(submissions):
         print(f" – {submissions[i]['postType'].upper()}",end="",noPrint=True)
 
         if isPostExists(submissions[i]):
-            print("\nIt already exists")
+            print(f"\n{nameCorrector(submissions[i]['postTitle'])}")
+            print("It already exists")
             duplicates += 1
             downloadedCount -= 1
             continue
