@@ -1,4 +1,7 @@
 # Changes on *master*
+## [15/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/adccd8f3ba03ad124d58643d78dab287a4123a6f)
+- Prints out the title of posts' that are already downloaded
+
 ## [13/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/50cb7c15b9cb4befce0cfa2c23ab5de4af9176c6)
 - Added alternative location of current directory for config file
 - Fixed console prints on Linux
