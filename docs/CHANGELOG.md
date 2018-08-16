@@ -1,4 +1,7 @@
 # Changes on *master*
+## [16/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/d56efed1c6833a66322d9158523b89d0ce57f5de)
+- Fix the bug that prevents downloading imgur videos
+
 ## [15/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/adccd8f3ba03ad124d58643d78dab287a4123a6f)
 - Prints out the title of posts' that are already downloaded
 
