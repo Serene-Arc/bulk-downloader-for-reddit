@@ -642,6 +642,8 @@ def download(submissions):
         print(" Total of {} links downloaded!".format(downloadedCount))
 
 def main():
+
+    VanillaPrint(f"\nBulk Downloader for Reddit v{__version__}")
     GLOBAL.arguments = parseArguments()
 
     if GLOBAL.arguments.directory is not None:
