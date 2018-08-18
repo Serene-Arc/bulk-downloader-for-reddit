@@ -569,7 +569,9 @@ def download(submissions):
         print(f" – {submissions[i]['postType'].upper()}",end="",noPrint=True)
 
         if isPostExists(submissions[i]):
-            print(f"\n{nameCorrector(submissions[i]['postTitle'])}")
+            print(f"\n" \
+                  f"{submissions[i]['postSubmitter']}_"
+                  f"{nameCorrector(submissions[i]['postTitle'])}")
             print("It already exists")
             duplicates += 1
             downloadedCount -= 1
@@ -643,7 +645,10 @@ def download(submissions):
 
 def main():
 
-    VanillaPrint(f"\nBulk Downloader for Reddit v{__version__}")
+    VanillaPrint(
+        f"Bulk Downloader for Reddit v{__version__}\n" \
+        f"Written by Ali PARLAKCI – parlakciali@gmail.com\n"
+    )
     GLOBAL.arguments = parseArguments()
 
     if GLOBAL.arguments.directory is not None:
@@ -652,6 +657,8 @@ def main():
         GLOBAL.directory = Path(input("download directory: "))
 
     print("\n"," ".join(sys.argv),"\n",noPrint=True)
+    print(f"Bulk Downloader for Reddit v{__version__}\n",noPrint=True
+    )
 
     try:
         checkConflicts()
