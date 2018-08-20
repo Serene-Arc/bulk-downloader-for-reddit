@@ -646,8 +646,9 @@ def download(submissions):
 def main():
 
     VanillaPrint(
-        f"Bulk Downloader for Reddit v{__version__}\n" \
-        f"Written by Ali PARLAKCI – parlakciali@gmail.com\n"
+        f"  Bulk Downloader for Reddit v{__version__}\n" \
+        f"  Written by Ali PARLAKCI – parlakciali@gmail.com\n\n" \
+        f"  https://github.com/aliparlakci/bulk-downloader-for-reddit/"
     )
     GLOBAL.arguments = parseArguments()
 
