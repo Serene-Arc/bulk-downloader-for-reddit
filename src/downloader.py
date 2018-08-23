@@ -66,8 +66,9 @@ def getFile(fileDir,tempDir,imageURL,indent=0):
     ]
 
     opener = urllib.request.build_opener()
-    opener.addheaders = headers
-    if not "imgur" in imageURL: urllib.request.install_opener(opener)
+    if not "imgur" in imageURL:
+        opener.addheaders = headers
+    urllib.request.install_opener(opener)
 
     if not (os.path.isfile(fileDir)):
         for i in range(3):
