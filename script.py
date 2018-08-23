@@ -635,13 +635,15 @@ def download(submissions):
             downloadedCount -= 1
 
     if duplicates:
-        print("\n There was {} duplicates".format(duplicates))
+        print(f"\nThere {'were' if duplicates > 1 else 'was'} " \
+              f"{duplicates} duplicate{'s' if duplicates > 1 else ''}")
 
     if downloadedCount == 0:
-        print(" Nothing downloaded :(")
+        print("Nothing downloaded :(")
 
     else:
-        print(" Total of {} links downloaded!".format(downloadedCount))
+        print(f"Total of {downloadedCount} " \
+              f"link{'s' if downloadedCount > 1 else ''} downloaded!")
 
 def main():
 
