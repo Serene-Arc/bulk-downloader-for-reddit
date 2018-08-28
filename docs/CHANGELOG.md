@@ -1,4 +1,8 @@
 # Changes on *master*
+## [28/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/d56efed1c6833a66322d9158523b89d0ce57f5de)
+- Adjusted algorith used for extracting gfycat links because of gfycat's design change
+- Ignore space at the end of the given directory
+
 ## [16/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/d56efed1c6833a66322d9158523b89d0ce57f5de)
 - Fix the bug that prevents downloading imgur videos
 

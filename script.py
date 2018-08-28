@@ -655,9 +655,9 @@ def main():
     GLOBAL.arguments = parseArguments()
 
     if GLOBAL.arguments.directory is not None:
-        GLOBAL.directory = Path(GLOBAL.arguments.directory)
+        GLOBAL.directory = Path(GLOBAL.arguments.directory.strip())
     else:
-        GLOBAL.directory = Path(input("download directory: "))
+        GLOBAL.directory = Path(input("download directory: ").strip())
 
     print("\n"," ".join(sys.argv),"\n",noPrint=True)
     print(f"Bulk Downloader for Reddit v{__version__}\n",noPrint=True
