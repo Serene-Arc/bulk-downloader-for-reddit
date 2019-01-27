@@ -279,7 +279,8 @@ class PromptUser:
                 GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
 
             # DELETE THE PLUS (+) AT THE END
-            if not subredditInput.lower() == "frontpage":
+            if not subredditInput.lower() == "frontpage" \
+                and GLOBAL.arguments.subreddit[-1] == "+":
                 GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
 
             print("\nselect sort type:")
