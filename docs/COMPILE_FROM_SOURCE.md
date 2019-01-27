@@ -1,9 +1,9 @@
 # Compiling from source code
 ## Requirements
 ### Python 3 Interpreter
-Latest* version of **Python 3** is needed. See if it is already installed [here](#finding-the-correct-keyword-for-python). If not, download the matching release for your platform [here](https://www.python.org/downloads/) and install it. If you are a *Windows* user, selecting **Add Python 3 to PATH** option when installing the software is mandatory.   
-  
-\* *Use Python 3.6.5 if you encounter an issue*
+- This program is designed to work best on **Python 3.6.5** and this version of Python 3 is suggested. See if it is already installed, [here](#finding-the-correct-keyword-for-python).  
+- If not, download the matching release for your platform [here](https://www.python.org/downloads/) and install it. If you are a *Windows* user, selecting **Add Python 3 to PATH** option when installing the software is mandatory.   
+
 ## Using terminal
 ### To open it...
 -  **On Windows**: Press **Shift+Right Click**, select **Open Powershell window here** or **Open Command Prompt window here**
