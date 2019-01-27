@@ -1,4 +1,7 @@
 # Changes on *master*
+## [27/01/2019](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/b7baf07fb5998368d87e3c4c36aed40daf820609)
+- Clarified the instructions
+
 ## [28/08/2018](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/d56efed1c6833a66322d9158523b89d0ce57f5de)
 - Adjusted algorith used for extracting gfycat links because of gfycat's design change
 - Ignore space at the end of the given directory
