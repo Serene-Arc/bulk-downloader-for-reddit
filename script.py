@@ -23,7 +23,7 @@ from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
-__version__ = "1.6.4"
+__version__ = "1.6.4.1"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
@@ -265,12 +265,15 @@ class PromptUser:
 
         if programMode == "subreddit":
 
-            subredditInput = input("subreddit (enter frontpage for frontpage): ")
+            subredditInput = input("(type frontpage for all subscribed subreddits,\n" \
+                                   " use plus to seperate multi subreddits:" \
+                                   " pics+funny+me_irl etc.)\n\n" \
+                                   "subreddit: ")
             GLOBAL.arguments.subreddit = subredditInput
 
-            while not (subredditInput == "" or subredditInput.lower() == "frontpage"):
-                subredditInput = input("subreddit: ")
-                GLOBAL.arguments.subreddit += "+" + subredditInput
+            # while not (subredditInput == "" or subredditInput.lower() == "frontpage"):
+            #     subredditInput = input("subreddit: ")
+            #     GLOBAL.arguments.subreddit += "+" + subredditInput
 
             if " " in GLOBAL.arguments.subreddit:
                 GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
@@ -297,7 +300,7 @@ class PromptUser:
                 GLOBAL.arguments.time = "all"
 
         elif programMode == "multireddit":
-            GLOBAL.arguments.user = input("\nredditor: ")
+            GLOBAL.arguments.user = input("\nmultireddit owner: ")
             GLOBAL.arguments.multireddit = input("\nmultireddit: ")
             
             print("\nselect sort type:")
@@ -648,16 +651,16 @@ def download(submissions):
 def main():
 
     VanillaPrint(
-        f"  Bulk Downloader for Reddit v{__version__}\n" \
-        f"  Written by Ali PARLAKCI – parlakciali@gmail.com\n\n" \
-        f"  https://github.com/aliparlakci/bulk-downloader-for-reddit/"
+        f"\nBulk Downloader for Reddit v{__version__}\n" \
+        f"Written by Ali PARLAKCI – parlakciali@gmail.com\n\n" \
+        f"https://github.com/aliparlakci/bulk-downloader-for-reddit/"
     )
     GLOBAL.arguments = parseArguments()
 
     if GLOBAL.arguments.directory is not None:
         GLOBAL.directory = Path(GLOBAL.arguments.directory.strip())
     else:
-        GLOBAL.directory = Path(input("download directory: ").strip())
+        GLOBAL.directory = Path(input("\ndownload directory: ").strip())
 
     print("\n"," ".join(sys.argv),"\n",noPrint=True)
     print(f"Bulk Downloader for Reddit v{__version__}\n",noPrint=True
