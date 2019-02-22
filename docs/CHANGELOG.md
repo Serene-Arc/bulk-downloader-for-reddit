@@ -1,4 +1,7 @@
 # Changes on *master*
+##[23/02/2019](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/4d385fda60028343be816eb7c4f7bc613a9d555d)
+- Fixed v.redd.it links
+
 ## [27/01/2019](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/b7baf07fb5998368d87e3c4c36aed40daf820609)
 - Clarified the instructions
 
