@@ -95,7 +95,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
             authorizedInstance = GetAuth(reddit,port).getRefreshToken(*scopes)
             reddit = authorizedInstance[0]
             refresh_token = authorizedInstance[1]
-            jsonFile(GLOBAL.configDirectory / "config.json").add({
+            jsonFile(GLOBAL.configDirectory).add({
                 "reddit_username":str(reddit.user.me()),
                 "reddit_refresh_token":refresh_token
             })
@@ -105,7 +105,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
         authorizedInstance = GetAuth(reddit,port).getRefreshToken(*scopes)
         reddit = authorizedInstance[0]
         refresh_token = authorizedInstance[1]
-        jsonFile(GLOBAL.configDirectory / "config.json").add({
+        jsonFile(GLOBAL.configDirectory).add({
             "reddit_username":str(reddit.user.me()),
             "reddit_refresh_token":refresh_token
         })
