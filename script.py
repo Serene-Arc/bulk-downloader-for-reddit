@@ -674,8 +674,11 @@ def main():
 
     if not Path(GLOBAL.configDirectory).is_dir():
         os.makedirs(GLOBAL.configDirectory)
-    GLOBAL.config = getConfig("config.json") if Path("config.json").exists() \
-                    else getConfig(GLOBAL.configDirectory / "config.json")
+
+    GLOBAL.configDirectory = Path("config.json") if Path("config.json").exists() \
+                    else GLOBAL.defaultConfigDirectory  / "config.json"
+
+    GLOBAL.config = getConfig(GLOBAL.configDirectory)
 
     if GLOBAL.arguments.log is not None:
         logDir = Path(GLOBAL.arguments.log)

@@ -3,6 +3,8 @@ import sys
 import random
 import socket
 import webbrowser
+import urllib.request
+from urllib.error import HTTPError
 
 import praw
 from prawcore.exceptions import NotFound, ResponseException, Forbidden
@@ -93,7 +95,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
             authorizedInstance = GetAuth(reddit,port).getRefreshToken(*scopes)
             reddit = authorizedInstance[0]
             refresh_token = authorizedInstance[1]
-            jsonFile(GLOBAL.configDirectory / "config.json").add({
+            jsonFile(GLOBAL.configDirectory).add({
                 "reddit_username":str(reddit.user.me()),
                 "reddit_refresh_token":refresh_token
             })
@@ -103,7 +105,7 @@ def beginPraw(config,user_agent = str(socket.gethostname())):
         authorizedInstance = GetAuth(reddit,port).getRefreshToken(*scopes)
         reddit = authorizedInstance[0]
         refresh_token = authorizedInstance[1]
-        jsonFile(GLOBAL.configDirectory / "config.json").add({
+        jsonFile(GLOBAL.configDirectory).add({
             "reddit_username":str(reddit.user.me()),
             "reddit_refresh_token":refresh_token
         })
@@ -422,16 +424,18 @@ def checkIfMatching(submission):
         eromeCount += 1
         return details
 
-    elif isDirectLink(submission.url) is not False:
-        details['postType'] = 'direct'
-        details['postURL'] = isDirectLink(submission.url)
-        directCount += 1
-        return details
-
     elif submission.is_self:
         details['postType'] = 'self'
         details['postContent'] = submission.selftext
         selfCount += 1
+        return details
+
+    directLink = isDirectLink(submission.url)
+
+    if directLink is not False:
+        details['postType'] = 'direct'
+        details['postURL'] = directLink
+        directCount += 1
         return details
 
 def printSubmission(SUB,validNumber,totalNumber):
@@ -473,7 +477,22 @@ def isDirectLink(URL):
         return URL
 
     elif "v.redd.it" in URL:
-        return URL+"/DASH_600_K"
+        bitrates = ["DASH_1080","DASH_720","DASH_600", \
+                    "DASH_480","DASH_360","DASH_240"]
+                    
+        for bitrate in bitrates:
+            videoURL = URL+"/"+bitrate
+
+            try:
+                responseCode = urllib.request.urlopen(videoURL).getcode()
+            except urllib.error.HTTPError:
+                responseCode = 0
+
+            if responseCode == 200:
+                return videoURL
+
+        else:
+            return False
 
     for extension in imageTypes:
         if extension in URL:
