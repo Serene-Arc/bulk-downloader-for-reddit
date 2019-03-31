@@ -1,5 +1,5 @@
 # Bulk Downloader for Reddit
-Downloads media from reddit posts.
+Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
 
 ## [Download the latest release here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 
