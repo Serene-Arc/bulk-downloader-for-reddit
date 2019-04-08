@@ -23,7 +23,7 @@ from src.tools import (GLOBAL, createLogFile, jsonFile, nameCorrector,
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
-__version__ = "1.6.5"
+__version__ = "1.6.5.1"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
 
@@ -675,8 +675,11 @@ def main():
     if not Path(GLOBAL.configDirectory).is_dir():
         os.makedirs(GLOBAL.configDirectory)
 
-    GLOBAL.configDirectory = Path("config.json") if Path("config.json").exists() \
-                    else GLOBAL.defaultConfigDirectory  / "config.json"
+    if Path("config.json").exists():
+        GLOBAL.configDirectory = Path("config.json")
+    else:
+        os.makedirs(GLOBAL.defaultConfigDirectory)
+        GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
 
     GLOBAL.config = getConfig(GLOBAL.configDirectory)
 
