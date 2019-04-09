@@ -672,13 +672,12 @@ def main():
     except ProgramModeError as err:
         PromptUser()
 
-    if not Path(GLOBAL.configDirectory).is_dir():
-        os.makedirs(GLOBAL.configDirectory)
+    if not Path(GLOBAL.defaultConfigDirectory).is_dir():
+        os.makedirs(GLOBAL.defaultConfigDirectory)
 
     if Path("config.json").exists():
         GLOBAL.configDirectory = Path("config.json")
     else:
-        os.makedirs(GLOBAL.defaultConfigDirectory)
         GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
 
     GLOBAL.config = getConfig(GLOBAL.configDirectory)
