@@ -2,6 +2,8 @@
 
 Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
 
+## [Download the latest release here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
+
 ## What it can do
 
 - Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
@@ -19,7 +21,7 @@ You can use it either as a `bulk-downloader-for-reddit.exe` executable file for 
 
 ### Executables
 
-For Windows and Linux, [download the latest release, here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
+For Windows and Linux, [download the latest executables, here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
 
 ### Python script
 
