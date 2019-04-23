@@ -111,7 +111,7 @@ Press enter to quit
 
 ## FAQ
 
-### I am running the script on an headless machine or a remote server. How can I authenticate my reddit account?
+### I am running the script on a headless machine or on a remote server. How can I authenticate my reddit account?
 - Download the script on your everday computer and run it for once.
 - Authenticate the program on both reddit and imgur.
 - Go to your Home folder (for Windows users it is `C:\Users\[USERNAME]\`, for Linux users it is `/home/[USERNAME]`)
