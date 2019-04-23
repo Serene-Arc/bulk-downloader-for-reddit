@@ -1,4 +1,4 @@
-# Compiling from source code
+# Interpret from source code
 ## Requirements
 ### Python 3 Interpreter
 - This program is designed to work best on **Python 3.6.5** and this version of Python 3 is suggested. See if it is already installed, [here](#finding-the-correct-keyword-for-python).  
@@ -6,11 +6,11 @@
 
 ## Using terminal
 ### To open it...
--  **On Windows**: Press **Shift+Right Click**, select **Open Powershell window here** or **Open Command Prompt window here**
+-  **on Windows**: Press **Shift+Right Click**, select **Open Powershell window here** or **Open Command Prompt window here**
   
-- **On Linux**: Right-click in a folder and select **Open Terminal** or press **Ctrl+Alt+T**.
+- **on Linux**: Right-click in a folder and select **Open Terminal** or press **Ctrl+Alt+T**.
   
-- **On MacOS**: Look for an app called **Terminal**.
+- **on MacOS**: Look for an app called **Terminal**.
   
 ### Navigating to the directory where script is downloaded
 Go inside the folder where script.py is located. If you are not familiar with changing directories on command-prompt and terminal read *Changing Directories* in [this article](https://lifehacker.com/5633909/who-needs-a-mouse-learn-to-use-the-command-line-for-almost-anything)

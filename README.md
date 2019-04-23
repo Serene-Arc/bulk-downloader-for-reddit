@@ -15,20 +15,19 @@ Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/
 
 ## Installation
 
-You can use it either as a Python script or `bulk-downloader-for-reddit.exe` file.
+You can use it either as a *Python script* or `bulk-downloader-for-reddit.exe` file.
+
+### Executables
+
+For Windows and Linux, [download the latest release, here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
 
 ### Python script
 
 * Download this repository ([latest zip](https://github.com/aliparlakci/bulk-downloader-for-reddit/archive/master.zip) or `git clone git@github.com:aliparlakci/bulk-downloader-for-reddit.git`).
 * Enter its folder.
-* Run `python ./script.py` from the command-line (MacOSX or Linux command line; it may work with Anaconda prompt).
+* Run `python ./script.py` from the command-line (Windows, MacOSX or Linux command line; it may work with Anaconda prompt) See [here](docs/INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python) if you are having trouble.
 
-It uses Python 3.6 and above. It won't work with Python 3.5 or any Python 2.x. If you have a trouble setting it up, see [here](docs/COMPILE_FROM_SOURCE.md).
-
-
-### Executable
-
-For Windows, [download the latest release](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
+It uses Python 3.6 and above. It won't work with Python 3.5 or any Python 2.x. If you have a trouble setting it up, see [here](docs/INTERPRET_FROM_SOURCE.md).
 
 
 ### Setting up the script
@@ -42,9 +41,9 @@ When you run it for the first time, it will automatically create `config.json` f
 
 ## Running
 
-You can run it it an interactive mode, or using [command-line arguments](docs/COMMAND_LINE_ARGUMENTS.md) (also aviable via `python ./script.py --help` or `bulk-downloader-for-reddit.exe --help`).
+You can run it it an interactive mode, or using [command-line arguments](docs/COMMAND_LINE_ARGUMENTS.md) (also available via `python ./script.py --help` or `bulk-downloader-for-reddit.exe --help`).
 
-To run the interactive mode, simply use `python ./script.py` or `bulk-downloader-for-reddit.exe` without any commands
+To run the interactive mode, simply use `python ./script.py` or double click on `bulk-downloader-for-reddit.exe` without any extra commands.
 
 ### Example for an interactive script
 
