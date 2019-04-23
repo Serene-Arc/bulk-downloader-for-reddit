@@ -15,7 +15,7 @@ Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/
 
 ## Installation
 
-You can use it either as a *Python script* or `bulk-downloader-for-reddit.exe` file.
+You can use it either as a `bulk-downloader-for-reddit.exe` executable file for Windows, as a Linux binary or as a *[Python script](#python-script)*. There is no MacOS executable, MacOS users must use the Python script option. 
 
 ### Executables
 
@@ -25,7 +25,7 @@ For Windows and Linux, [download the latest release, here](https://github.com/al
 
 * Download this repository ([latest zip](https://github.com/aliparlakci/bulk-downloader-for-reddit/archive/master.zip) or `git clone git@github.com:aliparlakci/bulk-downloader-for-reddit.git`).
 * Enter its folder.
-* Run `python ./script.py` from the command-line (Windows, MacOSX or Linux command line; it may work with Anaconda prompt) See [here](docs/INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python) if you are having trouble.
+* Run `python ./script.py` from the command-line (Windows, MacOSX or Linux command line; it may work with Anaconda prompt) See [here](docs/INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python) if you have any trouble with this step.
 
 It uses Python 3.6 and above. It won't work with Python 3.5 or any Python 2.x. If you have a trouble setting it up, see [here](docs/INTERPRET_FROM_SOURCE.md).
 
@@ -44,6 +44,8 @@ When you run it for the first time, it will automatically create `config.json` f
 You can run it it an interactive mode, or using [command-line arguments](docs/COMMAND_LINE_ARGUMENTS.md) (also available via `python ./script.py --help` or `bulk-downloader-for-reddit.exe --help`).
 
 To run the interactive mode, simply use `python ./script.py` or double click on `bulk-downloader-for-reddit.exe` without any extra commands.
+
+### [Example for command line arguemnts](docs/COMMAND_LINE_ARGUMENTS.md#examples)
 
 ### Example for an interactive script
 
@@ -107,9 +109,16 @@ Press enter to quit
 
 ## FAQ
 
+### I am running the script on an headless machine or a remote server. How can I authenticate my reddit account?
+- Download the script on your everday computer and run it for once.
+- Authenticate the program on both reddit and imgur.
+- Go to your Home folder (for Windows users it is `C:\Users\[USERNAME]\`, for Linux users it is `/home/[USERNAME]`)
+- Copy the *config.json* file inside the Bulk Downloader for Reddit folder and paste it **next to** the file that you run the program.
+
 ### How can I change my credentials?
-- All of the user data is held in **config.json** file which is in a folder named "Bulk Downloader for Reddit" in your **Home** directory. You can edit
-  them, there.
+- All of the user data is held in **config.json** file which is in a folder named "Bulk Downloader for Reddit" in your **Home** directory. You can edit them, there.  
+
+  Also if you already have a config.json file, you can paste it **next to** the script and override the one on your Home directory. 
 
 ### What do the dots resemble when getting posts?
 - Each dot means that 100 posts are scanned.
