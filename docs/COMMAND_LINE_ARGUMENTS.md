@@ -1,6 +1,6 @@
 # Using command-line arguments
 
-See **[compiling from source](COMPILE_FROM_SOURCE.md)** page first unless you are using an executable file. If you are using an executable file, see [using terminal](COMPILE_FROM_SOURCE.md#using-terminal) and come back.
+See **[compiling from source](INTERPRET_FROM_SOURCE.md)** page first unless you are using an executable file. If you are using an executable file, see [using terminal](INTERPRET_FROM_SOURCE.md#using-terminal) and come back.
 
 ***Use*** `.\bulk-downloader-for-reddit.exe` ***or*** `./bulk-downloader-for-reddit` ***if you are using the executable***.
 ```console
@@ -98,4 +98,4 @@ python script.py --directory C:\\NEW_FOLDER\\ANOTHER_FOLDER --log UNNAMED_FOLDER
 
 # FAQ
 ## I can't startup the script no matter what.
-See **[finding the correct keyword for Python](COMPILE_FROM_SOURCE.md#finding-the-correct-keyword-for-python)**
+See **[finding the correct keyword for Python](INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python)**
