@@ -47,7 +47,7 @@ You can run it it an interactive mode, or using [command-line arguments](docs/CO
 
 To run the interactive mode, simply use `python ./script.py` or double click on `bulk-downloader-for-reddit.exe` without any extra commands.
 
-### [Example for command line arguemnts](docs/COMMAND_LINE_ARGUMENTS.md#examples)
+### [Example for command line arguments](docs/COMMAND_LINE_ARGUMENTS.md#examples)
 
 ### Example for an interactive script
 
