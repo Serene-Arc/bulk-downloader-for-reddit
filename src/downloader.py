@@ -117,7 +117,9 @@ class Erome:
                 post["postSubmitter"]+"_"+title+"_"+post['postId']+".tmp"
             )
 
-            imageURL = "https:" + IMAGES[0]
+            imageURL = IMAGES[0]
+            if 'https://' not in imageURL and 'http://' not in imageURL:
+                imageURL = "https://" + imageURL
 
             try:
                 getFile(fileDir,tempDir,imageURL)
@@ -146,7 +148,9 @@ class Erome:
                 extension = getExtension(IMAGES[i])
 
                 fileName = str(i+1)
-                imageURL = "https:" + IMAGES[i]
+                imageURL = IMAGES[i]
+                if 'https://' not in imageURL and 'http://' not in imageURL:
+                    imageURL = "https://" + imageURL
 
                 fileDir = folderDir / (fileName + extension)
                 tempDir = folderDir / (fileName + ".tmp")
