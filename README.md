@@ -1,3 +1,9 @@
+## ❗Important
+
+I haven't had the chance to work the application for several months due to my education. Now that the semester is over, I will fix the bugs and implement features that are asked as soon as possible. Yeeeyyy! 🎉🎉🎉 
+  
+In the mean time, please give feedback on the Issues section and tell me about your experience with the program.
+
 # Bulk Downloader for Reddit
 
 Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
