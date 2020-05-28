@@ -11,7 +11,7 @@ class GLOBAL:
     """Declare global variables"""
 
     RUN_TIME = 0
-    config = None
+    config = {'imgur_client_id':None, 'imgur_client_secret': None}
     arguments = None
     directory = None
     defaultConfigDirectory = Path.home() / "Bulk Downloader for Reddit"
