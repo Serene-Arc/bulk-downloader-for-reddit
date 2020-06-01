@@ -13,6 +13,7 @@ import time
 import webbrowser
 from io import StringIO
 from pathlib import Path, PurePath
+from prawcore.exceptions import InsufficientScope
 
 from src.downloaders.Direct import Direct
 from src.downloaders.Erome import Erome
@@ -20,427 +21,33 @@ from src.downloaders.Gfycat import Gfycat
 from src.downloaders.Imgur import Imgur
 from src.downloaders.redgifs import Redgifs
 from src.downloaders.selfPost import SelfPost
+from src.downloaders.vreddit import VReddit
+from src.downloaders.youtube import Youtube
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.errors import *
+from src.errors import ImgurLimitError, NoSuitablePost, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, DomainInSkip, full_exc_info
 from src.parser import LinkDesigner
 from src.searcher import getPosts
-from src.utils import (GLOBAL, createLogFile, jsonFile, nameCorrector,
+from src.utils import (GLOBAL, createLogFile, nameCorrector,
                        printToFile)
+from src.jsonHelper import JsonFile
+from src.config import Config
+from src.arguments import Arguments
+from src.programMode import ProgramMode
+from src.reddit import Reddit
+from src.store import Store
 
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
-__version__ = "1.6.5"
+__version__ = "1.8.0"
 __maintainer__ = "Ali Parlakci"
 __email__ = "parlakciali@gmail.com"
-
-def getConfig(configFileName):
-    """Read credentials from config.json file"""
-
-    keys = ['imgur_client_id',
-            'imgur_client_secret']
-
-    if os.path.exists(configFileName):
-        FILE = jsonFile(configFileName)
-        content = FILE.read()
-        if "reddit_refresh_token" in content:
-            if content["reddit_refresh_token"] == "":
-                FILE.delete("reddit_refresh_token")
-
-        if not all(False if content.get(key,"") == "" else True for key in keys):
-            print(
-                "Go to this URL and fill the form: " \
-                "https://api.imgur.com/oauth2/addclient\n" \
-                "Enter the client id and client secret here:"
-            )
-            webbrowser.open("https://api.imgur.com/oauth2/addclient",new=2)
-
-        for key in keys:
-            try:
-                if content[key] == "":
-                    raise KeyError
-            except KeyError:
-                FILE.add({key:input("  "+key+": ")})
-        return jsonFile(configFileName).read()
-
-    else:
-        FILE = jsonFile(configFileName)
-        configDictionary = {}
-        print(
-            "Go to this URL and fill the form: " \
-            "https://api.imgur.com/oauth2/addclient\n" \
-            "Enter the client id and client secret here:"
-            )
-        webbrowser.open("https://api.imgur.com/oauth2/addclient",new=2)
-        for key in keys:
-            configDictionary[key] = input("  "+key+": ")
-        FILE.add(configDictionary)
-        return FILE.read()
-
-def parseArguments(arguments=[]):
-    """Initialize argparse and add arguments"""
-
-    parser = argparse.ArgumentParser(allow_abbrev=False,
-                                     description="This program downloads " \
-                                                 "media from reddit " \
-                                                 "posts")
-    parser.add_argument("--directory","-d",
-                        help="Specifies the directory where posts will be " \
-                        "downloaded to",
-                        metavar="DIRECTORY")
-        
-    parser.add_argument("--NoDownload",
-                        help="Just gets the posts and stores them in a file" \
-                             " for downloading later",
-                        action="store_true",
-                        default=False)
-    
-    parser.add_argument("--verbose","-v",
-                        help="Verbose Mode",
-                        action="store_true",
-                        default=False)
-    
-    parser.add_argument("--quit","-q",
-                        help="Auto quit afer the process finishes",
-                        action="store_true",
-                        default=False)
-
-    parser.add_argument("--link","-l",
-                        help="Get posts from link",
-                        metavar="link")
-
-    parser.add_argument("--saved",
-                        action="store_true",
-                        help="Triggers saved mode")
-
-    parser.add_argument("--submitted",
-                        action="store_true",
-                        help="Gets posts of --user")
-
-    parser.add_argument("--upvoted",
-                        action="store_true",
-                        help="Gets upvoted posts of --user")
-
-    parser.add_argument("--log",
-                        help="Takes a log file which created by itself " \
-                             "(json files), reads posts and tries downloadin" \
-                             "g them again.",
-                        # type=argparse.FileType('r'),
-                        metavar="LOG FILE")
-
-    parser.add_argument("--subreddit",
-                        nargs="+",
-                        help="Triggers subreddit mode and takes subreddit's " \
-                             "name without r/. use \"frontpage\" for frontpage",
-                        metavar="SUBREDDIT",
-                        type=str)
-    
-    parser.add_argument("--multireddit",
-                        help="Triggers multireddit mode and takes "\
-                             "multireddit's name without m/",
-                        metavar="MULTIREDDIT",
-                        type=str)
-
-    parser.add_argument("--user",
-                        help="reddit username if needed. use \"me\" for " \
-                             "current user",
-                        required="--multireddit" in sys.argv or \
-                                 "--submitted" in sys.argv,
-                        metavar="redditor",
-                        type=str)
-
-    parser.add_argument("--search",
-                        help="Searches for given query in given subreddits",
-                        metavar="query",
-                        type=str)
-
-    parser.add_argument("--sort",
-                        help="Either hot, top, new, controversial, rising " \
-                             "or relevance default: hot",
-                        choices=[
-                            "hot","top","new","controversial","rising",
-                            "relevance"
-                        ],
-                        metavar="SORT TYPE",
-                        type=str)
-
-    parser.add_argument("--limit",
-                        help="default: unlimited",
-                        metavar="Limit",
-                        type=int)
-
-    parser.add_argument("--time",
-                        help="Either hour, day, week, month, year or all." \
-                             " default: all",
-                        choices=["all","hour","day","week","month","year"],
-                        metavar="TIME_LIMIT",
-                        type=str)
-
-    if arguments == []:
-        return parser.parse_args()
-    else:
-        return parser.parse_args(arguments)
-
-def checkConflicts():
-    """Check if command-line arguments are given correcly,
-    if not, raise errors
-    """
-
-    if GLOBAL.arguments.user is None:
-        user = 0
-    else:
-        user = 1
-
-    search = 1 if GLOBAL.arguments.search else 0
-
-    modes = [
-        "saved","subreddit","submitted","log","link","upvoted","multireddit"
-    ]
-
-    values = {
-        x: 0 if getattr(GLOBAL.arguments,x) is None or \
-                getattr(GLOBAL.arguments,x) is False \
-             else 1 \
-             for x in modes
-    }
-
-    if not sum(values[x] for x in values) == 1:
-        raise ProgramModeError("Invalid program mode")
-    
-    if search+values["saved"] == 2:
-        raise SearchModeError("You cannot search in your saved posts")
-
-    if search+values["submitted"] == 2:
-        raise SearchModeError("You cannot search in submitted posts")
-
-    if search+values["upvoted"] == 2:
-        raise SearchModeError("You cannot search in upvoted posts")
-
-    if search+values["log"] == 2:
-        raise SearchModeError("You cannot search in log files")
-
-    if values["upvoted"]+values["submitted"] == 1 and user == 0:
-        raise RedditorNameError("No redditor name given")
-
-class PromptUser:
-    @staticmethod
-    def chooseFrom(choices):
-        print()
-        choicesByIndex = list(str(x) for x in range(len(choices)+1))
-        for i in range(len(choices)):
-            print("{indent}[{order}] {mode}".format(
-                indent=" "*4,order=i+1,mode=choices[i]
-            ))
-        print(" "*4+"[0] exit\n")
-        choice = input("> ")
-        while not choice.lower() in choices+choicesByIndex+["exit"]:
-            print("Invalid input\n")
-            programModeIndex = input("> ")
-
-        if choice == "0" or choice == "exit":
-            sys.exit()
-        elif choice in choicesByIndex:
-            return choices[int(choice)-1]
-        else:
-            return choice
-    
-    def __init__(self):
-        print("select program mode:")
-        programModes = [
-            "search","subreddit","multireddit",
-            "submitted","upvoted","saved","log"
-        ]
-        programMode = self.chooseFrom(programModes)
-
-        if programMode == "search":
-            GLOBAL.arguments.search = input("\nquery: ")
-            GLOBAL.arguments.subreddit = input("\nsubreddit: ")
-
-            print("\nselect sort type:")
-            sortTypes = [
-                "relevance","top","new"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
-
-            print("\nselect time filter:")
-            timeFilters = [
-                "hour","day","week","month","year","all"
-            ]
-            timeFilter = self.chooseFrom(timeFilters)
-            GLOBAL.arguments.time = timeFilter
-
-        if programMode == "subreddit":
-
-            subredditInput = input("(type frontpage for all subscribed subreddits,\n" \
-                                   " use plus to seperate multi subreddits:" \
-                                   " pics+funny+me_irl etc.)\n\n" \
-                                   "subreddit: ")
-            GLOBAL.arguments.subreddit = subredditInput
-
-            # while not (subredditInput == "" or subredditInput.lower() == "frontpage"):
-            #     subredditInput = input("subreddit: ")
-            #     GLOBAL.arguments.subreddit += "+" + subredditInput
-
-            if " " in GLOBAL.arguments.subreddit:
-                GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit.split())
-
-            # DELETE THE PLUS (+) AT THE END
-            if not subredditInput.lower() == "frontpage" \
-                and GLOBAL.arguments.subreddit[-1] == "+":
-                GLOBAL.arguments.subreddit = GLOBAL.arguments.subreddit[:-1]
-
-            print("\nselect sort type:")
-            sortTypes = [
-                "hot","top","new","rising","controversial"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
-
-            if sortType in ["top","controversial"]:
-                print("\nselect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
-                ]
-                timeFilter = self.chooseFrom(timeFilters)
-                GLOBAL.arguments.time = timeFilter
-            else:
-                GLOBAL.arguments.time = "all"
-
-        elif programMode == "multireddit":
-            GLOBAL.arguments.user = input("\nmultireddit owner: ")
-            GLOBAL.arguments.multireddit = input("\nmultireddit: ")
-            
-            print("\nselect sort type:")
-            sortTypes = [
-                "hot","top","new","rising","controversial"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
-
-            if sortType in ["top","controversial"]:
-                print("\nselect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
-                ]
-                timeFilter = self.chooseFrom(timeFilters)
-                GLOBAL.arguments.time = timeFilter
-            else:
-                GLOBAL.arguments.time = "all"
-        
-        elif programMode == "submitted":
-            GLOBAL.arguments.submitted = True
-            GLOBAL.arguments.user = input("\nredditor: ")
-
-            print("\nselect sort type:")
-            sortTypes = [
-                "hot","top","new","controversial"
-            ]
-            sortType = self.chooseFrom(sortTypes)
-            GLOBAL.arguments.sort = sortType
-
-            if sortType == "top":
-                print("\nselect time filter:")
-                timeFilters = [
-                    "hour","day","week","month","year","all"
-                ]
-                timeFilter = self.chooseFrom(timeFilters)
-                GLOBAL.arguments.time = timeFilter
-            else:
-                GLOBAL.arguments.time = "all"
-        
-        elif programMode == "upvoted":
-            GLOBAL.arguments.upvoted = True
-            GLOBAL.arguments.user = input("\nredditor: ")
-        
-        elif programMode == "saved":
-            GLOBAL.arguments.saved = True
-        
-        elif programMode == "log":
-            while True:
-                GLOBAL.arguments.log = input("\nlog file directory:")
-                if Path(GLOBAL.arguments.log ).is_file():
-                    break 
-        while True:
-            try:
-                GLOBAL.arguments.limit = int(input("\nlimit (0 for none): "))
-                if GLOBAL.arguments.limit == 0:
-                    GLOBAL.arguments.limit = None
-                break
-            except ValueError:
-                pass
-
-def prepareAttributes():
-    ATTRIBUTES = {}
-
-    if GLOBAL.arguments.user is not None:
-        ATTRIBUTES["user"] = GLOBAL.arguments.user
-
-    if GLOBAL.arguments.search is not None:
-        ATTRIBUTES["search"] = GLOBAL.arguments.search
-        if GLOBAL.arguments.sort == "hot" or \
-           GLOBAL.arguments.sort == "controversial" or \
-           GLOBAL.arguments.sort == "rising":
-            GLOBAL.arguments.sort = "relevance"
-
-    if GLOBAL.arguments.sort is not None:
-        ATTRIBUTES["sort"] = GLOBAL.arguments.sort
-    else:
-        if GLOBAL.arguments.submitted:
-            ATTRIBUTES["sort"] = "new"
-        else:
-            ATTRIBUTES["sort"] = "hot"
-
-    if GLOBAL.arguments.time is not None:
-        ATTRIBUTES["time"] = GLOBAL.arguments.time
-    else:
-        ATTRIBUTES["time"] = "all"
-
-    if GLOBAL.arguments.link is not None:
-
-        GLOBAL.arguments.link = GLOBAL.arguments.link.strip("\"")
-
-        ATTRIBUTES = LinkDesigner(GLOBAL.arguments.link)
-
-        if GLOBAL.arguments.search is not None:
-            ATTRIBUTES["search"] = GLOBAL.arguments.search
-
-        if GLOBAL.arguments.sort is not None:
-            ATTRIBUTES["sort"] = GLOBAL.arguments.sort
-
-        if GLOBAL.arguments.time is not None:
-            ATTRIBUTES["time"] = GLOBAL.arguments.time
-
-    elif GLOBAL.arguments.subreddit is not None:
-        if type(GLOBAL.arguments.subreddit) == list:    
-            GLOBAL.arguments.subreddit = "+".join(GLOBAL.arguments.subreddit)
-
-        ATTRIBUTES["subreddit"] = GLOBAL.arguments.subreddit
-
-    elif GLOBAL.arguments.multireddit is not None:
-        ATTRIBUTES["multireddit"] = GLOBAL.arguments.multireddit
-
-    elif GLOBAL.arguments.saved is True:
-        ATTRIBUTES["saved"] = True
-
-    elif GLOBAL.arguments.upvoted is True:
-        ATTRIBUTES["upvoted"] = True
-
-    elif GLOBAL.arguments.submitted is not None:
-        ATTRIBUTES["submitted"] = True
-
-        if GLOBAL.arguments.sort == "rising":
-            raise InvalidSortingType("Invalid sorting type has given")
-    
-    ATTRIBUTES["limit"] = GLOBAL.arguments.limit
-
-    return ATTRIBUTES
 
 def postFromLog(fileName):
     """Analyze a log file and return a list of dictionaries containing
     submissions
     """
     if Path.is_file(Path(fileName)):
-        content = jsonFile(fileName).read()
+        content = JsonFile(fileName).read()
     else:
         print("File not found")
         sys.exit()
@@ -453,63 +60,44 @@ def postFromLog(fileName):
     posts = []
 
     for post in content:
-        if not content[post][-1]['postType'] == None:
+        if not content[post][-1]['TYPE'] == None:
             posts.append(content[post][-1])
 
     return posts
 
-def isPostExists(POST):
+def isPostExists(POST,directory):
     """Figure out a file's name and checks if the file already exists"""
 
-    title = nameCorrector(POST['postTitle'])
-    PATH = GLOBAL.directory / POST["postSubreddit"]
+    filename = GLOBAL.config['filename'].format(**POST)
 
-    possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md"]
+    possibleExtensions = [".jpg",".png",".mp4",".gif",".webm",".md",".mkv",".flv"]
 
-    """If you change the filenames, don't forget to add them here.
-    Please don't remove existing ones
-    """
     for extension in possibleExtensions:
 
-        OLD_FILE_PATH = PATH / (
-            title
-            + "_" + POST['postId']
-            + extension
-        )
-        FILE_PATH = PATH / (
-            POST["postSubmitter"] 
-            + "_" + title 
-            + "_" + POST['postId'] 
-            + extension
-        )
+        path = directory / Path(filename+extension)
 
-        SHORT_FILE_PATH = PATH / (POST['postId']+extension)
-
-        if OLD_FILE_PATH.exists() or \
-           FILE_PATH.exists() or \
-           SHORT_FILE_PATH.exists():
-           
+        if path.exists():
             return True
 
     else:
         return False
 
-def downloadPost(SUBMISSION):
-
-    """Download directory is declared here for each file"""
-    directory = GLOBAL.directory / SUBMISSION['postSubreddit']
+def downloadPost(SUBMISSION,directory):
 
     global lastRequestTime
+    lastRequestTime = 0
 
     downloaders = {
         "imgur":Imgur,"gfycat":Gfycat,"erome":Erome,"direct":Direct,"self":SelfPost,
-        "redgifs":Redgifs, "gifdeliverynetwork": GifDeliveryNetwork
+        "redgifs":Redgifs, "gifdeliverynetwork": GifDeliveryNetwork,
+        "v.redd.it": VReddit, "youtube": Youtube
     }
 
     print()
-    if SUBMISSION['postType'] in downloaders:
+    if SUBMISSION['TYPE'] in downloaders:
 
-        if SUBMISSION['postType'] == "imgur":
+        # WORKAROUND FOR IMGUR API LIMIT
+        if SUBMISSION['TYPE'] == "imgur":
             
             while int(time.time() - lastRequestTime) <= 2:
                 pass
@@ -554,7 +142,7 @@ def downloadPost(SUBMISSION):
 
                 raise ImgurLimitError('{} LIMIT EXCEEDED\n'.format(KEYWORD.upper()))
 
-        downloaders[SUBMISSION['postType']] (directory,SUBMISSION)
+        downloaders[SUBMISSION['TYPE']] (directory,SUBMISSION)
 
     else:
         raise NoSuitablePost
@@ -566,35 +154,61 @@ def download(submissions):
     to download each one, catch errors, update the log files
     """
 
-    subsLenght = len(submissions)
     global lastRequestTime
     lastRequestTime = 0
-    downloadedCount = subsLenght
+    downloadedCount = 0
     duplicates = 0
 
     FAILED_FILE = createLogFile("FAILED")
 
-    for i in range(subsLenght):
-        print(f"\n({i+1}/{subsLenght}) – {submissions[i]['postId']} – r/{submissions[i]['postSubreddit']}",
-              end="")
-        print(f" – {submissions[i]['postType'].upper()}",end="",noPrint=True)
+    if GLOBAL.arguments.unsave:
+        reddit = Reddit(GLOBAL.config['credentials']['reddit']).begin()
 
-        if isPostExists(submissions[i]):
-            print(f"\n" \
-                  f"{submissions[i]['postSubmitter']}_"
-                  f"{nameCorrector(submissions[i]['postTitle'])}")
+    submissions = list(filter(lambda x: x['POSTID'] not in GLOBAL.downloadedPosts(), submissions))
+    subsLenght = len(submissions)
+        
+    for i in range(len(submissions)):
+        print(f"\n({i+1}/{subsLenght})",end=" — ")
+        print(submissions[i]['POSTID'],
+              f"r/{submissions[i]['SUBREDDIT']}",
+              f"u/{submissions[i]['REDDITOR']}",
+              submissions[i]['FLAIR'] if submissions[i]['FLAIR'] else "",
+              sep=" — ",
+              end="")
+        print(f" – {submissions[i]['TYPE'].upper()}",end="",noPrint=True)
+
+        details = {**submissions[i], **{"TITLE": nameCorrector(submissions[i]['TITLE'])}}
+        directory = GLOBAL.directory / GLOBAL.config["folderpath"].format(**details)
+
+        if isPostExists(details,directory):
+            print()
+            print(directory)
+            print(GLOBAL.config['filename'].format(**details))
             print("It already exists")
             duplicates += 1
-            downloadedCount -= 1
+            continue
+
+        if any(domain in submissions[i]['CONTENTURL'] for domain in GLOBAL.arguments.skip):
+            print()
+            print(submissions[i]['CONTENTURL'])
+            print("Domain found in skip domains, skipping post...")
             continue
 
         try:
-            downloadPost(submissions[i])
-        
+            downloadPost(details,directory)
+            GLOBAL.downloadedPosts.add(details['POSTID'])
+            try:
+                if GLOBAL.arguments.unsave:
+                    reddit.submission(id=details['POSTID']).unsave()
+            except InsufficientScope:
+                reddit = Reddit().begin()
+                reddit.submission(id=details['POSTID']).unsave()
+              
+            downloadedCount += 1
+              
         except FileAlreadyExistsError:
             print("It already exists")
             duplicates += 1
-            downloadedCount -= 1
 
         except ImgurLoginError:
             print(
@@ -608,13 +222,12 @@ def download(submissions):
                 "{class_name}: {info}".format(
                     class_name=exception.__class__.__name__,info=str(exception)
                 ),
-                submissions[i]
+                details
             ]})
-            downloadedCount -= 1
 
         except NotADownloadableLinkError as exception:
             print(
-                "{class_name}: {info}".format(
+                "{class_name}: {info} See CONSOLE_LOG.txt for more information".format(
                     class_name=exception.__class__.__name__,info=str(exception)
                 )
             )
@@ -624,60 +237,55 @@ def download(submissions):
                 ),
                 submissions[i]
             ]})
-            downloadedCount -= 1
+
+        except DomainInSkip:
+            print()
+            print(submissions[i]['CONTENTURL'])
+            print("Domain found in skip domains, skipping post...")
 
         except NoSuitablePost:
             print("No match found, skipping...")
-            downloadedCount -= 1
+
+        except FailedToDownload:
+            print("Failed to download the posts, skipping...")
         
-        except Exception as exception:
-            # raise exception
+        except Exception as exc:
             print(
-                "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__,info=str(exception)
+                "{class_name}: {info} See CONSOLE_LOG.txt for more information".format(
+                    class_name=exc.__class__.__name__,info=str(exc)
                 )
             )
+
+            logging.error(sys.exc_info()[0].__name__,
+                          exc_info=full_exc_info(sys.exc_info()))
+            print(log_stream.getvalue(),noPrint=True)
+
             FAILED_FILE.add({int(i+1):[
                 "{class_name}: {info}".format(
-                    class_name=exception.__class__.__name__,info=str(exception)
+                    class_name=exc.__class__.__name__,info=str(exc)
                 ),
                 submissions[i]
             ]})
-            downloadedCount -= 1
 
     if duplicates:
         print(f"\nThere {'were' if duplicates > 1 else 'was'} " \
               f"{duplicates} duplicate{'s' if duplicates > 1 else ''}")
 
     if downloadedCount == 0:
-        print("Nothing downloaded :(")
+        print("Nothing is downloaded :(")
 
     else:
         print(f"Total of {downloadedCount} " \
               f"link{'s' if downloadedCount > 1 else ''} downloaded!")
 
-def main():
-
+def printLogo():
     VanillaPrint(
         f"\nBulk Downloader for Reddit v{__version__}\n" \
         f"Written by Ali PARLAKCI – parlakciali@gmail.com\n\n" \
-        f"https://github.com/aliparlakci/bulk-downloader-for-reddit/"
-    )
-    GLOBAL.arguments = parseArguments()
-
-    if GLOBAL.arguments.directory is not None:
-        GLOBAL.directory = Path(GLOBAL.arguments.directory.strip())
-    else:
-        GLOBAL.directory = Path(input("\ndownload directory: ").strip())
-
-    print("\n"," ".join(sys.argv),"\n",noPrint=True)
-    print(f"Bulk Downloader for Reddit v{__version__}\n",noPrint=True
+        f"https://github.com/aliparlakci/bulk-downloader-for-reddit/\n"
     )
 
-    try:
-        checkConflicts()
-    except ProgramModeError as err:
-        PromptUser()
+def main():
 
     if not Path(GLOBAL.defaultConfigDirectory).is_dir():
         os.makedirs(GLOBAL.defaultConfigDirectory)
@@ -686,16 +294,64 @@ def main():
         GLOBAL.configDirectory = Path("config.json")
     else:
         GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
+    try:
+        GLOBAL.config = Config(GLOBAL.configDirectory).generate()
+    except InvalidJSONFile as exception:
+        VanillaPrint(str(exception.__class__.__name__),">>",str(exception))
+        VanillaPrint("Resolve it or remove it to proceed")
+        input("\nPress enter to quit")
+        sys.exit()
 
-    GLOBAL.config = getConfig(GLOBAL.configDirectory)
+    sys.argv = sys.argv + GLOBAL.config["options"].split()
 
-    if GLOBAL.arguments.log is not None:
-        logDir = Path(GLOBAL.arguments.log)
+    arguments = Arguments.parse()
+    GLOBAL.arguments = arguments
+
+    if arguments.set_filename:
+        Config(GLOBAL.configDirectory).setCustomFileName()
+        sys.exit()
+
+    if arguments.set_folderpath:
+        Config(GLOBAL.configDirectory).setCustomFolderPath()
+        sys.exit()
+
+    if arguments.set_default_directory:
+        Config(GLOBAL.configDirectory).setDefaultDirectory()
+        sys.exit()
+
+    if arguments.set_default_options:
+        Config(GLOBAL.configDirectory).setDefaultOptions()
+        sys.exit()
+
+    if arguments.use_local_config:
+        JsonFile(".\\config.json").add(GLOBAL.config)
+        sys.exit()
+        
+    if arguments.directory:
+        GLOBAL.directory = Path(arguments.directory.strip())
+    elif "default_directory" in GLOBAL.config and GLOBAL.config["default_directory"] != "":
+        GLOBAL.directory = Path(GLOBAL.config["default_directory"].format(time=GLOBAL.RUN_TIME))
+    else:
+        GLOBAL.directory = Path(input("\ndownload directory: ").strip())
+
+    if arguments.downloaded_posts:
+        GLOBAL.downloadedPosts = Store(arguments.downloaded_posts)
+    else:
+        GLOBAL.downloadedPosts = Store()
+
+    printLogo()
+    print("\n"," ".join(sys.argv),"\n",noPrint=True)
+
+    if arguments.log is not None:
+        logDir = Path(arguments.log)
         download(postFromLog(logDir))
         sys.exit()
 
+
+    programMode = ProgramMode(arguments).generate()
+
     try:
-        POSTS = getPosts(prepareAttributes())
+        posts = getPosts(programMode)
     except Exception as exc:
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
@@ -703,15 +359,11 @@ def main():
         print(exc)
         sys.exit()
 
-    if POSTS is None:
+    if posts is None:
         print("I could not find any posts in that URL")
         sys.exit()
 
-    if GLOBAL.arguments.NoDownload:
-        sys.exit()
-
-    else:
-        download(POSTS)
+    download(posts)
 
 if __name__ == "__main__":
 
@@ -721,16 +373,19 @@ if __name__ == "__main__":
     try:
         VanillaPrint = print
         print = printToFile
-        GLOBAL.RUN_TIME = time.time()
+        GLOBAL.RUN_TIME = str(time.strftime(
+                                      "%d-%m-%Y_%H-%M-%S",
+                                      time.localtime(time.time())
+                                      ))
         main()
 
     except KeyboardInterrupt:
         if GLOBAL.directory is None:
-            GLOBAL.directory = Path(".\\")
+            GLOBAL.directory = Path("..\\")
         
     except Exception as exception:
         if GLOBAL.directory is None:
-            GLOBAL.directory = Path(".\\")
+            GLOBAL.directory = Path("..\\")
         logging.error(sys.exc_info()[0].__name__,
                       exc_info=full_exc_info(sys.exc_info()))
         print(log_stream.getvalue())

@@ -13,7 +13,7 @@ class Imgur:
     def __init__(self,directory,post):
         self.imgurClient = self.initImgur()
 
-        imgurID = self.getId(post['postURL'])
+        imgurID = self.getId(post['CONTENTURL'])
         content = self.getLink(imgurID)
 
         if not os.path.exists(directory): os.makedirs(directory)
@@ -21,38 +21,16 @@ class Imgur:
         if content['type'] == 'image':
 
             try:
-                post['mediaURL'] = content['object'].mp4
+                post['MEDIAURL'] = content['object'].mp4
             except AttributeError:
-                post['mediaURL'] = content['object'].link
+                post['MEDIAURL'] = content['object'].link
 
-            post['postExt'] = getExtension(post['mediaURL'])
+            post['EXTENSION'] = getExtension(post['MEDIAURL'])
+
+            filename = GLOBAL.config['filename'].format(**post)+post["EXTENSION"]
+            shortFilename = post['POSTID']+post['EXTENSION']
             
-            title = nameCorrector(post['postTitle'])
-
-            """Filenames are declared here"""
-
-            print(post["postSubmitter"]+"_"+title+"_"+post['postId']+post['postExt'])
-
-            fileDir = directory / (
-                post["postSubmitter"]
-                + "_" + title
-                + "_" + post['postId'] 
-                + post['postExt']
-            )
-
-            tempDir = directory / (
-                post["postSubmitter"]
-                + "_" + title 
-                + "_" + post['postId'] 
-                + ".tmp"
-            )
-
-            try:
-                getFile(fileDir,tempDir,post['mediaURL'])
-            except FileNameTooLong:
-                fileDir = directory / post['postId'] + post['postExt']
-                tempDir = directory / post['postId'] + '.tmp'
-                getFile(fileDir,tempDir,post['mediaURL'])
+            getFile(filename,shortFilename,directory,post['MEDIAURL'])
 
         elif content['type'] == 'album':
             images = content['object'].images
@@ -60,18 +38,17 @@ class Imgur:
             howManyDownloaded = imagesLenght
             duplicates = 0
 
-            title = nameCorrector(post['postTitle'])
-            print(post["postSubmitter"]+"_"+title+"_"+post['postId'],end="\n\n")
+            filename = GLOBAL.config['filename'].format(**post)
 
-            folderDir = directory / (
-                post["postSubmitter"] + "_" + title + "_" + post['postId']
-            )
+            print(filename)
+
+            folderDir = directory / filename
 
             try:
                 if not os.path.exists(folderDir):
                     os.makedirs(folderDir)
             except FileNotFoundError:
-                folderDir = directory / post['postId']
+                folderDir = directory / post['POSTID']
                 os.makedirs(folderDir)
 
             for i in range(imagesLenght):
@@ -82,41 +59,23 @@ class Imgur:
 
                 images[i]['Ext'] = getExtension(imageURL)
 
-                fileName = (str(i+1)
+                filename = (str(i+1)
                             + "_"
                             + nameCorrector(str(images[i]['title']))
                             + "_"
                             + images[i]['id'])
 
-                """Filenames are declared here"""
+                shortFilename = (str(i+1) + "_" + images[i]['id'])
 
-                fileDir = folderDir / (fileName + images[i]['Ext'])
-                tempDir = folderDir / (fileName + ".tmp")
-
-                print("  ({}/{})".format(i+1,imagesLenght))
-                print("  {}".format(fileName+images[i]['Ext']))
+                print("\n  ({}/{})".format(i+1,imagesLenght))
 
                 try:
-                    getFile(fileDir,tempDir,imageURL,indent=2)
+                    getFile(filename,shortFilename,folderDir,imageURL,indent=2)
                     print()
                 except FileAlreadyExistsError:
                     print("  The file already exists" + " "*10,end="\n\n")
                     duplicates += 1
                     howManyDownloaded -= 1
-
-                # IF FILE NAME IS TOO LONG, IT WONT REGISTER
-                except FileNameTooLong:
-                    fileName = (str(i+1) + "_" + images[i]['id'])
-                    fileDir = folderDir / (fileName + images[i]['Ext'])
-                    tempDir = folderDir / (fileName + ".tmp")
-                    try:
-                        getFile(fileDir,tempDir,imageURL,indent=2)
-                    # IF STILL TOO LONG
-                    except FileNameTooLong:
-                        fileName = str(i+1)
-                        fileDir = folderDir / (fileName + images[i]['Ext'])
-                        tempDir = folderDir / (fileName + ".tmp")
-                        getFile(fileDir,tempDir,imageURL,indent=2)
 
                 except Exception as exception:
                     print("\n  Could not get the file")
@@ -143,8 +102,8 @@ class Imgur:
 
         config = GLOBAL.config
         return imgurpython.ImgurClient(
-            config['imgur_client_id'],
-            config['imgur_client_secret']
+            config["credentials"]['imgur_client_id'],
+            config["credentials"]['imgur_client_secret']
         )
     def getId(self,submissionURL):
         """Extract imgur post id

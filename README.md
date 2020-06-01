@@ -1,115 +1,178 @@
-# Bulk Downloader for Reddit
+# 📥 Bulk Downloader for Reddit
 
-Downloads media from reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
+Downloads reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
+  
+Please give feedback *(errors, feature requests, etc.)* on the [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) page. I will try to resolve them ASAP.
 
 ## [Download the latest release here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
 
-## What it can do
+## 🚀 How to use
+If you run **Windows**, after you extract the zip file, double-click on the *bulk-downloader-for-reddit.exe*. The program will guide you through. Also, take a look at the [Setting up the program](#🔨-setting-up-the-program) section. **However**, Bulk Dowloader for Reddit has a plenty of features which can only be activated via command line arguments. See [Options](#⚙-Options) for it.
 
-- Can get posts from: frontpage, subreddits, multireddits, redditor's submissions, upvoted and saved posts; search results or just plain reddit links
-- Sorts posts by hot, top, new and so on
-- Downloads **REDDIT** images and videos, **IMGUR** images and albums, **GFYCAT** links, **EROME** images and albums, **SELF POSTS** and any link to a **DIRECT IMAGE**
-- Skips the existing ones
-- Puts post title and OP's name in file's name
-- Puts every post to its subreddit's folder
-- Saves a reusable copy of posts' details that are found so that they can be re-downloaded again
-- Logs failed ones in a file to so that you can try to download them later
+Unfortunately, there is no binary for **MacOS** or **Linux**. If you are a MacOS or Linux user, you must use the program from the source code. See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page.
+  
+However, binary version for Linux is being worked. So, stay tuned.
+  
+OR, regardless of your operating system, you can fire up the program from the **source code**.
 
-## Installation
+#### `python3 -m pip install -r -requirements.txt`
 
-You can use it either as a `bulk-downloader-for-reddit.exe` executable file for Windows, as a Linux binary or as a *[Python script](#python-script)*. There is no MacOS executable, MacOS users must use the Python script option. 
+#### `python3 script.py`
 
-### Executables
+See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page for more information.
 
-For Windows and Linux, [download the latest executables, here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest).
+## 🔨 Setting up the program
+### 🖼 IMGUR API
 
-### Python script
+You need to create an imgur developer app in order API to work. Go to https://api.imgur.com/oauth2/addclient and login.
 
-* Download this repository ([latest zip](https://github.com/aliparlakci/bulk-downloader-for-reddit/archive/master.zip) or `git clone git@github.com:aliparlakci/bulk-downloader-for-reddit.git`).
-* Enter its folder.
-* Run `python ./script.py` from the command-line (Windows, MacOSX or Linux command line; it may work with Anaconda prompt) See [here](docs/INTERPRET_FROM_SOURCE.md#finding-the-correct-keyword-for-python) if you have any trouble with this step.
+IMGUR will redirect you to homepage instead of API form page. After you log in, open the above link manually. Fill the form in the link (It does not really matter what you fill it with. You can write www.google.com to the callback url)
 
-It uses Python 3.6 and above. It won't work with Python 3.5 or any Python 2.x. If you have a trouble setting it up, see [here](docs/INTERPRET_FROM_SOURCE.md).
+After you send the form, it will redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**. Type in those values into program respectively.
 
+### 📽 ffmpeg Library
+  
+Program needs **ffmpeg software** to add audio to some video files. However, installing it is **voluntary**. Although the program can still run with no errors without the ffmpeg library, some video files might have no sound.
+  
+Install it through a package manager such as **Chocolatey** in Windows, **apt** in Linux or **Homebrew** in MacOS:
 
-### Setting up the script
+- **in Windows**: After you **[install Chocolatey](https://chocolatey.org/install)**, type **`choco install ffmpeg`** in either Command Promt or Powershell.
+- **in Linux**: Type **`sudo apt install ffmpeg`** in Terminal.
+- **in MacOS**: After you **[install Homebrew](https://brew.sh/)**, type **`brew install ffmpeg`** in Terminal
 
-You need to create an imgur developer app in order API to work. Go to https://api.imgur.com/oauth2/addclient and fill the form (It does not really matter how you fill it).
+OR, [Download ffmpeg](https://www.ffmpeg.org/download.html) manually on your system and [add the bin folder in the downloaded folder's directory to `PATH` of your system.](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) However, package manager option is suggested.
 
-It should redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**.
+## ⚙ Options
 
-When you run it for the first time, it will automatically create `config.json` file containing `imgur_client_id`, `imgur_client_secret`, `reddit_username` and `reddit_refresh_token`.
+Some of the below features are available only through command-line.
+  
+Open the [Command Promt](https://youtu.be/bgSSJQolR0E?t=18), [Powershell](https://youtu.be/bgSSJQolR0E?t=18) or [Terminal](https://youtu.be/Pz4yHAB3G8w?t=31) in the folder that contains bulk-downloader-for-reddit file (click on the links to see how)
+  
+After you type **`bulk-downloader-for-reddit.exe`**, type the preffered options.
 
+Example: **`bulk-downloader-for-reddit.exe --subreddit pics --sort top --limit 10`**
 
-## Running
+## **`--subreddit`** 
+Downloads posts from given subreddit(s). Takes number of subreddit names as a paramater.
+  
+Example usage: **`--subreddit IAmA pics --sort hot --limit 10`**
 
-You can run it it an interactive mode, or using [command-line arguments](docs/COMMAND_LINE_ARGUMENTS.md) (also available via `python ./script.py --help` or `bulk-downloader-for-reddit.exe --help`).
+## **`--multireddit`**
+Downloads posts from given subreddit. Takes a single multireddit name as a parameter. **`--user`** option is required.
+  
+Example usage: **`--multireddit myMulti --user me --sort top --time week`**
 
-To run the interactive mode, simply use `python ./script.py` or double click on `bulk-downloader-for-reddit.exe` without any extra commands.
+## **`--search`**
+Searches for given query in given subreddit(s) or multireddit. Takes a search query as a parameter. **`--subreddit`** or **`--multireddit`** option is required. **`--sort`** option is required.
+  
+Example usage: **`--search carter --subreddit funny`**
+  
+## **`--submitted`** 
+Downloads given redditor's submitted posts. Does not take any parameter. **`--user`** option is required.
 
-### [Example for command line arguments](docs/COMMAND_LINE_ARGUMENTS.md#examples)
+Example usage: **`--submitted --user spɛz --sort top --time week`**
+  
+## **`--upvoted`**
+Downloads given redditor's upvoted posts. Does not take any parameter. **`--user`** option is required.
 
-### Example for an interactive script
+Example usage: **`--upvoted --user spɛz`**
+  
+## **`--saved`** 
+Downloads logged in redditor's saved posts. Does not take any parameter. Example usage: **`--saved`**
+  
+## **`--link`**
+Takes a reddit link as a parameter and downloads the posts in the link. Put the link in " " (double quotes).
+  
+Example usage: **`--link "https://www.reddit.com/r/funny/comments/25blmh/"`**
 
-```
-(py37) bulk-downloader-for-reddit user$ python ./script.py
+## **`--log`**
+Program saves the found posts into POSTS.json file and the failed posts to FAILED.json file in LOG_FILES folder. You can use those files to redownload the posts inside them.  
+  
+Uses a .json file to redownload posts from. Takes single directory to a .json file as a parameter.
 
-Bulk Downloader for Reddit v1.6.5
-Written by Ali PARLAKCI – parlakciali@gmail.com
+Example usage: **`--log D:\pics\LOG_FILES\FAILED.json`**
 
-https://github.com/aliparlakci/bulk-downloader-for-reddit/
+---
 
-download directory: downloads/dataisbeautiful_last_few
-select program mode:
+## **`--user`**
+Takes a reddit username as a parameter. Example usage: **`--user spɛz`**
+  
+## **`--sort`**
+Takes a valid sorting type as a parameter. Valid sort types are `hot`, `top`, `new`, `rising`, `controversial` and `relevance` (if you are using `--search` option)
 
-    [1] search
-    [2] subreddit
-    [3] multireddit
-    [4] submitted
-    [5] upvoted
-    [6] saved
-    [7] log
-    [0] exit
+Example usage: **`--sort top`**
+  
+## **`--time`**
+Takes a valid time as a parameter. Valid times are `hour`, `day`, `week`, `month`, `year` and `all`. Example usage: **`--time all`**
+  
+## **`--limit`**
+Takes a number to specify how many should program get. Upper bound is 1000 posts for **each** subreddit. For example, if you are downloading posts from pics and IAmA, the upper bound is 2000. Do not use the option to set it to highest bound possible.
 
-> 2
-(type frontpage for all subscribed subreddits,
- use plus to seperate multi subreddits: pics+funny+me_irl etc.)
+Example usage: **`--limit 500`**
 
-subreddit: dataisbeautiful
+---
 
-select sort type:
+## **`--skip`**
+Takes a number of domains as a parameter to skip the posts from those domains. Use self to imply text posts.
 
-    [1] hot
-    [2] top
-    [3] new
-    [4] rising
-    [5] controversial
-    [0] exit
+Example usage: **`--skip v.redd.it youtube.com youtu.be self`**
+  
+## **`--quit`**
+Automatically quits the application after it finishes. Otherwise, it will wait for an input to quit.
 
-> 1
+Example usage: **`--quit`**
+  
+## **`--directory`**
+Takes a directory which the posts should be downloaded to. Overrides the given default directory. Use `..\` to imply upper level and `.\` to imply the current level.
 
-limit (0 for none): 50
+Example usage: **`--directory D:\bdfr\`**  
+Example usage: **`--directory ..\images\`**  
+Example usage: **`-d ..\images\`**  
+Example usage: **`-d .\`**  
+  
+## **`--set-filename`**
+Starts the program to set a filename template to use for downloading posts. **Does not take any parameter.**
+  
+When the programs starts, you will be prompted to type a filename template. Use `SUBREDDIT`, `REDDITOR`, `POSTID`, `TITLE`, `UPVOTES`, `FLAIR`, `DATE` in curly brakets `{ }` to refer to the corrosponding property of a post.
 
-GETTING POSTS
+❗ Do NOT change the filename structure frequently. If you did, the program could not find duplicates and would download the already downloaded files again. This would not create any duplicates in the directory but the program would not be as snappy as it should be.
+  
+The default filename template is **`{REDDITOR}_{TITLE}_{POSTID}`**
 
+Example usage: **`--set-filename`**
+  
+## **`--set-folderpath`**
+Starts the program to set a folder structure  to use for downloading posts. **Does not take any parameter.**
+  
+When the programs starts, you will be prompted to type a filename template. Use `SUBREDDIT`, `REDDITOR`, `POSTID`, `TITLE`, `UPVOTES`, `FLAIR`, `DATE` in curly brakets `{ }` to refer to the corrosponding property of a post. Do not put slashes `/` or backslashes `\` at either ends. For instance, **`{REDDITOR}/{SUBREDDIT}/{FLAIR}`**
+  
+The default filename template is **`{SUBREDDIT}`**
 
-(1/24) – r/dataisbeautiful
-AutoModerator_[Battle]_DataViz_Battle_for_the_month_of_April_2019__Visualize_the_April_Fool's_Prank_for_2019-04-01_on__r_DataIsBeautiful_b8ws37.md
-Downloaded
+Example usage: **`--set-folderpath`**
+  
+## **`--set-default-directory`**
+Starts the program to set a default directory to use in case no directory is given. **Does not take any parameter.**
+  
+When the programs starts, you will be prompted to type a default directory. You can use {time} in foler names to use to timestamp it. For instance, **`D:\bdfr\posts_{time}`**
 
-(2/24) – r/dataisbeautiful
-AutoModerator_[Topic][Open]_Open_Discussion_Monday_—_Anybody_can_post_a_general_visualization_question_or_start_a_fresh_discussion!_bg1wej.md
-Downloaded
+Example usage: **`--set-default-directory`**
+  
+## **`--use-local-config`**
+Sets the program to use config.json file in the current directory. Creates it if it does not exists. Useful for having different configurations. **Does not take any parameter.**
+  
+Example usage: **`--use-local-config`**
+  
+## **`--no-dupes`**
+Skips the same posts in different subreddits. Does not take any parameter.
 
-...
+Example usage: **`--no-dupes`**
+  
+## **`--downloaded-posts`**
+Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to the given file. Does not take any parameter.
 
-Total of 24 links downloaded!
-
-Press enter to quit
-```
-
-
-## FAQ
+Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
+  
+## ❔ FAQ
 
 ### I am running the script on a headless machine or on a remote server. How can I authenticate my reddit account?
 - Download the script on your everday computer and run it for once.
@@ -128,21 +191,8 @@ Press enter to quit
 ### Getting posts takes too long.
 - You can press *Ctrl+C* to interrupt it and start downloading.
 
-### How are the filenames formatted?
-- **Self posts** and **images** that do not belong to an album and **album folders** are formatted as:  
-  `[SUBMITTER NAME]_[POST TITLE]_[REDDIT ID]`  
-  You can use *reddit id* to go to post's reddit page by going to link reddit.com/[REDDIT ID]
-
-- An **image in an album** is formatted as:  
-  `[ITEM NUMBER]_[IMAGE TITLE]_[IMGUR ID]`  
-  Similarly, you can use *imgur id* to go to image's imgur page by going to link imgur.com/[IMGUR ID].
-
 ### How do I open self post files?
 - Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
   However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).  
 
-  However, they are basically text files. You can also view them with any text editor such as Notepad on Windows, gedit on Linux or Text Editor on MacOS
-
-## Changelog
-
-* [See the changes on *master* here](docs/CHANGELOG.md)
+  However, they are basically text files. You can also view them with any text editor such as Notepad on Windows, gedit on Linux or Text Editor on MacOS.

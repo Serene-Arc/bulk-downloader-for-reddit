@@ -1,9 +1,14 @@
 import sys
 import os
+import time
 from urllib.error import HTTPError
 import urllib.request
+from pathlib import Path
+import hashlib
 
-from src.errors import FileAlreadyExistsError, FileNameTooLong
+from src.utils import nameCorrector, GLOBAL
+from src.utils import printToFile as print
+from src.errors import FileAlreadyExistsError, FileNameTooLong, FailedToDownload, DomainInSkip
 
 def dlProgress(count, blockSize, totalSize):
     """Function for writing download progress to console
@@ -30,16 +35,10 @@ def getExtension(link):
         else:
             return '.mp4'
 
-def getFile(fileDir,tempDir,imageURL,indent=0):
-    """Downloads given file to given directory.
+def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
 
-    fileDir -- Full file directory
-    tempDir -- Full file directory with the extension of '.tmp'
-    imageURL -- URL to the file to be downloaded
-
-    redditID -- Post's reddit id if renaming the file is necessary.
-                As too long file names seem not working.
-    """
+    if any(domain in imageURL for domain in GLOBAL.arguments.skip):
+        raise DomainInSkip
 
     headers = [
         ("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
@@ -58,20 +57,45 @@ def getFile(fileDir,tempDir,imageURL,indent=0):
         opener.addheaders = headers
     urllib.request.install_opener(opener)
 
-    if not (os.path.isfile(fileDir)):
-        for i in range(3):
+    filename = nameCorrector(filename)
+
+    if not silent: print(" "*indent + str(folderDir),
+                         " "*indent + str(filename),
+                         sep="\n")
+
+
+    for i in range(3):
+        fileDir = Path(folderDir) / filename
+        tempDir = Path(folderDir) / (filename+".tmp")
+
+        if not (os.path.isfile(fileDir)):
             try:
                 urllib.request.urlretrieve(imageURL,
                                            tempDir,
                                            reporthook=dlProgress)
+
+                if GLOBAL.arguments.no_dupes:
+                    fileHash = createHash(tempDir)
+                    if fileHash in GLOBAL.hashList:
+                        os.remove(tempDir)
+                        raise FileAlreadyExistsError
+                    GLOBAL.hashList.add(fileHash)
+
                 os.rename(tempDir,fileDir)
+                if not silent: print(" "*indent+"Downloaded"+" "*10)
+                return None
             except ConnectionResetError as exception:
-                print(" "*indent + str(exception))
-                print(" "*indent + "Trying again\n")
+                if not silent: print(" "*indent + str(exception))
+                if not silent: print(" "*indent + "Trying again\n")
             except FileNotFoundError:
-                raise FileNameTooLong
-            else:
-                print(" "*indent+"Downloaded"+" "*10)
-                break
-    else:
-        raise FileAlreadyExistsError
+                filename = shortFilename
+        else:
+            raise FileAlreadyExistsError
+    raise FailedToDownload
+
+def createHash(filename):
+    hash_md5 = hashlib.md5()
+    with open(filename, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()

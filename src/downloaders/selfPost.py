@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from src.errors import FileAlreadyExistsError
-from src.utils import nameCorrector
+from src.utils import GLOBAL
 
 VanillaPrint = print
 from src.utils import printToFile as print
@@ -12,23 +12,20 @@ class SelfPost:
     def __init__(self,directory,post):
         if not os.path.exists(directory): os.makedirs(directory)
 
-        title = nameCorrector(post['postTitle'])
+        filename = GLOBAL.config['filename'].format(**post)
 
-        """Filenames are declared here"""
+        fileDir = directory / (filename+".md")
+        print(fileDir)
+        print(filename+".md")
 
-        print(post["postSubmitter"]+"_"+title+"_"+post['postId']+".md")
 
-        fileDir = directory / (
-            post["postSubmitter"]+"_"+title+"_"+post['postId']+".md"
-        )
-        
         if Path.is_file(fileDir):
             raise FileAlreadyExistsError
             
         try:
             self.writeToFile(fileDir,post)
         except FileNotFoundError:
-            fileDir = post['postId']+".md"
+            fileDir = post['POSTID']+".md"
             fileDir = directory / fileDir
 
             self.writeToFile(fileDir,post)
@@ -38,20 +35,20 @@ class SelfPost:
         
         """Self posts are formatted here"""
         content = ("## ["
-                   + post["postTitle"]
+                   + post["TITLE"]
                    + "]("
-                   + post["postURL"]
+                   + post["CONTENTURL"]
                    + ")\n"
-                   + post["postContent"]
+                   + post["CONTENT"]
                    + "\n\n---\n\n"
                    + "submitted to [r/"
-                   + post["postSubreddit"]
+                   + post["SUBREDDIT"]
                    + "](https://www.reddit.com/r/"
-                   + post["postSubreddit"]
+                   + post["SUBREDDIT"]
                    + ") by [u/"
-                   + post["postSubmitter"]
+                   + post["REDDITOR"]
                    + "](https://www.reddit.com/user/"
-                   + post["postSubmitter"]
+                   + post["REDDITOR"]
                    + ")")
 
         with io.open(directory,"w",encoding="utf-8") as FILE:

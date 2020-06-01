@@ -1,4 +1,6 @@
 import os
+import logging
+import sys
 import urllib.request
 from html.parser import HTMLParser
 
@@ -6,14 +8,14 @@ from src.downloaders.downloaderUtils import getFile
 from src.downloaders.downloaderUtils import getExtension
 
 from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely, 
-                        NotADownloadableLinkError, FileAlreadyExistsError)
-from src.utils import nameCorrector
+                        NotADownloadableLinkError, FileAlreadyExistsError, full_exc_info)
+from src.utils import GLOBAL
 from src.utils import printToFile as print
 
 class Erome:
     def __init__(self,directory,post):
         try:
-            IMAGES = self.getLinks(post['postURL'])
+            IMAGES = self.getLinks(post['CONTENTURL'])
         except urllib.error.HTTPError:
             raise NotADownloadableLinkError("Not a downloadable link")
 
@@ -27,59 +29,43 @@ class Erome:
 
             """Filenames are declared here"""
 
-            title = nameCorrector(post['postTitle'])
-            print(post["postSubmitter"]+"_"+title+"_"+post['postId']+extension)
-
-            fileDir = directory / (
-                post["postSubmitter"]+"_"+title+"_"+post['postId']+extension
-            )
-            tempDir = directory / (
-                post["postSubmitter"]+"_"+title+"_"+post['postId']+".tmp"
-            )
+            filename = GLOBAL.config['filename'].format(**post)+post["EXTENSION"]
+            shortFilename = post['POSTID'] + extension
 
             imageURL = IMAGES[0]
-            if 'https://' not in imageURL and 'http://' not in imageURL:
+            if 'https://' not in imageURL or 'http://' not in imageURL:
                 imageURL = "https://" + imageURL
 
-            try:
-                getFile(fileDir,tempDir,imageURL)
-            except FileNameTooLong:
-                fileDir = directory / (post['postId'] + extension)
-                tempDir = directory / (post['postId'] + '.tmp')
-                getFile(fileDir,tempDir,imageURL)
+            getFile(filename,shortFilename,directory,imageURL)
 
         else:
-            title = nameCorrector(post['postTitle'])
-            print(post["postSubmitter"]+"_"+title+"_"+post['postId'],end="\n\n")
+            filename = GLOBAL.config['filename'].format(**post)
 
-            folderDir = directory / (
-                post["postSubmitter"] + "_" + title + "_" + post['postId']
-            )
+            print(filename)
+
+            folderDir = directory / filename
 
             try:
                 if not os.path.exists(folderDir):
                     os.makedirs(folderDir)
             except FileNotFoundError:
-                folderDir = directory / post['postId']
+                folderDir = directory / post['POSTID']
                 os.makedirs(folderDir)
 
             for i in range(imagesLenght):
                 
                 extension = getExtension(IMAGES[i])
 
-                fileName = str(i+1)
+                filename = str(i+1)+extension
                 imageURL = IMAGES[i]
                 if 'https://' not in imageURL and 'http://' not in imageURL:
                     imageURL = "https://" + imageURL
 
-                fileDir = folderDir / (fileName + extension)
-                tempDir = folderDir / (fileName + ".tmp")
-
                 print("  ({}/{})".format(i+1,imagesLenght))
-                print("  {}".format(fileName+extension))
+                print("  {}".format(filename))
 
                 try:
-                    getFile(fileDir,tempDir,imageURL,indent=2)
+                    getFile(filename,filename,folderDir,imageURL,indent=2)
                     print()
                 except FileAlreadyExistsError:
                     print("  The file already exists" + " "*10,end="\n\n")

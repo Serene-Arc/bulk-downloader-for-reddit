@@ -2,3 +2,4 @@ bs4
 requests
 praw
 imgurpython
+youtube-dl
