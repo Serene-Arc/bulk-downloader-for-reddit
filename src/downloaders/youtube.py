@@ -36,10 +36,10 @@ class Youtube:
                 fileHash = createHash(location)
             except FileNotFoundError:
                 return None
-            if fileHash in GLOBAL.hashList:
+            if fileHash in GLOBAL.downloadedPosts():
                 os.remove(location)
                 raise FileAlreadyExistsError
-            GLOBAL.hashList.add(fileHash)
+            GLOBAL.downloadedPosts.add(fileHash)
         
     @staticmethod
     def _hook(d):

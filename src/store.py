@@ -17,8 +17,8 @@ class Store:
     def __call__(self):
         return self.list
 
-    def add(self, filehash):
-        self.list.append(filehash)
+    def add(self, data):
+        self.list.append(data)
         if self.directory:
             with open(self.directory, 'a') as f:
-                f.write("{filehash}\n".format(filehash=filehash))
+                f.write("{data}\n".format(data=data))

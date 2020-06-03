@@ -5,6 +5,7 @@ import random
 
 from src.reddit import Reddit
 from src.jsonHelper import JsonFile
+from src.utils import nameCorrector
 
 class Config():
 
@@ -36,7 +37,7 @@ For example: {FLAIR}_{SUBREDDIT}_{REDDITOR}
 
 Existing filename template:""", None if "filename" not in self.file.read() else self.file.read()["filename"])
 
-        filename = input(">> ").upper()
+        filename = nameCorrector(input(">> ").upper())
         self.file.add({
             "filename": filename
         })
@@ -68,7 +69,7 @@ For example: {REDDITOR}/{SUBREDDIT}/{FLAIR}
 
 Existing folder structure""", None if "folderpath" not in self.file.read() else self.file.read()["folderpath"])
 
-        folderpath = input(">> ").strip("\\").strip("/").upper()
+        folderpath = nameCorrector(input(">> ").strip("\\").strip("/").upper())
 
         self.file.add({
             "folderpath": folderpath
@@ -105,8 +106,6 @@ Existing default options:""", None if "options" not in self.file.read() else sel
     def _validateCredentials(self):
         """Read credentials from config.json file"""
 
-        keys = ['imgur_client_id',
-                'imgur_client_secret']
         try:
             content = self.file.read()["credentials"]
         except:
@@ -119,25 +118,7 @@ Existing default options:""", None if "options" not in self.file.read() else sel
             pass
         else:
             Reddit().begin()
-
-        if not all(content.get(key,False) for key in keys):
-            print(
-                "---Setting up the Imgur API---\n\n" \
-                "Go to this URL and fill the form:\n" \
-                "https://api.imgur.com/oauth2/addclient\n" \
-                "Then, enter the client id and client secret here\n" \
-                "Press Enter to open the link in the browser"
-            )
-            input()
-            webbrowser.open("https://api.imgur.com/oauth2/addclient",new=2)
-
-        for key in keys:
-            try:
-                if content[key] == "":
-                    raise KeyError
-            except KeyError:
-                self.file.add({key:input("\t"+key+": ")},
-                              "credentials")
+            
         print()
 
     def setDefaultDirectory(self):

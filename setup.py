@@ -8,7 +8,7 @@ from script import __version__
 options = {
     "build_exe": {
         "packages":[
-            "idna","imgurpython", "praw", "requests", "multiprocessing"
+            "idna", "praw", "requests", "multiprocessing"
         ]
     }
 }

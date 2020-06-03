@@ -2,7 +2,7 @@ import io
 import os
 from pathlib import Path
 
-from src.errors import FileAlreadyExistsError
+from src.errors import FileAlreadyExistsError, TypeInSkip
 from src.utils import GLOBAL
 
 VanillaPrint = print
@@ -10,6 +10,9 @@ from src.utils import printToFile as print
 
 class SelfPost:
     def __init__(self,directory,post):
+
+        if "self" in GLOBAL.arguments.skip: raise TypeInSkip
+
         if not os.path.exists(directory): os.makedirs(directory)
 
         filename = GLOBAL.config['filename'].format(**post)

@@ -22,14 +22,6 @@ OR, regardless of your operating system, you can fire up the program from the **
 See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page for more information.
 
 ## 🔨 Setting up the program
-### 🖼 IMGUR API
-
-You need to create an imgur developer app in order API to work. Go to https://api.imgur.com/oauth2/addclient and login.
-
-IMGUR will redirect you to homepage instead of API form page. After you log in, open the above link manually. Fill the form in the link (It does not really matter what you fill it with. You can write www.google.com to the callback url)
-
-After you send the form, it will redirect you to a page where it shows your **imgur_client_id** and **imgur_client_secret**. Type in those values into program respectively.
-
 ### 📽 ffmpeg Library
   
 Program needs **ffmpeg software** to add audio to some video files. However, installing it is **voluntary**. Although the program can still run with no errors without the ffmpeg library, some video files might have no sound.
@@ -113,9 +105,14 @@ Example usage: **`--limit 500`**
 ---
 
 ## **`--skip`**
-Takes a number of domains as a parameter to skip the posts from those domains. Use self to imply text posts.
+Takes a number of file types as a parameter to skip the posts from those domains. Valid file types are `images`, `videos`, `gifs`, `self`
+  
+Example usage: **`--skip self videos`**
+  
+## **`--skip-domain`**
+Takes a number of domains as a parameter to skip the posts from those domains.
 
-Example usage: **`--skip v.redd.it youtube.com youtu.be self`**
+Example usage: **`--skip v.redd.it youtube.com youtu.be`**
   
 ## **`--quit`**
 Automatically quits the application after it finishes. Otherwise, it will wait for an input to quit.
@@ -167,8 +164,13 @@ Skips the same posts in different subreddits. Does not take any parameter.
 
 Example usage: **`--no-dupes`**
   
+## **`--no-download`**
+Quits the program without downloading the posts. Does not take any parameter
+
+Example usage: **`--no-download`**
+  
 ## **`--downloaded-posts`**
-Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to the given file. Does not take any parameter.
+Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to the given file.
 
 Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
   

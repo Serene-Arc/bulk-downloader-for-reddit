@@ -18,9 +18,10 @@ class GLOBAL:
     configDirectory = ""
     reddit_client_id = "U-6gk4ZCh3IeNQ"
     reddit_client_secret = "7CZHY6AmKweZME5s50SfDGylaPg"
-    hashList = set()
     downloadedPosts = lambda: []
     printVanilla = print
+
+    log_stream= None
 
 def createLogFile(TITLE):
     """Create a log file with given name
@@ -63,34 +64,32 @@ def printToFile(*args, noPrint=False,**kwargs):
         ) as FILE:
             print(*args, file=FILE, **kwargs) 
 
-def nameCorrector(string):
+def nameCorrector(string,reference=None):
     """Swap strange characters from given string 
     with underscore (_) and shorten it.
     Return the string
     """
 
-    stringLenght = len(string)
-    if stringLenght > 200:
-        string = string[:200]
-    stringLenght = len(string)
-    spacesRemoved = []
+    LIMIT = 247
 
-    for b in range(stringLenght):
-        if string[b] == " ":
-            spacesRemoved.append("_")
-        else:
-            spacesRemoved.append(string[b])
-    
-    string = ''.join(spacesRemoved)
+    stringLength = len(string)
+
+    if reference:
+        referenceLenght = len(reference)
+        totalLenght = referenceLenght
+    else:
+        totalLenght = stringLength
+
+    if totalLenght > LIMIT:
+        limit = LIMIT - referenceLenght
+        string = string[:limit-1]
+
+    string = string.replace(" ", "_")
     
     if len(string.split('\n')) > 1:
         string = "".join(string.split('\n'))
     
-    BAD_CHARS = ['\\','/',':','*','?','"','<','>','|','#']
-    
-    if any(x in string for x in BAD_CHARS):
-        for char in string:
-            if char in BAD_CHARS:
-                string = string.replace(char,"_")
+    BAD_CHARS = ['\\','/',':','*','?','"','<','>','|','#', '.', '@' ,'“', '’', '\'', '!']
+    string = "".join([i if i not in BAD_CHARS else "_" for i in string])
 
     return string

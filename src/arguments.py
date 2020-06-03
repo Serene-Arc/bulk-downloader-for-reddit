@@ -103,6 +103,13 @@ class Arguments:
 
         parser.add_argument("--skip",
                             nargs="+",
+                            help="Skip posts with given type",
+                            type=str,
+                            choices=["images","videos","gifs","self"],
+                            default=[])   
+
+        parser.add_argument("--skip-domain",
+                            nargs="+",
                             help="Skip posts with given domain",
                             type=str,
                             default=[])   
@@ -140,7 +147,13 @@ class Arguments:
         parser.add_argument("--downloaded-posts",
                             help="Use a hash file to keep track of downloaded files",
                             type=str
-                            ) 
+                            )
+
+        parser.add_argument("--no-download",
+                            action="store_true",
+                            help="Just saved posts into a the POSTS.json file without downloading"
+                            )
+   
 
         if arguments == []:
             return parser.parse_args()

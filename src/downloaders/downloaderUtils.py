@@ -8,7 +8,7 @@ import hashlib
 
 from src.utils import nameCorrector, GLOBAL
 from src.utils import printToFile as print
-from src.errors import FileAlreadyExistsError, FileNameTooLong, FailedToDownload, DomainInSkip
+from src.errors import FileAlreadyExistsError, FileNameTooLong, FailedToDownload, TypeInSkip, DomainInSkip
 
 def dlProgress(count, blockSize, totalSize):
     """Function for writing download progress to console
@@ -37,7 +37,18 @@ def getExtension(link):
 
 def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
 
-    if any(domain in imageURL for domain in GLOBAL.arguments.skip):
+    FORMATS = {
+        "videos": [".mp4", ".webm"],
+        "images": [".jpg",".jpeg",".png",".bmp"],
+        "gifs": [".gif"]
+    }
+
+    for type in GLOBAL.arguments.skip:
+        for extension in FORMATS[type]:
+            if extension in filename:
+                raise TypeInSkip
+
+    if any(domain in imageURL for domain in GLOBAL.arguments.skip_domain):
         raise DomainInSkip
 
     headers = [
@@ -52,12 +63,12 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
         ("Connection", "keep-alive")
     ]
 
+    if not os.path.exists(folderDir): os.makedirs(folderDir)
+
     opener = urllib.request.build_opener()
     if not "imgur" in imageURL:
         opener.addheaders = headers
     urllib.request.install_opener(opener)
-
-    filename = nameCorrector(filename)
 
     if not silent: print(" "*indent + str(folderDir),
                          " "*indent + str(filename),
@@ -74,12 +85,12 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
                                            tempDir,
                                            reporthook=dlProgress)
 
+                fileHash = createHash(tempDir)
                 if GLOBAL.arguments.no_dupes:
-                    fileHash = createHash(tempDir)
-                    if fileHash in GLOBAL.hashList:
+                    if fileHash in GLOBAL.downloadedPosts():
                         os.remove(tempDir)
                         raise FileAlreadyExistsError
-                    GLOBAL.hashList.add(fileHash)
+                GLOBAL.downloadedPosts.add(fileHash)
 
                 os.rename(tempDir,fileDir)
                 if not silent: print(" "*indent+"Downloaded"+" "*10)
