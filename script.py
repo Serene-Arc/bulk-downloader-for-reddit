@@ -294,7 +294,7 @@ def main():
         sys.exit()
 
     if arguments.use_local_config:
-        JsonFile(".\\config.json").add(GLOBAL.config)
+        JsonFile("config.json").add(GLOBAL.config)
         sys.exit()
         
     if arguments.directory:
