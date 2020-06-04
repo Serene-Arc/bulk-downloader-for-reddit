@@ -51,7 +51,7 @@ class VReddit:
 
         FNULL = open(os.devnull, 'w')
         cmd = f"ffmpeg -i {inputAudio} -i {inputVideo} -c:v copy -c:a aac -strict experimental {str(directory / filename)}"
-        subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
+        subprocess.call(cmd.split(), stdout=FNULL, stderr=subprocess.STDOUT)
 
         os.remove(directory / video)
         os.remove(directory / audio)
