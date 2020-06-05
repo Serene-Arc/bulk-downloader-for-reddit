@@ -34,6 +34,13 @@ Install it through a package manager such as **Chocolatey** in Windows, **apt** 
 
 OR, [Download ffmpeg](https://www.ffmpeg.org/download.html) manually on your system and [add the bin folder in the downloaded folder's directory to `PATH` of your system.](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) However, package manager option is suggested.
 
+## 🐋 Docker
+There is also a complete ready to go Docker integration. Install **Docker** and **docker-compose**. Then run the following command from the repository root:
+### `docker-compose run --service-ports bdfr`
+And you'll find youself right in the app. The files will be downloaded to `downloads/`. Since it is docker, you may want to change the ownership of the files once you're done (belongs to root by default).
+
+_Credits to [wAuner](https://github.com/wAuner)_
+
 ## ⚙ Options
 
 Some of the below features are available only through command-line.
