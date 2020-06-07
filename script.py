@@ -256,14 +256,24 @@ def printLogo():
     )
 
 def main():
+    arguments = Arguments.parse()
+    GLOBAL.arguments = arguments
 
-    if not Path(GLOBAL.defaultConfigDirectory).is_dir():
-        os.makedirs(GLOBAL.defaultConfigDirectory)
-
-    if Path("config.json").exists():
-        GLOBAL.configDirectory = Path("config.json")
+    if arguments.config:
+        if arguments.use_local_config:
+            sys.exit()
+        if Path(arguments.config).exists():
+            GLOBAL.configDirectory = Path(arguments.config)
+        else:
+            VanillaPrint("custom config",arguments.config,"not found. Exiting.")
+            sys.exit()
     else:
-        GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
+        if not Path(GLOBAL.defaultConfigDirectory).is_dir():
+            os.makedirs(GLOBAL.defaultConfigDirectory)
+        if Path("config.json").exists():
+            GLOBAL.configDirectory = Path("config.json")
+        else:
+            GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
     try:
         GLOBAL.config = Config(GLOBAL.configDirectory).generate()
     except InvalidJSONFile as exception:
@@ -273,9 +283,6 @@ def main():
         sys.exit()
 
     sys.argv = sys.argv + GLOBAL.config["options"].split()
-
-    arguments = Arguments.parse()
-    GLOBAL.arguments = arguments
 
     if arguments.set_filename:
         Config(GLOBAL.configDirectory).setCustomFileName()
