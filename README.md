@@ -15,7 +15,7 @@ However, binary version for Linux is being worked. So, stay tuned.
   
 OR, regardless of your operating system, you can fire up the program from the **source code**.
 
-### `python3 -m pip install -r -requirements.txt`
+### `python3 -m pip install -r requirements.txt`
 
 ### `python3 script.py`
 
