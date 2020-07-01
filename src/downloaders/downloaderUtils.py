@@ -40,7 +40,8 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
     FORMATS = {
         "videos": [".mp4", ".webm"],
         "images": [".jpg",".jpeg",".png",".bmp"],
-        "gifs": [".gif"]
+        "gifs": [".gif"],
+        "self": []
     }
 
     for type in GLOBAL.arguments.skip:
