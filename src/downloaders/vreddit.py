@@ -25,7 +25,7 @@ class VReddit:
             videoName = post['POSTID'] + "_video"
             videoURL = post['CONTENTURL']
             audioName = post['POSTID'] + "_audio"
-            audioURL = videoURL[:videoURL.rfind('/')] + '/audio'
+            audioURL = videoURL[:videoURL.rfind('/')] + '/DASH_audio.mp4'
             
             print(directory,filename,sep="\n")
 
