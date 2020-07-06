@@ -350,7 +350,7 @@ def extractDirectLink(URL):
         return URL
 
     for extension in imageTypes:
-        if extension in URL.split("/")[-1]:
+        if extension in URL.split(".")[-1]:
             return URL
     else:
         return  None
