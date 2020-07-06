@@ -298,7 +298,7 @@ def matchWithDownloader(submission):
                     "DASH_480","DASH_360","DASH_240"]
                     
         for bitrate in bitrates:
-            videoURL = submission.url+"/"+bitrate
+            videoURL = submission.url+"/"+bitrate+".mp4"
 
             try:    
                 responseCode = urllib.request.urlopen(videoURL).getcode()
