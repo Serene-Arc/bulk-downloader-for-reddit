@@ -96,9 +96,8 @@ def getFile(filename,shortFilename,folderDir,imageURL,indent=0, silent=False):
                 os.rename(tempDir,fileDir)
                 if not silent: print(" "*indent+"Downloaded"+" "*10)
                 return None
-            except ConnectionResetError as exception:
-                if not silent: print(" "*indent + str(exception))
-                if not silent: print(" "*indent + "Trying again\n")
+            except ConnectionResetError:
+                raise FailedToDownload
             except FileNotFoundError:
                 filename = shortFilename
         else:
