@@ -342,7 +342,7 @@ def extractDirectLink(URL):
     if not, return False
     """
 
-    imageTypes = ['jpg','png','mp4','webm','gif']
+    imageTypes = ['jpg','jpeg','png','mp4','webm','gif']
     if URL[-1] == "/":
         URL = URL[:-1]
 
