@@ -257,13 +257,12 @@ def printLogo():
     )
 
 def main():
-
-    if not Path(GLOBAL.defaultConfigDirectory).is_dir():
-        os.makedirs(GLOBAL.defaultConfigDirectory)
-
+    
     if Path("config.json").exists():
         GLOBAL.configDirectory = Path("config.json")
     else:
+        if not Path(GLOBAL.defaultConfigDirectory).is_dir():
+            os.makedirs(GLOBAL.defaultConfigDirectory)
         GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
     try:
         GLOBAL.config = Config(GLOBAL.configDirectory).generate()
