@@ -165,6 +165,7 @@ def download(submissions):
               
         except FileAlreadyExistsError:
             print("It already exists")
+            GLOBAL.downloadedPosts.add(details['POSTID'])
             duplicates += 1
 
         except ImgurLoginError:
