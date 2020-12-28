@@ -153,6 +153,11 @@ class Arguments:
                             action="store_true",
                             help="Just saved posts into a the POSTS.json file without downloading"
                             )
+        parser.add_argument("--download-delay",
+                            metavar="DELAY",
+                            type=int,
+                            help="Amount, in seconds, to delay before beginning the next item in the download queue"
+                            )
    
 
         if arguments == []:

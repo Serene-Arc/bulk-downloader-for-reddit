@@ -36,6 +36,8 @@ from src.programMode import ProgramMode
 from src.reddit import Reddit
 from src.store import Store
 
+from time import sleep
+
 __author__ = "Ali Parlakci"
 __license__ = "GPL"
 __version__ = "1.9.4"
@@ -154,13 +156,18 @@ def download(submissions):
         try:
             downloadPost(details,directory)
             GLOBAL.downloadedPosts.add(details['POSTID'])
+
             try:
                 if GLOBAL.arguments.unsave:
                     reddit.submission(id=details['POSTID']).unsave()
             except InsufficientScope:
                 reddit = Reddit().begin()
                 reddit.submission(id=details['POSTID']).unsave()
-              
+
+            if GLOBAL.arguments.download_delay:
+                print(f"Delaying next download for {GLOBAL.arguments.download_delay} seconds...")
+                sleep(GLOBAL.arguments.download_delay)
+
             downloadedCount += 1
               
         except FileAlreadyExistsError:
