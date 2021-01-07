@@ -332,6 +332,9 @@ def matchWithDownloader(submission):
     elif 'gifdeliverynetwork' in submission.domain:
         return {'TYPE': 'gifdeliverynetwork'}
 
+    if 'reddit.com/gallery' in submission.url: #EBJ
+        return {'TYPE': 'gallery'}
+      
     elif submission.is_self and 'self' not in GLOBAL.arguments.skip:
         return {'TYPE': 'self',
                 'CONTENT': submission.selftext}
