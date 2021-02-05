@@ -1,6 +1,6 @@
 
-## 📢 Looking for Maintainers
-I am aware that the issues stacking rapidly. However, I am really struggling to find the time to work on the project. So, I am **looking for maintainers** for the project. If you are willing to be a part of this project, email me at parlakciali[at]gmail[dot]com.
+## 📢 Looking for collabrators
+I am aware that the issues stacking rapidly. However, I am really struggling to find the time to work on the project. So, I am looking for collabrators for the project. If you are willing to be a part of this project, email me at parlakciali[at]gmail[dot]com.
   
 Also, feel free to send me your merge request! I am planning on setting up continuous delivery flow with GitHub Actions so that each contribution to the project will create a new release. 
 
