@@ -36,7 +36,9 @@ class Redgifs:
         if url[-1:] == '/':
             url = url[:-1]
 
-        url = "https://redgifs.com/watch/" + url.split('/')[-1]
+        url = urllib.request.Request("https://redgifs.com/watch/" + url.split('/')[-1])
+
+        url.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64')
 
         pageSource = (urllib.request.urlopen(url).read().decode())
 

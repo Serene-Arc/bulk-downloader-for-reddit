@@ -114,7 +114,7 @@ class Imgur:
     @staticmethod 
     def getData(link):
         
-        cookies = {"over18": "1"}
+        cookies = {"over18": "1", "postpagebeta": "0"}
         res = requests.get(link, cookies=cookies)
         if res.status_code != 200: raise ImageNotFound(f"Server responded with {res.status_code} to {link}")
         pageSource = requests.get(link, cookies=cookies).text
@@ -125,11 +125,17 @@ class Imgur:
         STARTING_STRING_LENGHT = len(STARTING_STRING)
         try:
             startIndex = pageSource.index(STARTING_STRING) + STARTING_STRING_LENGHT
-            endIndex = pageSource.index(ENDING_STRING)
+            endIndex = pageSource.index(ENDING_STRING, startIndex)
         except ValueError:
             raise NotADownloadableLinkError(f"Could not read the page source on {link}")
 
-        data = pageSource[startIndex:endIndex].strip()[:-1]
+        while pageSource[endIndex] != "}":
+            endIndex=endIndex-1
+        try:
+            data = pageSource[startIndex:endIndex+2].strip()[:-1]
+        except:
+            pageSource[endIndex+1]='}'
+            data = pageSource[startIndex:endIndex+3].strip()[:-1]
 
         return json.loads(data)
 
