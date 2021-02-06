@@ -6,142 +6,136 @@ except ModuleNotFoundError:
     from errors import InvalidRedditLink
 
 
-def QueryParser(PassedQueries, index):
-    ExtractedQueries = {}
+def QueryParser(passed_queries, index):
+    extracted_queries = {}
 
-    QuestionMarkIndex = PassedQueries.index("?")
-    Header = PassedQueries[:QuestionMarkIndex]
-    ExtractedQueries["HEADER"] = Header
-    Queries = PassedQueries[QuestionMarkIndex + 1:]
+    question_mark_index = passed_queries.index("?")
+    header = passed_queries[:question_mark_index]
+    extracted_queries["HEADER"] = header
+    queries = passed_queries[question_mark_index + 1:]
 
-    ParsedQueries = Queries.split("&")
+    parsed_queries = queries.split("&")
 
-    for Query in ParsedQueries:
-        Query = Query.split("=")
-        ExtractedQueries[Query[0]] = Query[1]
+    for query in parsed_queries:
+        query = query.split("=")
+        extracted_queries[query[0]] = query[1]
 
-    if ExtractedQueries["HEADER"] == "search":
-        ExtractedQueries["q"] = ExtractedQueries["q"].replace("%20", " ")
+    if extracted_queries["HEADER"] == "search":
+        extracted_queries["q"] = extracted_queries["q"].replace("%20", " ")
 
-    return ExtractedQueries
+    return extracted_queries
 
 
-def LinkParser(LINK):
-    RESULT = {}
-    ShortLink = False
+def LinkParser(link):
+    result = {}
+    short_link = False
 
-    if "reddit.com" not in LINK:
+    if "reddit.com" not in link:
         raise InvalidRedditLink("Invalid reddit link")
 
-    SplittedLink = LINK.split("/")
+    splitted_link = link.split("/")
 
-    if SplittedLink[0] == "https:" or SplittedLink[0] == "http:":
-        SplittedLink = SplittedLink[2:]
+    if splitted_link[0] == "https:" or splitted_link[0] == "http:":
+        splitted_link = splitted_link[2:]
 
     try:
-        if (SplittedLink[-2].endswith("reddit.com") and
-            SplittedLink[-1] == "") or \
-           SplittedLink[-1].endswith("reddit.com"):
+        if (splitted_link[-2].endswith("reddit.com") and
+                splitted_link[-1] == "") or splitted_link[-1].endswith("reddit.com"):
 
-            RESULT["sort"] = "best"
-            return RESULT
+            result["sort"] = "best"
+            return result
     except IndexError:
-        if SplittedLink[0].endswith("reddit.com"):
-            RESULT["sort"] = "best"
-            return RESULT
+        if splitted_link[0].endswith("reddit.com"):
+            result["sort"] = "best"
+            return result
 
-    if "redd.it" in SplittedLink:
-        ShortLink = True
+    if "redd.it" in splitted_link:
+        short_link = True
 
-    if SplittedLink[0].endswith("reddit.com"):
-        SplittedLink = SplittedLink[1:]
+    if splitted_link[0].endswith("reddit.com"):
+        splitted_link = splitted_link[1:]
 
-    if "comments" in SplittedLink:
-        RESULT = {"post": LINK}
-        return RESULT
+    if "comments" in splitted_link:
+        result = {"post": link}
+        return result
 
-    if "me" in SplittedLink or \
-        "u" in SplittedLink or \
-        "user" in SplittedLink or \
-        "r" in SplittedLink or \
-            "m" in SplittedLink:
+    elif "me" in splitted_link or \
+         "u" in splitted_link or \
+         "user" in splitted_link or \
+         "r" in splitted_link or \
+         "m" in splitted_link:
 
-        if "r" in SplittedLink:
-            RESULT["subreddit"] = SplittedLink[SplittedLink.index("r") + 1]
+        if "r" in splitted_link:
+            result["subreddit"] = splitted_link[splitted_link.index("r") + 1]
 
-        elif "m" in SplittedLink:
-            RESULT["multireddit"] = SplittedLink[SplittedLink.index("m") + 1]
-            RESULT["user"] = SplittedLink[SplittedLink.index("m") - 1]
+        elif "m" in splitted_link:
+            result["multireddit"] = splitted_link[splitted_link.index("m") + 1]
+            result["user"] = splitted_link[splitted_link.index("m") - 1]
 
         else:
-            for index in range(len(SplittedLink)):
-                if SplittedLink[index] == "u" or \
-                        SplittedLink[index] == "user":
+            for index in range(len(splitted_link)):
+                if splitted_link[index] == "u" or splitted_link[index] == "user":
+                    result["user"] = splitted_link[index + 1]
 
-                    RESULT["user"] = SplittedLink[index + 1]
+                elif splitted_link[index] == "me":
+                    result["user"] = "me"
 
-                elif SplittedLink[index] == "me":
-                    RESULT["user"] = "me"
-
-    for index in range(len(SplittedLink)):
-        if SplittedLink[index] in [
+    for index in range(len(splitted_link)):
+        if splitted_link[index] in [
             "hot", "top", "new", "controversial", "rising"
         ]:
 
-            RESULT["sort"] = SplittedLink[index]
+            result["sort"] = splitted_link[index]
 
             if index == 0:
-                RESULT["subreddit"] = "frontpage"
+                result["subreddit"] = "frontpage"
 
-        elif SplittedLink[index] in ["submitted", "saved", "posts", "upvoted"]:
-            if SplittedLink[index] == "submitted" or \
-               SplittedLink[index] == "posts":
-                RESULT["submitted"] = {}
+        elif splitted_link[index] in ["submitted", "saved", "posts", "upvoted"]:
+            if splitted_link[index] == "submitted" or splitted_link[index] == "posts":
+                result["submitted"] = {}
 
-            elif SplittedLink[index] == "saved":
-                RESULT["saved"] = True
+            elif splitted_link[index] == "saved":
+                result["saved"] = True
 
-            elif SplittedLink[index] == "upvoted":
-                RESULT["upvoted"] = True
+            elif splitted_link[index] == "upvoted":
+                result["upvoted"] = True
 
-        elif "?" in SplittedLink[index]:
-            ParsedQuery = QueryParser(SplittedLink[index], index)
-            if ParsedQuery["HEADER"] == "search":
-                del ParsedQuery["HEADER"]
-                RESULT["search"] = ParsedQuery
+        elif "?" in splitted_link[index]:
+            parsed_query = QueryParser(splitted_link[index], index)
+            if parsed_query["HEADER"] == "search":
+                del parsed_query["HEADER"]
+                result["search"] = parsed_query
 
-            elif ParsedQuery["HEADER"] == "submitted" or \
-                    ParsedQuery["HEADER"] == "posts":
-                del ParsedQuery["HEADER"]
-                RESULT["submitted"] = ParsedQuery
+            elif parsed_query["HEADER"] == "submitted" or \
+                    parsed_query["HEADER"] == "posts":
+                del parsed_query["HEADER"]
+                result["submitted"] = parsed_query
 
             else:
-                del ParsedQuery["HEADER"]
-                RESULT["queries"] = ParsedQuery
+                del parsed_query["HEADER"]
+                result["queries"] = parsed_query
 
-    if not ("upvoted" in RESULT or
-            "saved" in RESULT or
-            "submitted" in RESULT or
-            "multireddit" in RESULT) and \
-       "user" in RESULT:
-        RESULT["submitted"] = {}
+    if not ("upvoted" in result or
+            "saved" in result or
+            "submitted" in result or
+            "multireddit" in result) and "user" in result:
+        result["submitted"] = {}
 
-    return RESULT
+    return result
 
 
-def LinkDesigner(LINK):
-
-    attributes = LinkParser(LINK)
-    MODE = {}
+def LinkDesigner(link):
+    attributes = LinkParser(link)
+    mode = {}
 
     if "post" in attributes:
-        MODE["post"] = attributes["post"]
-        MODE["sort"] = ""
-        MODE["time"] = ""
-        return MODE
+        mode["post"] = attributes["post"]
+        mode["sort"] = ""
+        mode["time"] = ""
+        return mode
 
-    if "search" in attributes:
-        MODE["search"] = attributes["search"]["q"]
+    elif "search" in attributes:
+        mode["search"] = attributes["search"]["q"]
 
         if "restrict_sr" in attributes["search"]:
 
@@ -150,91 +144,90 @@ def LinkDesigner(LINK):
                     attributes["search"]["restrict_sr"] == ""):
 
                 if "subreddit" in attributes:
-                    MODE["subreddit"] = attributes["subreddit"]
+                    mode["subreddit"] = attributes["subreddit"]
                 elif "multireddit" in attributes:
-                    MODE["multreddit"] = attributes["multireddit"]
-                    MODE["user"] = attributes["user"]
+                    mode["multreddit"] = attributes["multireddit"]
+                    mode["user"] = attributes["user"]
             else:
-                MODE["subreddit"] = "all"
+                mode["subreddit"] = "all"
         else:
-            MODE["subreddit"] = "all"
+            mode["subreddit"] = "all"
 
         if "t" in attributes["search"]:
-            MODE["time"] = attributes["search"]["t"]
+            mode["time"] = attributes["search"]["t"]
         else:
-            MODE["time"] = "all"
+            mode["time"] = "all"
 
         if "sort" in attributes["search"]:
-            MODE["sort"] = attributes["search"]["sort"]
+            mode["sort"] = attributes["search"]["sort"]
         else:
-            MODE["sort"] = "relevance"
+            mode["sort"] = "relevance"
 
         if "include_over_18" in attributes["search"]:
-            if attributes["search"]["include_over_18"] == 1 or \
-                    attributes["search"]["include_over_18"] == "on":
-                MODE["nsfw"] = True
+            if attributes["search"]["include_over_18"] == 1 or attributes["search"]["include_over_18"] == "on":
+                mode["nsfw"] = True
             else:
-                MODE["nsfw"] = False
+                mode["nsfw"] = False
 
     else:
         if "queries" in attributes:
-            if not ("submitted" in attributes or
-                    "posts" in attributes):
+            if not ("submitted" in attributes or "posts" in attributes):
 
                 if "t" in attributes["queries"]:
-                    MODE["time"] = attributes["queries"]["t"]
+                    mode["time"] = attributes["queries"]["t"]
                 else:
-                    MODE["time"] = "day"
+                    mode["time"] = "day"
             else:
                 if "t" in attributes["queries"]:
-                    MODE["time"] = attributes["queries"]["t"]
+                    mode["time"] = attributes["queries"]["t"]
                 else:
-                    MODE["time"] = "all"
+                    mode["time"] = "all"
 
                 if "sort" in attributes["queries"]:
-                    MODE["sort"] = attributes["queries"]["sort"]
+                    mode["sort"] = attributes["queries"]["sort"]
                 else:
-                    MODE["sort"] = "new"
+                    mode["sort"] = "new"
         else:
-            MODE["time"] = "day"
+            mode["time"] = "day"
 
     if "subreddit" in attributes and "search" not in attributes:
-        MODE["subreddit"] = attributes["subreddit"]
+        mode["subreddit"] = attributes["subreddit"]
 
     elif "user" in attributes and "search" not in attributes:
-        MODE["user"] = attributes["user"]
+        mode["user"] = attributes["user"]
 
         if "submitted" in attributes:
-            MODE["submitted"] = True
+            mode["submitted"] = True
             if "sort" in attributes["submitted"]:
-                MODE["sort"] = attributes["submitted"]["sort"]
-            elif "sort" in MODE:
+                mode["sort"] = attributes["submitted"]["sort"]
+            elif "sort" in mode:
                 pass
             else:
-                MODE["sort"] = "new"
+                mode["sort"] = "new"
 
             if "t" in attributes["submitted"]:
-                MODE["time"] = attributes["submitted"]["t"]
+                mode["time"] = attributes["submitted"]["t"]
             else:
-                MODE["time"] = "all"
+                mode["time"] = "all"
 
         elif "saved" in attributes:
-            MODE["saved"] = True
+            mode["saved"] = True
 
         elif "upvoted" in attributes:
-            MODE["upvoted"] = True
+            mode["upvoted"] = True
 
         elif "multireddit" in attributes:
-            MODE["multireddit"] = attributes["multireddit"]
+            mode["multireddit"] = attributes["multireddit"]
 
     if "sort" in attributes:
-        MODE["sort"] = attributes["sort"]
-    elif "sort" in MODE:
+        mode["sort"] = attributes["sort"]
+    elif "sort" in mode:
         pass
     else:
-        MODE["sort"] = "hot"
+        mode["sort"] = "hot"
 
-    return MODE
+    return mode
+
 
 
 if __name__ == "__main__":

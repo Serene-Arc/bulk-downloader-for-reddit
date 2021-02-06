@@ -1,10 +1,9 @@
-
 from src.reddit import Reddit
 from src.jsonHelper import JsonFile
 from src.utils import nameCorrector
 
 
-class Config():
+class Config:
 
     def __init__(self, filename):
         self.filename = filename
@@ -35,23 +34,17 @@ For example: {FLAIR}_{SUBREDDIT}_{REDDITOR}
 Existing filename template:""", None if "filename" not in self.file.read() else self.file.read()["filename"])
 
         filename = nameCorrector(input(">> ").upper())
-        self.file.add({
-            "filename": filename
-        })
+        self.file.add({"filename": filename})
 
     def _readCustomFileName(self):
         content = self.file.read()
 
         if "filename" not in content:
-            self.file.add({
-                "filename": "{REDDITOR}_{TITLE}_{POSTID}"
-            })
+            self.file.add({"filename": "{REDDITOR}_{TITLE}_{POSTID}"})
         content = self.file.read()
 
-        if not "{POSTID}" in content["filename"]:
-            self.file.add({
-                "filename": content["filename"] + "_{POSTID}"
-            })
+        if "{POSTID}" not in content["filename"]:
+            self.file.add({"filename": content["filename"] + "_{POSTID}"})
 
     def setCustomFolderPath(self):
         print("""
@@ -68,16 +61,12 @@ Existing folder structure""", None if "folderpath" not in self.file.read() else 
 
         folderpath = nameCorrector(input(">> ").strip("\\").strip("/").upper())
 
-        self.file.add({
-            "folderpath": folderpath
-        })
+        self.file.add({"folderpath": folderpath})
 
     def _readCustomFolderPath(self, path=None):
         content = self.file.read()
         if "folderpath" not in content:
-            self.file.add({
-                "folderpath": "{SUBREDDIT}"
-            })
+            self.file.add({"folderpath": "{SUBREDDIT}"})
 
     def setDefaultOptions(self):
         print("""
@@ -89,33 +78,25 @@ Existing default options:""", None if "options" not in self.file.read() else sel
 
         options = input(">> ").strip("")
 
-        self.file.add({
-            "options": options
-        })
+        self.file.add({"options": options})
 
     def _readDefaultOptions(self, path=None):
         content = self.file.read()
         if "options" not in content:
-            self.file.add({
-                "options": ""
-            })
+            self.file.add({"options": ""})
 
     def _validateCredentials(self):
         """Read credentials from config.json file"""
-
         try:
             content = self.file.read()["credentials"]
         except BaseException:
-            self.file.add({
-                "credentials": {}
-            })
+            self.file.add({"credentials": {}})
             content = self.file.read()["credentials"]
 
         if "reddit" in content and len(content["reddit"]) != 0:
             pass
         else:
             Reddit().begin()
-
         print()
 
     def setDefaultDirectory(self):
@@ -125,6 +106,4 @@ For example: D:/archive/BDFR_{time}
 """)
         print("Current default directory:", self.file.read()[
               "default_directory"] if "default_directory" in self.file.read() else "")
-        self.file.add({
-            "default_directory": input(">> ")
-        })
+        self.file.add({"default_directory": input(">> ")})

@@ -100,9 +100,6 @@ class InvalidSortingType(Exception):
     pass
 
 
-class FileNotFoundError(Exception):
-    pass
-
 
 class NoSuitablePost(Exception):
     pass

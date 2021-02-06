@@ -8,7 +8,6 @@ from src.jsonHelper import JsonFile
 
 class GLOBAL:
     """Declare global variables"""
-
     RUN_TIME = ""
     config = {'imgur_client_id': None, 'imgur_client_secret': None}
     arguments = None
@@ -17,54 +16,47 @@ class GLOBAL:
     configDirectory = ""
     reddit_client_id = "U-6gk4ZCh3IeNQ"
     reddit_client_secret = "7CZHY6AmKweZME5s50SfDGylaPg"
-    @staticmethod
-    def downloadedPosts(): return []
     printVanilla = print
-
     log_stream = None
 
+    @staticmethod
+    def downloadedPosts():
+        return []
 
-def createLogFile(TITLE):
+
+def createLogFile(title):
     """Create a log file with given name
     inside a folder time stampt in its name and
     put given arguments inside \"HEADER\" key
     """
+    folder_directory = GLOBAL.directory / "LOG_FILES" / GLOBAL.RUN_TIME
 
-    folderDirectory = GLOBAL.directory / "LOG_FILES" / GLOBAL.RUN_TIME
+    log_filename = title.upper() + '.json'
 
-    logFilename = TITLE.upper() + '.json'
+    if not path.exists(folder_directory):
+        makedirs(folder_directory)
 
-    if not path.exists(folderDirectory):
-        makedirs(folderDirectory)
+    file = JsonFile(folder_directory / Path(log_filename))
+    header = " ".join(sys.argv)
+    file.add({"HEADER": header})
 
-    FILE = JsonFile(folderDirectory / Path(logFilename))
-    HEADER = " ".join(sys.argv)
-    FILE.add({"HEADER": HEADER})
-
-    return FILE
+    return file
 
 
-def printToFile(*args, noPrint=False, **kwargs):
+def printToFile(*args, no_print=False, **kwargs):
     """Print to both CONSOLE and
     CONSOLE LOG file in a folder time stampt in the name
     """
+    folder_directory = GLOBAL.directory / Path("LOG_FILES") / Path(GLOBAL.RUN_TIME)
 
-    folderDirectory = GLOBAL.directory / \
-        Path("LOG_FILES") / Path(GLOBAL.RUN_TIME)
-
-    if not noPrint or \
-       GLOBAL.arguments.verbose or \
-       "file" in kwargs:
-
+    if not no_print or GLOBAL.arguments.verbose or "file" in kwargs:
         print(*args, **kwargs)
 
-    if not path.exists(folderDirectory):
-        makedirs(folderDirectory)
+    if not path.exists(folder_directory):
+        makedirs(folder_directory)
 
     if "file" not in kwargs:
-        with io.open(
-            folderDirectory / "CONSOLE_LOG.txt", "a", encoding="utf-8"
-        ) as FILE:
+        with io.open(folder_directory / "CONSOLE_LOG.txt", "a", encoding="utf-8") as FILE:
             print(*args, file=FILE, **kwargs)
 
 
@@ -73,19 +65,17 @@ def nameCorrector(string, reference=None):
     with underscore (_) and shorten it.
     Return the string
     """
-
-    LIMIT = 247
-
-    stringLength = len(string)
+    limit = 247
+    string_length = len(string)
 
     if reference:
-        referenceLenght = len(reference)
-        totalLenght = referenceLenght
+        reference_length = len(reference)
+        total_lenght = reference_length
     else:
-        totalLenght = stringLength
+        total_lenght = string_length
 
-    if totalLenght > LIMIT:
-        limit = LIMIT - referenceLenght
+    if total_lenght > limit:
+        limit -= reference_length
         string = string[:limit - 1]
 
     string = string.replace(" ", "_")
@@ -93,8 +83,7 @@ def nameCorrector(string, reference=None):
     if len(string.split('\n')) > 1:
         string = "".join(string.split('\n'))
 
-    BAD_CHARS = ['\\', '/', ':', '*', '?', '"', '<',
-                 '>', '|', '#', '.', '@', '“', '’', '\'', '!']
-    string = "".join([i if i not in BAD_CHARS else "_" for i in string])
+    bad_chars = ['\\', '/', ':', '*', '?', '"', '<', '>', '|', '#', '.', '@', '“', '’', '\'', '!']
+    string = "".join([i if i not in bad_chars else "_" for i in string])
 
     return string

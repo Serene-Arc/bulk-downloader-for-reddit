@@ -1,16 +1,16 @@
 import os
 
-from src.downloaders.downloaderUtils import getFile, getExtension
+from src.downloaders.downloaderUtils import getExtension, getFile
 from src.utils import GLOBAL
 
 
 class Direct:
-    def __init__(self, directory, POST):
-        POST['EXTENSION'] = getExtension(POST['CONTENTURL'])
+    def __init__(self, directory, post):
+        post['EXTENSION'] = getExtension(post['CONTENTURL'])
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        filename = GLOBAL.config['filename'].format(**POST) + POST["EXTENSION"]
-        shortFilename = POST['POSTID'] + POST['EXTENSION']
+        filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
+        short_filename = post['POSTID'] + post['EXTENSION']
 
-        getFile(filename, shortFilename, directory, POST['CONTENTURL'])
+        getFile(filename, short_filename, directory, post['CONTENTURL'])

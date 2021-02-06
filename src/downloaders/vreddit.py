@@ -13,45 +13,40 @@ class VReddit:
             os.makedirs(directory)
 
         filename = GLOBAL.config['filename'].format(**post) + extension
-        shortFilename = post['POSTID'] + extension
+        short_filename = post['POSTID'] + extension
 
         try:
-            FNULL = open(os.devnull, 'w')
-            subprocess.call("ffmpeg", stdout=FNULL, stderr=subprocess.STDOUT)
-        except BaseException:
-            getFile(filename, shortFilename, directory, post['CONTENTURL'])
+            fnull = open(os.devnull, 'w')
+            subprocess.call("ffmpeg", stdout=fnull, stderr=subprocess.STDOUT)
+        except Exception:
+            getFile(filename, short_filename, directory, post['CONTENTURL'])
             print("FFMPEG library not found, skipping merging video and audio")
         else:
-            videoName = post['POSTID'] + "_video"
-            videoURL = post['CONTENTURL']
-            audioName = post['POSTID'] + "_audio"
-            audioURL = videoURL[:videoURL.rfind('/')] + '/DASH_audio.mp4'
+            video_name = post['POSTID'] + "_video"
+            video_url = post['CONTENTURL']
+            audio_name = post['POSTID'] + "_audio"
+            audio_url = video_url[:video_url.rfind('/')] + '/DASH_audio.mp4'
 
             print(directory, filename, sep="\n")
 
-            getFile(videoName, videoName, directory, videoURL, silent=True)
-            getFile(audioName, audioName, directory, audioURL, silent=True)
+            getFile(video_name, video_name, directory, video_url, silent=True)
+            getFile(audio_name, audio_name, directory, audio_url, silent=True)
             try:
-                self._mergeAudio(videoName,
-                                 audioName,
-                                 filename,
-                                 shortFilename,
-                                 directory)
+                self._mergeAudio(video_name, audio_name, filename, short_filename, directory)
             except KeyboardInterrupt:
                 os.remove(directory / filename)
-                os.remove(directory / audioName)
-
-                os.rename(directory / videoName, directory / filename)
+                os.remove(directory / audio_name)
+                os.rename(directory / video_name, directory / filename)
 
     @staticmethod
-    def _mergeAudio(video, audio, filename, shortFilename, directory):
+    def _mergeAudio(video, audio, filename, short_filename, directory):
+        input_video = str(directory / video)
+        input_audio = str(directory / audio)
 
-        inputVideo = str(directory / video)
-        inputAudio = str(directory / audio)
-
-        FNULL = open(os.devnull, 'w')
-        cmd = f"ffmpeg -i {inputAudio} -i {inputVideo} -c:v copy -c:a aac -strict experimental {str(directory / filename)}"
-        subprocess.call(cmd.split(), stdout=FNULL, stderr=subprocess.STDOUT)
+        fnull = open(os.devnull, 'w')
+        cmd = "ffmpeg -i {} -i {} -c:v copy -c:a aac -strict experimental {}".format(
+            input_audio, input_video, str(directory / filename))
+        subprocess.call(cmd.split(), stdout=fnull, stderr=subprocess.STDOUT)
 
         os.remove(directory / video)
         os.remove(directory / audio)

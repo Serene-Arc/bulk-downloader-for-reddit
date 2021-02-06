@@ -10,12 +10,9 @@ class Arguments:
             arguments = []
 
         parser = argparse.ArgumentParser(allow_abbrev=False,
-                                         description="This program downloads "
-                                         "media from reddit "
-                                         "posts")
+                                         description="This program downloads media from reddit posts")
         parser.add_argument("--directory", "-d",
-                            help="Specifies the directory where posts will be "
-                            "downloaded to",
+                            help="Specifies the directory where posts will be downloaded to",
                             metavar="DIRECTORY")
 
         parser.add_argument("--verbose", "-v",
@@ -50,31 +47,26 @@ class Arguments:
                             help="Gets upvoted posts of --user")
 
         parser.add_argument("--log",
-                            help="Takes a log file which created by itself "
-                            "(json files), reads posts and tries downloadin"
-                            "g them again.",
+                            help="Takes a log file which created by itself (json files),reads posts and tries "
+                                 "downloading them again.",
                             # type=argparse.FileType('r'),
                             metavar="LOG FILE")
 
-        parser.add_argument(
-            "--subreddit",
-            nargs="+",
-            help="Triggers subreddit mode and takes subreddit's "
-            "name without r/. use \"frontpage\" for frontpage",
-            metavar="SUBREDDIT",
-            type=str)
+        parser.add_argument("--subreddit",
+                            nargs="+",
+                            help="Triggers subreddit mode and takes subreddit's name without r/. use \"frontpage\" "
+                                 "for frontpage",
+                            metavar="SUBREDDIT",
+                            type=str)
 
         parser.add_argument("--multireddit",
-                            help="Triggers multireddit mode and takes "
-                            "multireddit's name without m/",
+                            help="Triggers multireddit mode and takes multireddit's name without m",
                             metavar="MULTIREDDIT",
                             type=str)
 
         parser.add_argument("--user",
-                            help="reddit username if needed. use \"me\" for "
-                            "current user",
-                            required="--multireddit" in sys.argv or
-                            "--submitted" in sys.argv,
+                            help="reddit username if needed. use \"me\" for current user",
+                            required="--multireddit" in sys.argv or "--submitted" in sys.argv,
                             metavar="redditor",
                             type=str)
 
@@ -85,12 +77,8 @@ class Arguments:
             type=str)
 
         parser.add_argument("--sort",
-                            help="Either hot, top, new, controversial, rising "
-                            "or relevance default: hot",
-                            choices=[
-                                "hot", "top", "new", "controversial", "rising",
-                                "relevance"
-                            ],
+                            help="Either hot, top, new, controversial, rising or relevance default: hot",
+                            choices=["hot", "top", "new", "controversial", "rising", "relevance"],
                             metavar="SORT TYPE",
                             type=str)
 
@@ -100,10 +88,8 @@ class Arguments:
                             type=int)
 
         parser.add_argument("--time",
-                            help="Either hour, day, week, month, year or all."
-                            " default: all",
-                            choices=["all", "hour", "day",
-                                     "week", "month", "year"],
+                            help="Either hour, day, week, month, year or all. default: all",
+                            choices=["all", "hour", "day", "week", "month", "year"],
                             metavar="TIME_LIMIT",
                             type=str)
 
@@ -130,47 +116,38 @@ class Arguments:
                             help="Set custom filename",
                             )
 
-        parser.add_argument(
-            "--set-default-directory",
-            action="store_true",
-            help="Set a default directory to be used in case no directory is given",
-        )
+        parser.add_argument("--set-default-directory",
+                            action="store_true",
+                            help="Set a default directory to be used in case no directory is given",
+                            )
 
-        parser.add_argument(
-            "--set-default-options",
-            action="store_true",
-            help="Set default options to use everytime program runs",
-        )
+        parser.add_argument("--set-default-options",
+                            action="store_true",
+                            help="Set default options to use everytime program runs",
+                            )
 
-        parser.add_argument(
-            "--use-local-config",
-            action="store_true",
-            help="Creates a config file in the program's directory and uses it. Useful for having multiple configs",
-        )
+        parser.add_argument("--use-local-config",
+                            action="store_true",
+                            help="Creates a config file in the program's directory"
+                            " and uses it. Useful for having multiple configs",
+                            )
 
-        parser.add_argument(
-            "--no-dupes",
-            action="store_true",
-            help="Do not download duplicate posts on different subreddits",
-        )
+        parser.add_argument("--no-dupes",
+                            action="store_true",
+                            help="Do not download duplicate posts on different subreddits",
+                            )
 
-        parser.add_argument(
-            "--downloaded-posts",
-            help="Use a hash file to keep track of downloaded files",
-            type=str)
+        parser.add_argument("--downloaded-posts",
+                            help="Use a hash file to keep track of downloaded files",
+                            type=str
+                            )
 
-        parser.add_argument(
-            "--no-download",
-            action="store_true",
-            help="Just saved posts into a the POSTS.json file without downloading")
+        parser.add_argument("--no-download",
+                            action="store_true",
+                            help="Just saved posts into a the POSTS.json file without downloading"
+                            )
 
-        parser.add_argument(
-            "--download-delay",
-            metavar="DELAY",
-            type=int,
-            help="Amount, in seconds, to delay before beginning the next item in the download queue")
-        
-
-        if arguments == []:
+        if not arguments:
             return parser.parse_args()
-        return parser.parse_args(arguments)
+        else:
+            return parser.parse_args(arguments)
