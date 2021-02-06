@@ -5,11 +5,11 @@ from src.utils import nameCorrector
 
 class Config:
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
         self.file = JsonFile(self.filename)
 
-    def generate(self):
+    def generate(self) -> dict:
         self._validateCredentials()
         self._readCustomFileName()
         self._readCustomFolderPath()
@@ -80,7 +80,7 @@ Existing default options:""", None if "options" not in self.file.read() else sel
 
         self.file.add({"options": options})
 
-    def _readDefaultOptions(self, path=None):
+    def _readDefaultOptions(self):
         content = self.file.read()
         if "options" not in content:
             self.file.add({"options": ""})

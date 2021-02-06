@@ -2,7 +2,7 @@ from os import path
 
 
 class Store:
-    def __init__(self, directory=None):
+    def __init__(self, directory: str = None):
         self.directory = directory
         if self.directory:
             if path.exists(directory):
@@ -15,10 +15,10 @@ class Store:
         else:
             self.list = []
 
-    def __call__(self):
+    def __call__(self) -> list:
         return self.list
 
-    def add(self, data):
+    def add(self, data: dict):
         self.list.append(data)
         if self.directory:
             with open(self.directory, 'a') as f:

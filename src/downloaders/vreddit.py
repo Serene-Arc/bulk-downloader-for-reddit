@@ -1,4 +1,5 @@
 import os
+import pathlib
 import subprocess
 
 from src.downloaders.downloaderUtils import getFile
@@ -7,7 +8,7 @@ from src.utils import printToFile as print
 
 
 class VReddit:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         extension = ".mp4"
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -39,7 +40,12 @@ class VReddit:
                 os.rename(directory / video_name, directory / filename)
 
     @staticmethod
-    def _mergeAudio(video, audio, filename, short_filename, directory):
+    def _mergeAudio(
+            video: pathlib.Path,
+            audio: pathlib.Path,
+            filename: pathlib.Path,
+            short_filename,
+            directory: pathlib.Path):
         input_video = str(directory / video)
         input_audio = str(directory / audio)
 

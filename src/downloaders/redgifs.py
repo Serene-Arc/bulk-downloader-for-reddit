@@ -1,5 +1,6 @@
 import json
 import os
+import pathlib
 import urllib.request
 
 from bs4 import BeautifulSoup
@@ -10,7 +11,7 @@ from src.utils import GLOBAL
 
 
 class Redgifs:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         try:
             post['MEDIAURL'] = self.getLink(post['CONTENTURL'])
         except IndexError:
@@ -27,7 +28,7 @@ class Redgifs:
         getFile(filename, short_filename, directory, post['MEDIAURL'])
 
     @staticmethod
-    def getLink(url):
+    def getLink(url: str) -> str:
         """Extract direct link to the video from page's source
         and return it
         """

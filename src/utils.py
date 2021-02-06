@@ -2,6 +2,7 @@ import io
 import sys
 from os import makedirs, path
 from pathlib import Path
+from typing import Optional
 
 from src.jsonHelper import JsonFile
 
@@ -20,11 +21,11 @@ class GLOBAL:
     log_stream = None
 
     @staticmethod
-    def downloadedPosts():
+    def downloadedPosts() -> list:
         return []
 
 
-def createLogFile(title):
+def createLogFile(title: str) -> JsonFile:
     """Create a log file with given name
     inside a folder time stampt in its name and
     put given arguments inside \"HEADER\" key
@@ -60,7 +61,7 @@ def printToFile(*args, no_print=False, **kwargs):
             print(*args, file=FILE, **kwargs)
 
 
-def nameCorrector(string, reference=None):
+def nameCorrector(string: str, reference: Optional[str] = None) -> str:
     """Swap strange characters from given string
     with underscore (_) and shorten it.
     Return the string

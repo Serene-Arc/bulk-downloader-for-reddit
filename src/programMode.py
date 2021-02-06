@@ -3,15 +3,16 @@ from pathlib import Path
 
 from src.errors import InvalidSortingType, ProgramModeError, RedditorNameError, SearchModeError
 from src.parser import LinkDesigner
+import argparse
 
 
 
 class ProgramMode:
 
-    def __init__(self, arguments):
+    def __init__(self, arguments: argparse.Namespace):
         self.arguments = arguments
 
-    def generate(self):
+    def generate(self) -> dict:
         try:
             self._validateProgramMode()
         except ProgramModeError:
@@ -82,7 +83,7 @@ class ProgramMode:
         return program_mode
 
     @staticmethod
-    def _chooseFrom(choices):
+    def _chooseFrom(choices: list[str]):
         print()
         choices_by_index = list(str(x) for x in range(len(choices) + 1))
         for i in range(len(choices)):

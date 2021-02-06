@@ -9,7 +9,7 @@ from src.utils import GLOBAL
 from src.utils import printToFile as print
 
 
-def dlProgress(count, block_size, total_size):
+def dlProgress(count: int, block_size: int, total_size: int):
     """Function for writing download progress to console
     """
     download_mbs = int(count * block_size * (10 ** (-6)))
@@ -18,7 +18,7 @@ def dlProgress(count, block_size, total_size):
     sys.stdout.flush()
 
 
-def getExtension(link):
+def getExtension(link: str):
     """Extract file extension from image link.
     If didn't find any, return '.jpg'
     """
@@ -34,7 +34,7 @@ def getExtension(link):
             return '.mp4'
 
 
-def getFile(filename, short_filename, folder_dir, image_url, indent=0, silent=False):
+def getFile(filename: str, short_filename: str, folder_dir: Path, image_url: str, indent: int = 0, silent: bool = False):
     formats = {
         "videos": [".mp4", ".webm"],
         "images": [".jpg", ".jpeg", ".png", ".bmp"],
@@ -101,7 +101,7 @@ def getFile(filename, short_filename, folder_dir, image_url, indent=0, silent=Fa
     raise FailedToDownload
 
 
-def createHash(filename):
+def createHash(filename: str) -> str:
     hash_md5 = hashlib.md5()
     with open(filename, "rb") as f:
         for chunk in iter(lambda: f.read(4096), b""):

@@ -8,12 +8,14 @@ from prawcore.exceptions import Forbidden, NotFound
 from src.errors import (InsufficientPermission, InvalidSortingType, MultiredditNotFound, NoMatchingSubmissionFound,
                         NoPrawSupport)
 from src.reddit import Reddit
+from praw.models.listing.generator import ListingGenerator
 from src.utils import GLOBAL, createLogFile, printToFile
+from praw.models import Submission
 
 print = printToFile
 
 
-def getPosts(program_mode):
+def getPosts(program_mode: dict) -> list[dict]:
     """Call PRAW regarding to arguments and pass it to extractDetails.
     Return what extractDetails has returned.
     """
@@ -180,7 +182,7 @@ def getPosts(program_mode):
         return extractDetails(reddit.submission(url=program_mode["post"]), single_post=True)
 
 
-def extractDetails(posts, single_post=False):
+def extractDetails(posts: (ListingGenerator, Submission), single_post=False) -> list[dict]:
     """Check posts and decide if it can be downloaded.
     If so, create a dictionary with post details and append them to a list.
     Write all of posts to file. Return the list
@@ -270,7 +272,7 @@ def extractDetails(posts, single_post=False):
         raise NoMatchingSubmissionFound("No matching submission was found")
 
 
-def matchWithDownloader(submission):
+def matchWithDownloader(submission: Submission) -> dict[str, str]:
     direct_link = extractDirectLink(submission.url)
     if direct_link:
         return {'TYPE': 'direct', 'CONTENTURL': direct_link}
@@ -320,7 +322,7 @@ def matchWithDownloader(submission):
                 'CONTENT': submission.selftext}
 
 
-def extractDirectLink(url):
+def extractDirectLink(url: str) -> (bool, str):
     """Check if link is a direct image link.
     If so, return URL,
     if not, return False

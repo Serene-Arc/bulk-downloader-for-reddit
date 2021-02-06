@@ -1,5 +1,7 @@
 import json
 import os
+import pathlib
+
 import requests
 
 from src.downloaders.Direct import Direct
@@ -14,13 +16,13 @@ class Imgur:
 
     imgur_image_domain = "https://i.imgur.com/"
 
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         link = post['CONTENTURL']
 
         if link.endswith(".gifv"):
             link = link.replace(".gifv", ".mp4")
             Direct(directory, {**post, 'CONTENTURL': link})
-            return None
+            return
 
         self.raw_data = self.getData(link)
 
@@ -35,7 +37,7 @@ class Imgur:
         else:
             self.download(self.raw_data)
 
-    def downloadAlbum(self, images):
+    def downloadAlbum(self, images: dict):
         folder_name = GLOBAL.config['filename'].format(**self.post)
         folder_dir = self.directory / folder_name
 
@@ -92,7 +94,7 @@ class Imgur:
         elif how_many_downloaded + duplicates < images_length:
             raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
 
-    def download(self, image):
+    def download(self, image: dict):
         extension = self.validateExtension(image["ext"])
         image_url = self.imgur_image_domain + image["hash"] + extension
 
@@ -102,11 +104,11 @@ class Imgur:
         getFile(filename, short_filename, self.directory, image_url)
 
     @property
-    def isAlbum(self):
+    def isAlbum(self) -> bool:
         return "album_images" in self.raw_data
 
     @staticmethod
-    def getData(link):
+    def getData(link: str) -> dict:
         cookies = {"over18": "1", "postpagebeta": "0"}
         res = requests.get(link, cookies=cookies)
         if res.status_code != 200:
@@ -135,7 +137,7 @@ class Imgur:
         return json.loads(data)
 
     @staticmethod
-    def validateExtension(string):
+    def validateExtension(string: str) -> str:
         possible_extensions = [".jpg", ".png", ".mp4", ".gif"]
 
         for extension in possible_extensions:

@@ -3,6 +3,7 @@ import os
 import urllib
 
 import requests
+import pathlib
 
 from src.downloaders.downloaderUtils import getFile
 from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound, NotADownloadableLinkError,
@@ -12,7 +13,7 @@ from src.utils import printToFile as print
 
 
 class Gallery:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post):
         link = post['CONTENTURL']
         self.raw_data = self.getData(link)
 
@@ -36,7 +37,7 @@ class Gallery:
         self.downloadAlbum(images, count)
 
     @staticmethod
-    def getData(link):
+    def getData(link: str) -> dict:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -59,7 +60,7 @@ class Gallery:
         data = json.loads(page_source[start_index - 1:end_index + 1].strip()[:-1])
         return data
 
-    def downloadAlbum(self, images, count):
+    def downloadAlbum(self, images: dict, count: int):
         folder_name = GLOBAL.config['filename'].format(**self.post)
         folder_dir = self.directory / folder_name
 

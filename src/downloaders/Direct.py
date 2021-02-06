@@ -1,11 +1,12 @@
 import os
+import pathlib
 
 from src.downloaders.downloaderUtils import getExtension, getFile
 from src.utils import GLOBAL
 
 
 class Direct:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         post['EXTENSION'] = getExtension(post['CONTENTURL'])
         if not os.path.exists(directory):
             os.makedirs(directory)

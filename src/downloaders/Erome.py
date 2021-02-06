@@ -1,4 +1,5 @@
 import os
+import pathlib
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
@@ -10,7 +11,7 @@ from src.utils import printToFile as print
 
 
 class Erome:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         try:
             images = self.getLinks(post['CONTENTURL'])
         except urllib.error.HTTPError:
@@ -80,7 +81,7 @@ class Erome:
             elif how_many_downloaded + duplicates < images_length:
                 raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
 
-    def getLinks(self, url):
+    def getLinks(self, url: str) -> list[str]:
         content = []
         line_number = None
 

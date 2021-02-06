@@ -8,11 +8,12 @@ from src.downloaders.downloaderUtils import getExtension, getFile
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
 from src.errors import NotADownloadableLinkError
 from src.utils import GLOBAL
+import pathlib
 
 
 
 class Gfycat:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         try:
             post['MEDIAURL'] = self.getLink(post['CONTENTURL'])
         except IndexError:
@@ -29,7 +30,7 @@ class Gfycat:
         getFile(filename, short_filename, directory, post['MEDIAURL'])
 
     @staticmethod
-    def getLink(url):
+    def getLink(url: str) -> str:
         """Extract direct link to the video from page's source
         and return it
         """

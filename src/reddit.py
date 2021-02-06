@@ -13,7 +13,7 @@ from src.utils import GLOBAL
 
 class Reddit:
 
-    def __init__(self, refresh_token=None):
+    def __init__(self, refresh_token: str = None):
         self.SCOPES = ['identity', 'history', 'read', 'save']
         self.PORT = 7634
         self.refresh_token = refresh_token
@@ -24,7 +24,7 @@ class Reddit:
             "user_agent": str(socket.gethostname())
         }
 
-    def begin(self):
+    def begin(self) -> praw.Reddit:
         if self.refresh_token:
             self.arguments["refresh_token"] = self.refresh_token
             self.redditInstance = praw.Reddit(**self.arguments)
@@ -46,7 +46,7 @@ class Reddit:
             reddit.user.me()), "reddit": refresh_token}, "credentials")
         return self.redditInstance
 
-    def recieve_connection(self):
+    def recieve_connection(self) -> socket:
         """Wait for and then return a connected socket..
         Opens a TCP connection on port 8080, and waits for a single client.
         """
@@ -58,13 +58,12 @@ class Reddit:
         server.close()
         return client
 
-    @staticmethod
-    def send_message(client, message):
+    def send_message(self, client: socket, message: str):
         """Send message to client and close the connection."""
         client.send('HTTP/1.1 200 OK\r\n\r\n{}'.format(message).encode('utf-8'))
         client.close()
 
-    def getRefreshToken(self, *scopes):
+    def getRefreshToken(self, scopes: list[str]) -> tuple[praw.Reddit, str]:
         state = str(random.randint(0, 65000))
         url = self.redditInstance.auth.url(scopes, state, 'permanent')
         print("---Setting up the Reddit API---\n")

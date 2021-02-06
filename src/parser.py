@@ -6,7 +6,7 @@ except ModuleNotFoundError:
     from errors import InvalidRedditLink
 
 
-def QueryParser(passed_queries, index):
+def QueryParser(passed_queries: str) -> dict:
     extracted_queries = {}
 
     question_mark_index = passed_queries.index("?")
@@ -26,7 +26,7 @@ def QueryParser(passed_queries, index):
     return extracted_queries
 
 
-def LinkParser(link):
+def LinkParser(link: str) -> dict:
     result = {}
     short_link = False
 
@@ -81,9 +81,7 @@ def LinkParser(link):
                     result["user"] = "me"
 
     for index in range(len(splitted_link)):
-        if splitted_link[index] in [
-            "hot", "top", "new", "controversial", "rising"
-        ]:
+        if splitted_link[index] in ["hot", "top", "new", "controversial", "rising"]:
 
             result["sort"] = splitted_link[index]
 
@@ -101,7 +99,7 @@ def LinkParser(link):
                 result["upvoted"] = True
 
         elif "?" in splitted_link[index]:
-            parsed_query = QueryParser(splitted_link[index], index)
+            parsed_query = QueryParser(splitted_link[index])
             if parsed_query["HEADER"] == "search":
                 del parsed_query["HEADER"]
                 result["search"] = parsed_query
@@ -124,7 +122,7 @@ def LinkParser(link):
     return result
 
 
-def LinkDesigner(link):
+def LinkDesigner(link) -> dict:
     attributes = LinkParser(link)
     mode = {}
 

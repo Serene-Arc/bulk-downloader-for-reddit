@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 
 import youtube_dl
@@ -11,7 +12,7 @@ from src.utils import printToFile as print
 
 
 class Youtube:
-    def __init__(self, directory, post):
+    def __init__(self, directory: pathlib.Path, post: dict):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -20,7 +21,7 @@ class Youtube:
 
         self.download(filename, directory, post['CONTENTURL'])
 
-    def download(self, filename, directory, url):
+    def download(self, filename: str, directory: pathlib.Path, url: str):
         ydl_opts = {
             "format": "best",
             "outtmpl": str(directory / (filename + ".%(ext)s")),
@@ -36,7 +37,7 @@ class Youtube:
 
         if GLOBAL.arguments.no_dupes:
             try:
-                file_hash = createHash(location)
+                file_hash = createHash(str(location))
             except FileNotFoundError:
                 return None
             if file_hash in GLOBAL.downloadedPosts():

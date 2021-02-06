@@ -1,5 +1,5 @@
 import json
-from os import path, remove
+import os
 
 from src.errors import InvalidJSONFile
 
@@ -12,19 +12,19 @@ class JsonFile:
 
     file_dir = ""
 
-    def __init__(self, file_dir):
+    def __init__(self, file_dir: str):
         self.file_dir = file_dir
-        if not path.exists(self.file_dir):
+        if not os.path.exists(self.file_dir):
             self.__writeToFile({}, create=True)
 
-    def read(self):
+    def read(self) -> dict:
         try:
             with open(self.file_dir, 'r') as f:
                 return json.load(f)
         except json.decoder.JSONDecodeError:
             raise InvalidJSONFile(f"{self.file_dir} cannot be read")
 
-    def add(self, to_be_added, sub=None):
+    def add(self, to_be_added: dict, sub=None) -> dict:
         """Takes a dictionary and merges it with json file.
         It uses new key's value if a key already exists.
         Returns the new content as a dictionary.
@@ -37,7 +37,7 @@ class JsonFile:
         self.__writeToFile(data)
         return self.read()
 
-    def delete(self, *delete_keys):
+    def delete(self, *delete_keys: str):
         """Delete given keys from JSON file.
         Returns the new content as a dictionary.
         """
@@ -50,8 +50,8 @@ class JsonFile:
             return False
         self.__writeToFile(data)
 
-    def __writeToFile(self, content, create=False):
+    def __writeToFile(self, content: (dict, list, tuple), create: bool = False):
         if not create:
-            remove(self.file_dir)
+            os.remove(self.file_dir)
         with open(self.file_dir, 'w') as f:
             json.dump(content, f, indent=4)

@@ -87,7 +87,6 @@ def isPostExists(post, directory):
 
 
 def downloadPost(submission, directory):
-
     downloaders = {
         "imgur": Imgur, "gfycat": Gfycat, "erome": Erome, "direct": Direct, "self": SelfPost,
         "redgifs": Redgifs, "gifdeliverynetwork": GifDeliveryNetwork,
@@ -99,7 +98,6 @@ def downloadPost(submission, directory):
         downloaders[submission['TYPE']](directory, submission)
     else:
         raise NoSuitablePost
-
 
 
 def download(submissions):
