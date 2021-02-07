@@ -1,5 +1,5 @@
 from bulkredditdownloader.reddit import Reddit
-from bulkredditdownloader.jsonHelper import JsonFile
+from bulkredditdownloader.json_helper import JsonFile
 from bulkredditdownloader.utils import nameCorrector
 
 

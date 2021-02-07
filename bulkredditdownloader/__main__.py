@@ -14,21 +14,21 @@ from prawcore.exceptions import InsufficientScope
 
 from bulkredditdownloader.arguments import Arguments
 from bulkredditdownloader.config import Config
-from bulkredditdownloader.downloaders.Direct import Direct
-from bulkredditdownloader.downloaders.Erome import Erome
+from bulkredditdownloader.downloaders.direct import Direct
+from bulkredditdownloader.downloaders.erome import Erome
 from bulkredditdownloader.downloaders.gallery import Gallery
-from bulkredditdownloader.downloaders.Gfycat import Gfycat
-from bulkredditdownloader.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from bulkredditdownloader.downloaders.Imgur import Imgur
+from bulkredditdownloader.downloaders.gfycat import Gfycat
+from bulkredditdownloader.downloaders.gif_delivery_network import GifDeliveryNetwork
+from bulkredditdownloader.downloaders.imgur import Imgur
 from bulkredditdownloader.downloaders.redgifs import Redgifs
-from bulkredditdownloader.downloaders.selfPost import SelfPost
+from bulkredditdownloader.downloaders.self_post import SelfPost
 from bulkredditdownloader.downloaders.vreddit import VReddit
 from bulkredditdownloader.downloaders.youtube import Youtube
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, DomainInSkip, FailedToDownload, FileAlreadyExistsError,
                                          ImgurLimitError, ImgurLoginError, InvalidJSONFile, NoSuitablePost, NotADownloadableLinkError,
                                          TypeInSkip, full_exc_info)
-from bulkredditdownloader.jsonHelper import JsonFile
-from bulkredditdownloader.programMode import ProgramMode
+from bulkredditdownloader.json_helper import JsonFile
+from bulkredditdownloader.program_mode import ProgramMode
 from bulkredditdownloader.reddit import Reddit
 from bulkredditdownloader.searcher import getPosts
 from bulkredditdownloader.store import Store

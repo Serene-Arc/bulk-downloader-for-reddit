@@ -4,8 +4,8 @@ import pathlib
 
 import requests
 
-from bulkredditdownloader.downloaders.Direct import Direct
-from bulkredditdownloader.downloaders.downloaderUtils import getFile
+from bulkredditdownloader.downloaders.direct import Direct
+from bulkredditdownloader.downloaders.downloader_utils import getFile
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, ExtensionError, FileAlreadyExistsError, ImageNotFound,
                                          NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL, nameCorrector

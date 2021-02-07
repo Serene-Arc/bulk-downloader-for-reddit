@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from bulkredditdownloader.downloaders.downloaderUtils import getExtension, getFile
+from bulkredditdownloader.downloaders.downloader_utils import getExtension, getFile
 from bulkredditdownloader.utils import GLOBAL
 
 

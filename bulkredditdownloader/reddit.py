@@ -6,7 +6,7 @@ import praw
 from prawcore.exceptions import ResponseException
 
 from bulkredditdownloader.errors import RedditLoginFailed
-from bulkredditdownloader.jsonHelper import JsonFile
+from bulkredditdownloader.json_helper import JsonFile
 from bulkredditdownloader.utils import GLOBAL
 
 

@@ -4,7 +4,7 @@ import sys
 
 import youtube_dl
 
-from bulkredditdownloader.downloaders.downloaderUtils import createHash
+from bulkredditdownloader.downloaders.downloader_utils import createHash
 from bulkredditdownloader.errors import FileAlreadyExistsError
 from bulkredditdownloader.utils import GLOBAL
 from bulkredditdownloader.utils import printToFile as print

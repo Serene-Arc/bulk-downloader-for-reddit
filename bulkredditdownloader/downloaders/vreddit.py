@@ -2,7 +2,7 @@ import os
 import pathlib
 import subprocess
 
-from bulkredditdownloader.downloaders.downloaderUtils import getFile
+from bulkredditdownloader.downloaders.downloader_utils import getFile
 from bulkredditdownloader.utils import GLOBAL
 from bulkredditdownloader.utils import printToFile as print
 

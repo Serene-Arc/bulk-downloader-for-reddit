@@ -5,7 +5,7 @@ import urllib
 import requests
 import pathlib
 
-from bulkredditdownloader.downloaders.downloaderUtils import getFile
+from bulkredditdownloader.downloaders.downloader_utils import getFile
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound, NotADownloadableLinkError,
                                          TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL

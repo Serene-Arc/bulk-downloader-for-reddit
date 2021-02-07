@@ -1,18 +1,15 @@
-import json
 import os
+import pathlib
 import urllib.request
 
 from bs4 import BeautifulSoup
 
-from bulkredditdownloader.downloaders.downloaderUtils import getExtension, getFile
-from bulkredditdownloader.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
+from bulkredditdownloader.downloaders.downloader_utils import getExtension, getFile
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.utils import GLOBAL
-import pathlib
 
 
-
-class Gfycat:
+class GifDeliveryNetwork:
     def __init__(self, directory: pathlib.Path, post: dict):
         try:
             post['MEDIAURL'] = self.getLink(post['CONTENTURL'])
@@ -34,21 +31,20 @@ class Gfycat:
         """Extract direct link to the video from page's source
         and return it
         """
-        if '.webm' in url or '.mp4' in url or '.gif' in url:
+        if '.webm' in url.split('/')[-1] or '.mp4' in url.split('/')[-1] or '.gif' in url.split('/')[-1]:
             return url
 
         if url[-1:] == '/':
             url = url[:-1]
 
-        url = "https://gfycat.com/" + url.split('/')[-1]
-
+        url = "https://www.gifdeliverynetwork.com/" + url.split('/')[-1]
         page_source = (urllib.request.urlopen(url).read().decode())
 
         soup = BeautifulSoup(page_source, "html.parser")
-        attributes = {"data-react-helmet": "true", "type": "application/ld+json"}
-        content = soup.find("script", attrs=attributes)
+        attributes = {"id": "mp4Source", "type": "video/mp4"}
+        content = soup.find("source", attrs=attributes)
 
         if content is None:
-            return GifDeliveryNetwork.getLink(url)
+            raise NotADownloadableLinkError("Could not read the page source")
 
-        return json.loads(content.contents[0])["video"]["contentUrl"]
+        return content["src"]
