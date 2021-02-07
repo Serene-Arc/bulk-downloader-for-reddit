@@ -26,14 +26,6 @@ class BaseDownloader(ABC):
         return hash_md5.hexdigest()
 
     @staticmethod
-    def dlProgress(count: int, block_size: int, total_size: int):
-        """Function for writing download progress to console """
-        download_mbs = int(count * block_size * (10 ** (-6)))
-        file_size = int(total_size * (10 ** (-6)))
-        sys.stdout.write("{}Mb/{}Mb\r".format(download_mbs, file_size))
-        sys.stdout.flush()
-
-    @staticmethod
     def getFile(
             filename: str,
             short_filename: str,
@@ -79,13 +71,20 @@ class BaseDownloader(ABC):
         if not silent:
             print(" " * indent + str(folder_dir), " " * indent + str(filename), sep="\n")
 
+        def dlProgress(count: int, block_size: int, total_size: int):
+            """Function for writing download progress to console """
+            download_mbs = int(count * block_size * (10 ** (-6)))
+            file_size = int(total_size * (10 ** (-6)))
+            sys.stdout.write("{}Mb/{}Mb\r".format(download_mbs, file_size))
+            sys.stdout.flush()
+
         for i in range(3):
             file_dir = Path(folder_dir) / filename
             temp_dir = Path(folder_dir) / (filename + ".tmp")
 
             if not (os.path.isfile(file_dir)):
                 try:
-                    urllib.request.urlretrieve(image_url, temp_dir, reporthook=BaseDownloader.dlProgress)
+                    urllib.request.urlretrieve(image_url, temp_dir, reporthook=dlProgress)
 
                     file_hash = BaseDownloader.createHash(temp_dir)
                     if GLOBAL.arguments.no_dupes:
