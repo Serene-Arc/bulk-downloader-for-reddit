@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 import json
-import os
 import pathlib
+import logging
 
 import requests
 
@@ -9,7 +11,8 @@ from bulkredditdownloader.downloaders.direct import Direct
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, ExtensionError, FileAlreadyExistsError,
                                          ImageNotFound, NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL, nameCorrector
-from bulkredditdownloader.utils import printToFile as print
+
+logger = logging.getLogger(__name__)
 
 
 class Imgur(BaseDownloader):
@@ -18,24 +21,28 @@ class Imgur(BaseDownloader):
 
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
-        link = post['CONTENTURL']
+        self.raw_data = {}
+        self.download()
+
+    def download(self):
+        link = self.post['CONTENTURL']
 
         if link.endswith(".gifv"):
             link = link.replace(".gifv", ".mp4")
-            Direct(directory, {**post, 'CONTENTURL': link})
+            Direct(self.directory, {**self.post, 'CONTENTURL': link})
             return
 
-        self.raw_data = self.getData(link)
+        self.raw_data = self._get_data(link)
 
-        if self.isAlbum:
+        if self._is_album:
             if self.raw_data["album_images"]["count"] != 1:
-                self.downloadAlbum(self.raw_data["album_images"])
+                self._download_album(self.raw_data["album_images"])
             else:
-                self.download(self.raw_data["album_images"]["images"][0])
+                self._download_image(self.raw_data["album_images"]["images"][0])
         else:
-            self.download(self.raw_data)
+            self._download_image(self.raw_data)
 
-    def downloadAlbum(self, images: dict):
+    def _download_album(self, images: dict):
         folder_name = GLOBAL.config['filename'].format(**self.post)
         folder_dir = self.directory / folder_name
 
@@ -43,70 +50,60 @@ class Imgur(BaseDownloader):
         how_many_downloaded = 0
         duplicates = 0
 
-        try:
-            if not os.path.exists(folder_dir):
-                os.makedirs(folder_dir)
-        except FileNotFoundError:
-            folder_dir = self.directory / self.post['POSTID']
-            os.makedirs(folder_dir)
-
-        print(folder_name)
+        folder_dir.mkdir(exist_ok=True)
+        logger.info(folder_name)
 
         for i in range(images_length):
-            extension = self.validateExtension(images["images"][i]["ext"])
+            extension = self._validate_extension(images["images"][i]["ext"])
             image_url = self.imgur_image_domain + images["images"][i]["hash"] + extension
-            filename = "_".join([str(i + 1),
-                                 nameCorrector(images["images"][i]['title']),
-                                 images["images"][i]['hash']]) + extension
-            short_filename = str(i + 1) + "_" + images["images"][i]['hash']
+            filename = pathlib.Path("_".join([str(i + 1),
+                                              nameCorrector(images["images"][i]['title']),
+                                              images["images"][i]['hash']]) + extension)
 
-            print("\n  ({}/{})".format(i + 1, images_length))
+            logger.info("\n  ({}/{})".format(i + 1, images_length))
 
             try:
-                self.getFile(filename, short_filename, folder_dir, image_url, indent=2)
+                self._download_resource(filename, folder_dir, image_url, indent=2)
                 how_many_downloaded += 1
-                print()
 
             except FileAlreadyExistsError:
-                print("  The file already exists" + " " * 10, end="\n\n")
+                logger.info("  The file already exists" + " " * 10, end="\n\n")
                 duplicates += 1
 
             except TypeInSkip:
-                print("  Skipping...")
+                logger.info("  Skipping...")
                 how_many_downloaded += 1
 
             except Exception as exception:
-                print("\n  Could not get the file")
-                print(
-                    "  " +
-                    "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
+                logger.info("\n  Could not get the file")
+                logger.info(
+                    "  "
+                    + "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
                         class_name=exception.__class__.__name__,
                         info=str(exception)
                     )
                     + "\n"
                 )
-                print(GLOBAL.log_stream.getvalue(), no_print=True)
+                logger.info(GLOBAL.log_stream.getvalue(), no_print=True)
 
         if duplicates == images_length:
             raise FileAlreadyExistsError
         elif how_many_downloaded + duplicates < images_length:
             raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
 
-    def download(self, image: dict):
-        extension = self.validateExtension(image["ext"])
+    def _download_image(self, image: dict):
+        extension = self._validate_extension(image["ext"])
         image_url = self.imgur_image_domain + image["hash"] + extension
 
         filename = GLOBAL.config['filename'].format(**self.post) + extension
-        short_filename = self.post['POSTID'] + extension
 
-        self.getFile(filename, short_filename, self.directory, image_url)
+        self._download_resource(filename, self.directory, image_url)
 
-    @property
-    def isAlbum(self) -> bool:
+    def _is_album(self) -> bool:
         return "album_images" in self.raw_data
 
     @staticmethod
-    def getData(link: str) -> dict:
+    def _get_data(link: str) -> dict:
         cookies = {"over18": "1", "postpagebeta": "0"}
         res = requests.get(link, cookies=cookies)
         if res.status_code != 200:
@@ -128,18 +125,18 @@ class Imgur(BaseDownloader):
             end_index -= 1
         try:
             data = page_source[start_index:end_index + 2].strip()[:-1]
-        except Exception:
+        except IndexError:
             page_source[end_index + 1] = '}'
             data = page_source[start_index:end_index + 3].strip()[:-1]
 
         return json.loads(data)
 
     @staticmethod
-    def validateExtension(string: str) -> str:
+    def _validate_extension(extension_suffix: str) -> str:
         possible_extensions = [".jpg", ".png", ".mp4", ".gif"]
 
         for extension in possible_extensions:
-            if extension in string:
+            if extension in extension_suffix:
                 return extension
         else:
-            raise ExtensionError(f"\"{string}\" is not recognized as a valid extension.")
+            raise ExtensionError(f"\"{extension_suffix}\" is not recognized as a valid extension.")

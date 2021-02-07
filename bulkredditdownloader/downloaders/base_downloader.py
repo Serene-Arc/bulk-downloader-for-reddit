@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # coding=utf-8
+
 import hashlib
-import os
-import sys
-import urllib.request
-from abc import ABC
+import logging
+import re
+from abc import ABC, abstractmethod
 from pathlib import Path
+
+import requests
 
 from bulkredditdownloader.errors import DomainInSkip, FailedToDownload, FileAlreadyExistsError, TypeInSkip
 from bulkredditdownloader.utils import GLOBAL
-from bulkredditdownloader.utils import printToFile as print
+
+logger = logging.getLogger(__name__)
 
 
 class BaseDownloader(ABC):
@@ -17,22 +20,17 @@ class BaseDownloader(ABC):
         self.directory = directory
         self.post = post
 
+    @abstractmethod
+    def download(self):
+        raise NotImplementedError
+
     @staticmethod
-    def createHash(filename: str) -> str:
-        hash_md5 = hashlib.md5()
-        with open(filename, "rb") as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                hash_md5.update(chunk)
+    def _create_hash(content: bytes) -> str:
+        hash_md5 = hashlib.md5(content)
         return hash_md5.hexdigest()
 
     @staticmethod
-    def getFile(
-            filename: str,
-            short_filename: str,
-            folder_dir: Path,
-            image_url: str,
-            indent: int = 0,
-            silent: bool = False):
+    def _download_resource(filename: Path, folder_dir: Path, image_url: str, indent: int = 0, silent: bool = False):
         formats = {
             "videos": [".mp4", ".webm"],
             "images": [".jpg", ".jpeg", ".png", ".bmp"],
@@ -52,69 +50,55 @@ class BaseDownloader(ABC):
             ("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 "
                            "Safari/537.36 OPR/54.0.2952.64"),
-            ("Accept", "text/html,application/xhtml+xml,application/xml;"
-                       "q=0.9,image/webp,image/apng,*/*;q=0.8"),
+            ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"),
             ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.3"),
             ("Accept-Encoding", "none"),
             ("Accept-Language", "en-US,en;q=0.8"),
             ("Connection", "keep-alive")
         ]
 
-        if not os.path.exists(folder_dir):
-            os.makedirs(folder_dir)
+        folder_dir.mkdir(exist_ok=True)
 
-        opener = urllib.request.build_opener()
         if "imgur" not in image_url:
-            opener.addheaders = headers
-        urllib.request.install_opener(opener)
+            addheaders = headers
+        else:
+            addheaders = None
 
         if not silent:
-            print(" " * indent + str(folder_dir), " " * indent + str(filename), sep="\n")
+            logger.info(" " * indent + str(folder_dir), " " * indent + str(filename), sep="\n")
 
-        def dlProgress(count: int, block_size: int, total_size: int):
-            """Function for writing download progress to console """
-            download_mbs = int(count * block_size * (10 ** (-6)))
-            file_size = int(total_size * (10 ** (-6)))
-            sys.stdout.write("{}Mb/{}Mb\r".format(download_mbs, file_size))
-            sys.stdout.flush()
-
+        # Loop to attempt download 3 times
         for i in range(3):
-            file_dir = Path(folder_dir) / filename
-            temp_dir = Path(folder_dir) / (filename + ".tmp")
+            file_path = Path(folder_dir) / filename
 
-            if not (os.path.isfile(file_dir)):
+            if file_path.is_file():
+                raise FileAlreadyExistsError
+            else:
                 try:
-                    urllib.request.urlretrieve(image_url, temp_dir, reporthook=dlProgress)
-
-                    file_hash = BaseDownloader.createHash(temp_dir)
-                    if GLOBAL.arguments.no_dupes:
-                        if file_hash in GLOBAL.downloadedPosts():
-                            os.remove(temp_dir)
-                            raise FileAlreadyExistsError
-                    GLOBAL.downloadedPosts.add(file_hash)
-
-                    os.rename(temp_dir, file_dir)
-                    if not silent:
-                        print(" " * indent + "Downloaded" + " " * 10)
-                    return None
+                    download_content = requests.get(image_url, headers=addheaders).content
                 except ConnectionResetError:
                     raise FailedToDownload
-                except FileNotFoundError:
-                    filename = short_filename
-            else:
-                raise FileAlreadyExistsError
+
+                file_hash = BaseDownloader._create_hash(download_content)
+                if GLOBAL.arguments.no_dupes:
+                    if file_hash in GLOBAL.downloadedPosts():
+                        raise FileAlreadyExistsError
+                GLOBAL.downloadedPosts.add(file_hash)
+
+                with open(file_path, 'wb') as file:
+                    file.write(download_content)
+                if not silent:
+                    logger.info(" " * indent + "Downloaded" + " " * 10)
+                return
+
         raise FailedToDownload
 
     @staticmethod
-    def getExtension(link: str):
-        """Extract file extension from image link. If didn't find any, return '.jpg' """
-        image_types = ['jpg', 'png', 'mp4', 'webm', 'gif']
-        parsed = link.split('.')
-        for fileType in image_types:
-            if fileType in parsed:
-                return "." + parsed[-1]
+    def _get_extension(url: str) -> str:
+        pattern = re.compile(r'(\.(jpg|jpeg|png|mp4|webm|gif))')
+        if len(results := re.search(pattern, url).groups()) > 1:
+            return results[1]
+        if "v.redd.it" not in url:
+            return '.jpg'
         else:
-            if "v.redd.it" not in link:
-                return '.jpg'
-            else:
-                return '.mp4'
+            return '.mp4'

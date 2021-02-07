@@ -1,45 +1,46 @@
-from src.utils import printToFile as print
+#!/usr/bin/env python3
+
 import io
-import os
+import logging
 import pathlib
 from pathlib import Path
 
 from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import FileAlreadyExistsError, TypeInSkip
 from bulkredditdownloader.utils import GLOBAL
-from bulkredditdownloader.utils import printToFile as print
 
-VanillaPrint = print
+logger = logging.getLogger(__name__)
 
 
 class SelfPost(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
+        self.download()
+
+    def download(self):
         if "self" in GLOBAL.arguments.skip:
             raise TypeInSkip
 
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        self.directory.mkdir(exist_ok=True)
+        filename = GLOBAL.config['filename'].format(**self.post)
 
-        filename = GLOBAL.config['filename'].format(**post)
-
-        file_dir = directory / (filename + ".md")
-        print(file_dir)
-        print(filename + ".md")
+        file_dir = self.directory / (filename + ".md")
+        logger.info(file_dir)
+        logger.info(filename + ".md")
 
         if Path.is_file(file_dir):
             raise FileAlreadyExistsError
 
         try:
-            self.writeToFile(file_dir, post)
+            self._write_to_file(file_dir, self.post)
         except FileNotFoundError:
-            file_dir = post['POSTID'] + ".md"
-            file_dir = directory / file_dir
+            file_dir = self.post['POSTID'] + ".md"
+            file_dir = self.directory / file_dir
 
-            self.writeToFile(file_dir, post)
+            self._write_to_file(file_dir, self.post)
 
     @staticmethod
-    def writeToFile(directory: pathlib.Path, post: dict):
+    def _write_to_file(directory: pathlib.Path, post: dict):
         """Self posts are formatted here"""
         content = ("## ["
                    + post["TITLE"]
@@ -59,5 +60,5 @@ class SelfPost(BaseDownloader):
                    + ")")
 
         with io.open(directory, "w", encoding="utf-8") as FILE:
-            VanillaPrint(content, file=FILE)
-        print("Downloaded")
+            print(content, file=FILE)
+        logger.info("Downloaded")

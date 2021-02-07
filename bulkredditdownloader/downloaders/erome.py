@@ -1,5 +1,8 @@
-import os
+#!/usr/bin/env python3
+
+import logging
 import pathlib
+import re
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
@@ -7,70 +10,64 @@ from html.parser import HTMLParser
 from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, NotADownloadableLinkError
 from bulkredditdownloader.utils import GLOBAL
-from bulkredditdownloader.utils import printToFile as print
+
+logger = logging.getLogger(__name__)
 
 
 class Erome(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
+        self.download()
+
+    def download(self):
         try:
-            images = self.getLinks(post['CONTENTURL'])
+            images = self._get_links(self.post['CONTENTURL'])
         except urllib.error.HTTPError:
             raise NotADownloadableLinkError("Not a downloadable link")
 
         images_length = len(images)
-        how_many_downloaded = images_length
+        how_many_downloaded = len(images)
         duplicates = 0
 
         if images_length == 1:
-            extension = self.getExtension(images[0])
-
             """Filenames are declared here"""
-            filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
-            short_filename = post['POSTID'] + extension
+            filename = GLOBAL.config['filename'].format(**self.post) + self.post["EXTENSION"]
 
-            image_url = images[0]
-            if 'https://' not in image_url or 'http://' not in image_url:
-                image_url = "https://" + image_url
+            image = images[0]
+            if not re.match(r'https?://.*', image):
+                image = "https://" + image
 
-            self.getFile(filename, short_filename, directory, image_url)
+            self._download_resource(filename, self.directory, image)
 
         else:
-            filename = GLOBAL.config['filename'].format(**post)
-            print(filename)
+            filename = GLOBAL.config['filename'].format(**self.post)
+            logger.info(filename)
 
-            folder_dir = directory / filename
+            folder_dir = self.directory / filename
 
-            try:
-                if not os.path.exists(folder_dir):
-                    os.makedirs(folder_dir)
-            except FileNotFoundError:
-                folder_dir = directory / post['POSTID']
-                os.makedirs(folder_dir)
+            folder_dir.mkdir(exist_ok=True)
 
-            for i in range(images_length):
-                extension = self.getExtension(images[i])
-
+            for i, image in enumerate(images):
+                extension = self._get_extension(image)
                 filename = str(i + 1) + extension
-                image_url = images[i]
-                if 'https://' not in image_url and 'http://' not in image_url:
-                    image_url = "https://" + image_url
 
-                print("  ({}/{})".format(i + 1, images_length))
-                print("  {}".format(filename))
+                if not re.match(r'https?://.*', image):
+                    image = "https://" + image
+
+                logger.info("  ({}/{})".format(i + 1, images_length))
+                logger.info("  {}".format(filename))
 
                 try:
-                    self.getFile(filename, filename, folder_dir, image_url, indent=2)
-                    print()
+                    self._download_resource(pathlib.Path(filename), folder_dir, image, indent=2)
                 except FileAlreadyExistsError:
-                    print("  The file already exists" + " " * 10, end="\n\n")
+                    logger.info("  The file already exists" + " " * 10, end="\n\n")
                     duplicates += 1
                     how_many_downloaded -= 1
 
                 except Exception as exception:
                     # raise exception
-                    print("\n  Could not get the file")
-                    print(
+                    logger.error("\n  Could not get the file")
+                    logger.error(
                         "  "
                         + "{class_name}: {info}".format(class_name=exception.__class__.__name__, info=str(exception))
                         + "\n"
@@ -82,10 +79,12 @@ class Erome(BaseDownloader):
             elif how_many_downloaded + duplicates < images_length:
                 raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
 
-    def getLinks(self, url: str) -> list[str]:
+    @staticmethod
+    def _get_links(url: str) -> list[str]:
         content = []
         line_number = None
 
+        # TODO: move to bs4 and requests
         class EromeParser(HTMLParser):
             tag = None
 

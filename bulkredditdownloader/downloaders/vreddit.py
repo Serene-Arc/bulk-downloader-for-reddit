@@ -1,51 +1,56 @@
+#!/usr/bin/env python3
+
+import logging
 import os
 import pathlib
 import subprocess
 
 from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.utils import GLOBAL
-from bulkredditdownloader.utils import printToFile as print
+
+logger = logging.getLogger(__name__)
 
 
 class VReddit(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
-        extension = ".mp4"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        self.download()
 
-        filename = GLOBAL.config['filename'].format(**post) + extension
-        short_filename = post['POSTID'] + extension
+    def download(self):
+        extension = ".mp4"
+        self.directory.mkdir(exist_ok=True)
+
+        filename = GLOBAL.config['filename'].format(**self.post) + extension
 
         try:
             fnull = open(os.devnull, 'w')
             subprocess.call("ffmpeg", stdout=fnull, stderr=subprocess.STDOUT)
         except Exception:
-            self.getFile(filename, short_filename, directory, post['CONTENTURL'])
-            print("FFMPEG library not found, skipping merging video and audio")
+            self._download_resource(filename, self.directory, self.post['CONTENTURL'])
+            logger.info("FFMPEG library not found, skipping merging video and audio")
         else:
-            video_name = post['POSTID'] + "_video"
-            video_url = post['CONTENTURL']
-            audio_name = post['POSTID'] + "_audio"
+            video_name = self.post['POSTID'] + "_video"
+            video_url = self.post['CONTENTURL']
+            audio_name = self.post['POSTID'] + "_audio"
             audio_url = video_url[:video_url.rfind('/')] + '/DASH_audio.mp4'
 
-            print(directory, filename, sep="\n")
+            logger.info(self.directory, filename, sep="\n")
 
-            self.getFile(video_name, video_name, directory, video_url, silent=True)
-            self.getFile(audio_name, audio_name, directory, audio_url, silent=True)
+            self._download_resource(video_name, self.directory, video_url, silent=True)
+            self._download_resource(audio_name, self.directory, audio_url, silent=True)
             try:
-                self._mergeAudio(video_name, audio_name, filename, short_filename, directory)
+                self._merge_audio(video_name, audio_name, filename, self.directory)
             except KeyboardInterrupt:
-                os.remove(directory / filename)
-                os.remove(directory / audio_name)
-                os.rename(directory / video_name, directory / filename)
+                (self.directory / filename).unlink()
+                (self.directory / audio_name).unlink()
+                (self.directory / video_name).unlink()
+                (self.directory / filename).unlink()
 
     @staticmethod
-    def _mergeAudio(
+    def _merge_audio(
             video: pathlib.Path,
             audio: pathlib.Path,
             filename: pathlib.Path,
-            short_filename,
             directory: pathlib.Path):
         input_video = str(directory / video)
         input_audio = str(directory / audio)
@@ -55,5 +60,5 @@ class VReddit(BaseDownloader):
             input_audio, input_video, str(directory / filename))
         subprocess.call(cmd.split(), stdout=fnull, stderr=subprocess.STDOUT)
 
-        os.remove(directory / video)
-        os.remove(directory / audio)
+        (directory / video).unlink()
+        (directory / audio).unlink()

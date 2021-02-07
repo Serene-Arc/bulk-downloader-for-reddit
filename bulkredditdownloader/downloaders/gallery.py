@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+
 import json
-import os
 import pathlib
-import urllib
+import logging
+import urllib.parse
 
 import requests
 
@@ -9,15 +11,18 @@ from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound,
                                          NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL
-from bulkredditdownloader.utils import printToFile as print
+
+logger = logging.getLogger(__name__)
 
 
 class Gallery(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post):
         super().__init__(directory, post)
-        link = post['CONTENTURL']
-        self.raw_data = self.getData(link)
+        link = self.post['CONTENTURL']
+        self.raw_data = self._get_data(link)
+        self.download()
 
+    def download(self):
         images = {}
         count = 0
         for model in self.raw_data['posts']['models']:
@@ -27,15 +32,15 @@ class Gallery(BaseDownloader):
                         images[count] = {'id': item['mediaId'], 'url': self.raw_data['posts']
                                          ['models'][model]['media']['mediaMetadata'][item['mediaId']]['s']['u']}
                         count += 1
-                    except Exception:
+                    except KeyError:
                         continue
-            except Exception:
+            except KeyError:
                 continue
 
-        self.downloadAlbum(images, count)
+        self._download_album(images, count)
 
     @staticmethod
-    def getData(link: str) -> dict:
+    def _get_data(link: str) -> dict:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -58,50 +63,42 @@ class Gallery(BaseDownloader):
         data = json.loads(page_source[start_index - 1:end_index + 1].strip()[:-1])
         return data
 
-    def downloadAlbum(self, images: dict, count: int):
+    def _download_album(self, images: dict, count: int):
         folder_name = GLOBAL.config['filename'].format(**self.post)
         folder_dir = self.directory / folder_name
 
         how_many_downloaded = 0
         duplicates = 0
 
-        try:
-            if not os.path.exists(folder_dir):
-                os.makedirs(folder_dir)
-        except FileNotFoundError:
-            folder_dir = self.directory / self.post['POSTID']
-            os.makedirs(folder_dir)
+        folder_dir.mkdir(exist_ok=True)
+        logger.info(folder_name)
 
-        print(folder_name)
+        for i, image in enumerate(images):
+            path = urllib.parse.urlparse(image['url']).path
+            extension = pathlib.Path(path).suffix
 
-        for i in range(count):
-            path = urllib.parse.urlparse(images[i]['url']).path
-            extension = os.path.splitext(path)[1]
+            filename = pathlib.Path("_".join([str(i + 1), image['id']]) + extension)
 
-            filename = "_".join([str(i + 1), images[i]['id']]) + extension
-            short_filename = str(i + 1) + "_" + images[i]['id']
-
-            print("\n  ({}/{})".format(i + 1, count))
+            logger.info("\n  ({}/{})".format(i + 1, count))
 
             try:
-                self.getFile(filename, short_filename, folder_dir, images[i]['url'], indent=2)
+                self._download_resource(filename, folder_dir, image['url'], indent=2)
                 how_many_downloaded += 1
-                print()
 
             except FileAlreadyExistsError:
-                print("  The file already exists" + " " * 10, end="\n\n")
+                logger.info("  The file already exists" + " " * 10, end="\n\n")
                 duplicates += 1
 
             except TypeInSkip:
-                print("  Skipping...")
+                logger.info("  Skipping...")
                 how_many_downloaded += 1
 
             except Exception as exception:
-                print("\n  Could not get the file")
-                print("  " + "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
+                logger.info("\n  Could not get the file")
+                logger.info("  " + "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
                     class_name=exception.__class__.__name__, info=str(exception)) + "\n"
                 )
-                print(GLOBAL.log_stream.getvalue(), no_print=True)
+                logger.info(GLOBAL.log_stream.getvalue(), no_print=True)
 
         if duplicates == count:
             raise FileAlreadyExistsError

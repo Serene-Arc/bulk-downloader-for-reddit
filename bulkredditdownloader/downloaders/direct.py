@@ -1,4 +1,5 @@
-import os
+#!/usr/bin/env python3
+
 import pathlib
 
 from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
@@ -8,11 +9,11 @@ from bulkredditdownloader.utils import GLOBAL
 class Direct(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
-        post['EXTENSION'] = self.getExtension(post['CONTENTURL'])
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        self.download()
 
-        filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
-        short_filename = post['POSTID'] + post['EXTENSION']
+    def download(self):
+        self.post['EXTENSION'] = self._get_extension(self.post['CONTENTURL'])
+        self.directory.mkdir(exist_ok=True)
 
-        self.getFile(filename, short_filename, directory, post['CONTENTURL'])
+        filename = GLOBAL.config['filename'].format(**self.post) + self.post["EXTENSION"]
+        self._download_resource(pathlib.Path(filename), self.directory, self.post['CONTENTURL'])

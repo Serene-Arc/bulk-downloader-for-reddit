@@ -1,4 +1,5 @@
-import os
+#!/usr/bin/env python3
+
 import pathlib
 import urllib.request
 
@@ -12,23 +13,23 @@ from bulkredditdownloader.utils import GLOBAL
 class GifDeliveryNetwork(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
+        self.download()
+
+    def download(self):
         try:
-            post['MEDIAURL'] = self.getLink(post['CONTENTURL'])
+            self.post['MEDIAURL'] = self._get_link(self.post['CONTENTURL'])
         except IndexError:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        post['EXTENSION'] = self.getExtension(post['MEDIAURL'])
+        self.post['EXTENSION'] = self._get_extension(self.post['MEDIAURL'])
+        self.directory.mkdir(exist_ok=True)
 
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        filename = GLOBAL.config['filename'].format(**self.post) + self.post["EXTENSION"]
 
-        filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
-        short_filename = post['POSTID'] + post['EXTENSION']
-
-        self.getFile(filename, short_filename, directory, post['MEDIAURL'])
+        self._download_resource(filename, self.directory, self.post['MEDIAURL'])
 
     @staticmethod
-    def getLink(url: str) -> str:
+    def _get_link(url: str) -> str:
         """Extract direct link to the video from page's source
         and return it
         """

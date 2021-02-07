@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import logging
 import os
 import pathlib
 import sys
@@ -7,21 +10,24 @@ import youtube_dl
 from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import FileAlreadyExistsError
 from bulkredditdownloader.utils import GLOBAL
-from bulkredditdownloader.utils import printToFile as print
+
+logger = logging.getLogger(__name__)
 
 
 class Youtube(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
         super().__init__(directory, post)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        self.download()
 
-        filename = GLOBAL.config['filename'].format(**post)
-        print(filename)
+    def download(self):
+        self.directory.mkdir(exist_ok=True)
 
-        self.download(filename, directory, post['CONTENTURL'])
+        filename = GLOBAL.config['filename'].format(**self.post)
+        logger.info(filename)
 
-    def download(self, filename: str, directory: pathlib.Path, url: str):
+        self._download_video(filename, self.directory, self.post['CONTENTURL'])
+
+    def _download_video(self, filename: str, directory: pathlib.Path, url: str):
         ydl_opts = {
             "format": "best",
             "outtmpl": str(directory / (filename + ".%(ext)s")),
@@ -35,9 +41,12 @@ class Youtube(BaseDownloader):
 
         location = directory / (filename + ".mp4")
 
+        with open(location, 'rb') as file:
+            content = file.read()
+
         if GLOBAL.arguments.no_dupes:
             try:
-                file_hash = self.createHash(str(location))
+                file_hash = self._create_hash(content)
             except FileNotFoundError:
                 return None
             if file_hash in GLOBAL.downloadedPosts():
@@ -48,7 +57,7 @@ class Youtube(BaseDownloader):
     @staticmethod
     def _hook(d):
         if d['status'] == 'finished':
-            return print("Downloaded")
+            return logger.info("Downloaded")
         downloaded_mbs = int(d['downloaded_bytes'] * (10**(-6)))
         file_size = int(d['total_bytes'] * (10**(-6)))
         sys.stdout.write("{}Mb/{}Mb\r".format(downloaded_mbs, file_size))
