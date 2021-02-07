@@ -2,13 +2,14 @@ import os
 import pathlib
 import subprocess
 
-from bulkredditdownloader.downloaders.downloader_utils import getFile
+from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.utils import GLOBAL
 from bulkredditdownloader.utils import printToFile as print
 
 
-class VReddit:
+class VReddit(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
+        super().__init__(directory, post)
         extension = ".mp4"
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -20,7 +21,7 @@ class VReddit:
             fnull = open(os.devnull, 'w')
             subprocess.call("ffmpeg", stdout=fnull, stderr=subprocess.STDOUT)
         except Exception:
-            getFile(filename, short_filename, directory, post['CONTENTURL'])
+            self.getFile(filename, short_filename, directory, post['CONTENTURL'])
             print("FFMPEG library not found, skipping merging video and audio")
         else:
             video_name = post['POSTID'] + "_video"
@@ -30,8 +31,8 @@ class VReddit:
 
             print(directory, filename, sep="\n")
 
-            getFile(video_name, video_name, directory, video_url, silent=True)
-            getFile(audio_name, audio_name, directory, audio_url, silent=True)
+            self.getFile(video_name, video_name, directory, video_url, silent=True)
+            self.getFile(audio_name, audio_name, directory, audio_url, silent=True)
             try:
                 self._mergeAudio(video_name, audio_name, filename, short_filename, directory)
             except KeyboardInterrupt:

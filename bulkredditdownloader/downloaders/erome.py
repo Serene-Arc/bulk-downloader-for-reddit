@@ -4,14 +4,15 @@ import urllib.error
 import urllib.request
 from html.parser import HTMLParser
 
-from bulkredditdownloader.downloaders.downloader_utils import getExtension, getFile
+from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, NotADownloadableLinkError
 from bulkredditdownloader.utils import GLOBAL
 from bulkredditdownloader.utils import printToFile as print
 
 
-class Erome:
+class Erome(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
+        super().__init__(directory, post)
         try:
             images = self.getLinks(post['CONTENTURL'])
         except urllib.error.HTTPError:
@@ -22,7 +23,7 @@ class Erome:
         duplicates = 0
 
         if images_length == 1:
-            extension = getExtension(images[0])
+            extension = self.getExtension(images[0])
 
             """Filenames are declared here"""
             filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
@@ -32,7 +33,7 @@ class Erome:
             if 'https://' not in image_url or 'http://' not in image_url:
                 image_url = "https://" + image_url
 
-            getFile(filename, short_filename, directory, image_url)
+            self.getFile(filename, short_filename, directory, image_url)
 
         else:
             filename = GLOBAL.config['filename'].format(**post)
@@ -48,7 +49,7 @@ class Erome:
                 os.makedirs(folder_dir)
 
             for i in range(images_length):
-                extension = getExtension(images[i])
+                extension = self.getExtension(images[i])
 
                 filename = str(i + 1) + extension
                 image_url = images[i]
@@ -59,7 +60,7 @@ class Erome:
                 print("  {}".format(filename))
 
                 try:
-                    getFile(filename, filename, folder_dir, image_url, indent=2)
+                    self.getFile(filename, filename, folder_dir, image_url, indent=2)
                     print()
                 except FileAlreadyExistsError:
                     print("  The file already exists" + " " * 10, end="\n\n")

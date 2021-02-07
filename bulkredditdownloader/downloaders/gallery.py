@@ -1,24 +1,22 @@
 import json
 import os
+import pathlib
 import urllib
 
 import requests
-import pathlib
 
-from bulkredditdownloader.downloaders.downloader_utils import getFile
-from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound, NotADownloadableLinkError,
-                                         TypeInSkip)
+from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound,
+                                         NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL
 from bulkredditdownloader.utils import printToFile as print
 
 
-class Gallery:
+class Gallery(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post):
+        super().__init__(directory, post)
         link = post['CONTENTURL']
         self.raw_data = self.getData(link)
-
-        self.directory = directory
-        self.post = post
 
         images = {}
         count = 0
@@ -86,7 +84,7 @@ class Gallery:
             print("\n  ({}/{})".format(i + 1, count))
 
             try:
-                getFile(filename, short_filename, folder_dir, images[i]['url'], indent=2)
+                self.getFile(filename, short_filename, folder_dir, images[i]['url'], indent=2)
                 how_many_downloaded += 1
                 print()
 

@@ -4,15 +4,15 @@ import sys
 
 import youtube_dl
 
-from bulkredditdownloader.downloaders.downloader_utils import createHash
+from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import FileAlreadyExistsError
 from bulkredditdownloader.utils import GLOBAL
 from bulkredditdownloader.utils import printToFile as print
 
 
-
-class Youtube:
+class Youtube(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
+        super().__init__(directory, post)
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -37,7 +37,7 @@ class Youtube:
 
         if GLOBAL.arguments.no_dupes:
             try:
-                file_hash = createHash(str(location))
+                file_hash = self.createHash(str(location))
             except FileNotFoundError:
                 return None
             if file_hash in GLOBAL.downloadedPosts():

@@ -4,19 +4,20 @@ import pathlib
 
 import requests
 
+from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.downloaders.direct import Direct
-from bulkredditdownloader.downloaders.downloader_utils import getFile
-from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, ExtensionError, FileAlreadyExistsError, ImageNotFound,
-                                         NotADownloadableLinkError, TypeInSkip)
+from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, ExtensionError, FileAlreadyExistsError,
+                                         ImageNotFound, NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL, nameCorrector
 from bulkredditdownloader.utils import printToFile as print
 
 
-class Imgur:
+class Imgur(BaseDownloader):
 
     imgur_image_domain = "https://i.imgur.com/"
 
     def __init__(self, directory: pathlib.Path, post: dict):
+        super().__init__(directory, post)
         link = post['CONTENTURL']
 
         if link.endswith(".gifv"):
@@ -25,9 +26,6 @@ class Imgur:
             return
 
         self.raw_data = self.getData(link)
-
-        self.directory = directory
-        self.post = post
 
         if self.isAlbum:
             if self.raw_data["album_images"]["count"] != 1:
@@ -65,7 +63,7 @@ class Imgur:
             print("\n  ({}/{})".format(i + 1, images_length))
 
             try:
-                getFile(filename, short_filename, folder_dir, image_url, indent=2)
+                self.getFile(filename, short_filename, folder_dir, image_url, indent=2)
                 how_many_downloaded += 1
                 print()
 
@@ -101,7 +99,7 @@ class Imgur:
         filename = GLOBAL.config['filename'].format(**self.post) + extension
         short_filename = self.post['POSTID'] + extension
 
-        getFile(filename, short_filename, self.directory, image_url)
+        self.getFile(filename, short_filename, self.directory, image_url)
 
     @property
     def isAlbum(self) -> bool:

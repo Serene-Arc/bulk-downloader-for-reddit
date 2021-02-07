@@ -4,19 +4,20 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from bulkredditdownloader.downloaders.downloader_utils import getExtension, getFile
+from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.utils import GLOBAL
 
 
-class GifDeliveryNetwork:
+class GifDeliveryNetwork(BaseDownloader):
     def __init__(self, directory: pathlib.Path, post: dict):
+        super().__init__(directory, post)
         try:
             post['MEDIAURL'] = self.getLink(post['CONTENTURL'])
         except IndexError:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        post['EXTENSION'] = getExtension(post['MEDIAURL'])
+        post['EXTENSION'] = self.getExtension(post['MEDIAURL'])
 
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -24,7 +25,7 @@ class GifDeliveryNetwork:
         filename = GLOBAL.config['filename'].format(**post) + post["EXTENSION"]
         short_filename = post['POSTID'] + post['EXTENSION']
 
-        getFile(filename, short_filename, directory, post['MEDIAURL'])
+        self.getFile(filename, short_filename, directory, post['MEDIAURL'])
 
     @staticmethod
     def getLink(url: str) -> str:
