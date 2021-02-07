@@ -96,8 +96,9 @@ class BaseDownloader(ABC):
     @staticmethod
     def _get_extension(url: str) -> str:
         pattern = re.compile(r'(\.(jpg|jpeg|png|mp4|webm|gif))')
-        if len(results := re.search(pattern, url).groups()) > 1:
-            return results[1]
+        if results := re.search(pattern, url):
+            if len(results.groups()) > 1:
+                return results[0]
         if "v.redd.it" not in url:
             return '.jpg'
         else:
