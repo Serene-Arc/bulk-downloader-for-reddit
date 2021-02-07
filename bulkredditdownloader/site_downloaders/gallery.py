@@ -7,7 +7,7 @@ import urllib.parse
 
 import requests
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound,
                                          NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL

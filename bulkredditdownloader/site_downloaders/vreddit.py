@@ -5,7 +5,7 @@ import os
 import pathlib
 import subprocess
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.utils import GLOBAL
 
 logger = logging.getLogger(__name__)

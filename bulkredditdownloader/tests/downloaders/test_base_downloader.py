@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 
 @pytest.mark.parametrize(('test_bytes', 'expected'), ((b'test', '098f6bcd4621d373cade4e832627b4f6'),

@@ -7,7 +7,7 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from bulkredditdownloader.downloaders.gif_delivery_network import GifDeliveryNetwork
+from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
 class Gfycat(GifDeliveryNetwork):

@@ -14,16 +14,16 @@ from prawcore.exceptions import InsufficientScope
 
 from bulkredditdownloader.arguments import Arguments
 from bulkredditdownloader.config import Config
-from bulkredditdownloader.downloaders.direct import Direct
-from bulkredditdownloader.downloaders.erome import Erome
-from bulkredditdownloader.downloaders.gallery import Gallery
-from bulkredditdownloader.downloaders.gfycat import Gfycat
-from bulkredditdownloader.downloaders.gif_delivery_network import GifDeliveryNetwork
-from bulkredditdownloader.downloaders.imgur import Imgur
-from bulkredditdownloader.downloaders.redgifs import Redgifs
-from bulkredditdownloader.downloaders.self_post import SelfPost
-from bulkredditdownloader.downloaders.vreddit import VReddit
-from bulkredditdownloader.downloaders.youtube import Youtube
+from bulkredditdownloader.site_downloaders.direct import Direct
+from bulkredditdownloader.site_downloaders.erome import Erome
+from bulkredditdownloader.site_downloaders.gallery import Gallery
+from bulkredditdownloader.site_downloaders.gfycat import Gfycat
+from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
+from bulkredditdownloader.site_downloaders.imgur import Imgur
+from bulkredditdownloader.site_downloaders.redgifs import Redgifs
+from bulkredditdownloader.site_downloaders.self_post import SelfPost
+from bulkredditdownloader.site_downloaders.vreddit import VReddit
+from bulkredditdownloader.site_downloaders.youtube import Youtube
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, DomainInSkip, FailedToDownload, FileAlreadyExistsError,
                                          ImgurLimitError, ImgurLoginError, InvalidJSONFile, NoSuitablePost, NotADownloadableLinkError,
                                          TypeInSkip, full_exc_info)

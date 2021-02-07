@@ -7,7 +7,7 @@ import sys
 
 import youtube_dl
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import FileAlreadyExistsError
 from bulkredditdownloader.utils import GLOBAL
 

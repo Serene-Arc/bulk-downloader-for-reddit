@@ -6,8 +6,8 @@ import logging
 
 import requests
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
-from bulkredditdownloader.downloaders.direct import Direct
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.direct import Direct
 from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, ExtensionError, FileAlreadyExistsError,
                                          ImageNotFound, NotADownloadableLinkError, TypeInSkip)
 from bulkredditdownloader.utils import GLOBAL, nameCorrector

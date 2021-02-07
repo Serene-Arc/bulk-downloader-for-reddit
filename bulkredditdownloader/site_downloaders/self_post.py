@@ -5,7 +5,7 @@ import logging
 import pathlib
 from pathlib import Path
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import FileAlreadyExistsError, TypeInSkip
 from bulkredditdownloader.utils import GLOBAL
 

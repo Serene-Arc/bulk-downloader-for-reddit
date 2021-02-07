@@ -7,7 +7,7 @@ import urllib.error
 import urllib.request
 from html.parser import HTMLParser
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, NotADownloadableLinkError
 from bulkredditdownloader.utils import GLOBAL
 

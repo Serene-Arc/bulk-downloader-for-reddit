@@ -5,7 +5,7 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from bulkredditdownloader.downloaders.base_downloader import BaseDownloader
+from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.utils import GLOBAL
 
