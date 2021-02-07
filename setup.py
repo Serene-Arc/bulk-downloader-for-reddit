@@ -3,7 +3,7 @@
 ## python setup.py build
 import sys
 from cx_Freeze import setup, Executable
-from script import __version__
+from bulkredditdownloader.__main__ import __version__
 
 options = {
     "build_exe": {

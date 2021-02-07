@@ -4,10 +4,10 @@ import urllib.error
 import urllib.request
 from html.parser import HTMLParser
 
-from src.downloaders.downloaderUtils import getExtension, getFile
-from src.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, NotADownloadableLinkError
-from src.utils import GLOBAL
-from src.utils import printToFile as print
+from bulkredditdownloader.downloaders.downloaderUtils import getExtension, getFile
+from bulkredditdownloader.errors import AlbumNotDownloadedCompletely, FileAlreadyExistsError, NotADownloadableLinkError
+from bulkredditdownloader.utils import GLOBAL
+from bulkredditdownloader.utils import printToFile as print
 
 
 class Erome:

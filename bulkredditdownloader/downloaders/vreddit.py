@@ -2,9 +2,9 @@ import os
 import pathlib
 import subprocess
 
-from src.downloaders.downloaderUtils import getFile
-from src.utils import GLOBAL
-from src.utils import printToFile as print
+from bulkredditdownloader.downloaders.downloaderUtils import getFile
+from bulkredditdownloader.utils import GLOBAL
+from bulkredditdownloader.utils import printToFile as print
 
 
 class VReddit:

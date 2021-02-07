@@ -1,6 +1,6 @@
-from src.reddit import Reddit
-from src.jsonHelper import JsonFile
-from src.utils import nameCorrector
+from bulkredditdownloader.reddit import Reddit
+from bulkredditdownloader.jsonHelper import JsonFile
+from bulkredditdownloader.utils import nameCorrector
 
 
 class Config:

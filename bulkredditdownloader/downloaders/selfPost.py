@@ -4,9 +4,9 @@ import os
 import pathlib
 from pathlib import Path
 
-from src.errors import FileAlreadyExistsError, TypeInSkip
-from src.utils import GLOBAL
-from src.utils import printToFile as print
+from bulkredditdownloader.errors import FileAlreadyExistsError, TypeInSkip
+from bulkredditdownloader.utils import GLOBAL
+from bulkredditdownloader.utils import printToFile as print
 
 VanillaPrint = print
 

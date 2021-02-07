@@ -1,7 +1,7 @@
 from pprint import pprint
 
 try:
-    from src.errors import InvalidRedditLink
+    from bulkredditdownloader.errors import InvalidRedditLink
 except ModuleNotFoundError:
     from errors import InvalidRedditLink
 

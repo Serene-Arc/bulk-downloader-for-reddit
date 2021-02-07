@@ -5,11 +5,11 @@ from urllib.error import HTTPError
 
 from prawcore.exceptions import Forbidden, NotFound
 
-from src.errors import (InsufficientPermission, InvalidSortingType, MultiredditNotFound, NoMatchingSubmissionFound,
-                        NoPrawSupport)
-from src.reddit import Reddit
+from bulkredditdownloader.errors import (InsufficientPermission, InvalidSortingType, MultiredditNotFound, NoMatchingSubmissionFound,
+                                         NoPrawSupport)
+from bulkredditdownloader.reddit import Reddit
 from praw.models.listing.generator import ListingGenerator
-from src.utils import GLOBAL, createLogFile, printToFile
+from bulkredditdownloader.utils import GLOBAL, createLogFile, printToFile
 from praw.models import Submission
 
 print = printToFile

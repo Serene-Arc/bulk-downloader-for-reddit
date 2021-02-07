@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
 
-from src.errors import InvalidSortingType, ProgramModeError, RedditorNameError, SearchModeError
-from src.parser import LinkDesigner
+from bulkredditdownloader.errors import InvalidSortingType, ProgramModeError, RedditorNameError, SearchModeError
+from bulkredditdownloader.parser import LinkDesigner
 import argparse
 
 

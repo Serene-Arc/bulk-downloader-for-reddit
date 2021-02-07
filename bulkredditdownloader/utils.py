@@ -4,7 +4,7 @@ from os import makedirs, path
 from pathlib import Path
 from typing import Optional
 
-from src.jsonHelper import JsonFile
+from bulkredditdownloader.jsonHelper import JsonFile
 
 
 class GLOBAL:

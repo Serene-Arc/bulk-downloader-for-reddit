@@ -5,11 +5,11 @@ import urllib
 import requests
 import pathlib
 
-from src.downloaders.downloaderUtils import getFile
-from src.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound, NotADownloadableLinkError,
-                        TypeInSkip)
-from src.utils import GLOBAL
-from src.utils import printToFile as print
+from bulkredditdownloader.downloaders.downloaderUtils import getFile
+from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound, NotADownloadableLinkError,
+                                         TypeInSkip)
+from bulkredditdownloader.utils import GLOBAL
+from bulkredditdownloader.utils import printToFile as print
 
 
 class Gallery:

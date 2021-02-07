@@ -12,28 +12,27 @@ from io import StringIO
 from pathlib import Path
 from prawcore.exceptions import InsufficientScope
 
-from src.arguments import Arguments
-from src.config import Config
-from src.downloaders.Direct import Direct
-from src.downloaders.Erome import Erome
-from src.downloaders.gallery import Gallery
-from src.downloaders.Gfycat import Gfycat
-from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.downloaders.Imgur import Imgur
-from src.downloaders.Gallery import Gallery
-from src.downloaders.redgifs import Redgifs
-from src.downloaders.selfPost import SelfPost
-from src.downloaders.vreddit import VReddit
-from src.downloaders.youtube import Youtube
-from src.errors import (AlbumNotDownloadedCompletely, DomainInSkip, FailedToDownload, FileAlreadyExistsError,
-                        ImgurLimitError, ImgurLoginError, InvalidJSONFile, NoSuitablePost, NotADownloadableLinkError,
-                        TypeInSkip, full_exc_info)
-from src.jsonHelper import JsonFile
-from src.programMode import ProgramMode
-from src.reddit import Reddit
-from src.searcher import getPosts
-from src.store import Store
-from src.utils import GLOBAL, createLogFile, nameCorrector, printToFile
+from bulkredditdownloader.arguments import Arguments
+from bulkredditdownloader.config import Config
+from bulkredditdownloader.downloaders.Direct import Direct
+from bulkredditdownloader.downloaders.Erome import Erome
+from bulkredditdownloader.downloaders.gallery import Gallery
+from bulkredditdownloader.downloaders.Gfycat import Gfycat
+from bulkredditdownloader.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
+from bulkredditdownloader.downloaders.Imgur import Imgur
+from bulkredditdownloader.downloaders.redgifs import Redgifs
+from bulkredditdownloader.downloaders.selfPost import SelfPost
+from bulkredditdownloader.downloaders.vreddit import VReddit
+from bulkredditdownloader.downloaders.youtube import Youtube
+from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, DomainInSkip, FailedToDownload, FileAlreadyExistsError,
+                                         ImgurLimitError, ImgurLoginError, InvalidJSONFile, NoSuitablePost, NotADownloadableLinkError,
+                                         TypeInSkip, full_exc_info)
+from bulkredditdownloader.jsonHelper import JsonFile
+from bulkredditdownloader.programMode import ProgramMode
+from bulkredditdownloader.reddit import Reddit
+from bulkredditdownloader.searcher import getPosts
+from bulkredditdownloader.store import Store
+from bulkredditdownloader.utils import GLOBAL, createLogFile, nameCorrector, printToFile
 
 from time import sleep
 
@@ -330,11 +329,11 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         if GLOBAL.directory is None:
-            GLOBAL.directory = Path("..\\")
+            GLOBAL.directory = Path("../..\\")
 
     except Exception as exception:
         if GLOBAL.directory is None:
-            GLOBAL.directory = Path("..\\")
+            GLOBAL.directory = Path("../..\\")
         logging.error(sys.exc_info()[0].__name__, exc_info=full_exc_info(sys.exc_info()))
         print(GLOBAL.log_stream.getvalue())
 

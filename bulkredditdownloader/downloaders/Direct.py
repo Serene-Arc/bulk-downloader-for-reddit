@@ -1,8 +1,8 @@
 import os
 import pathlib
 
-from src.downloaders.downloaderUtils import getExtension, getFile
-from src.utils import GLOBAL
+from bulkredditdownloader.downloaders.downloaderUtils import getExtension, getFile
+from bulkredditdownloader.utils import GLOBAL
 
 
 class Direct:

@@ -4,10 +4,10 @@ import sys
 
 import youtube_dl
 
-from src.downloaders.downloaderUtils import createHash
-from src.errors import FileAlreadyExistsError
-from src.utils import GLOBAL
-from src.utils import printToFile as print
+from bulkredditdownloader.downloaders.downloaderUtils import createHash
+from bulkredditdownloader.errors import FileAlreadyExistsError
+from bulkredditdownloader.utils import GLOBAL
+from bulkredditdownloader.utils import printToFile as print
 
 
 

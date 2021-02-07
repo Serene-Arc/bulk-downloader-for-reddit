@@ -5,9 +5,9 @@ import webbrowser
 import praw
 from prawcore.exceptions import ResponseException
 
-from src.errors import RedditLoginFailed
-from src.jsonHelper import JsonFile
-from src.utils import GLOBAL
+from bulkredditdownloader.errors import RedditLoginFailed
+from bulkredditdownloader.jsonHelper import JsonFile
+from bulkredditdownloader.utils import GLOBAL
 
 
 

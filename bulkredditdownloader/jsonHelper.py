@@ -1,7 +1,7 @@
 import json
 import os
 
-from src.errors import InvalidJSONFile
+from bulkredditdownloader.errors import InvalidJSONFile
 
 
 class JsonFile:

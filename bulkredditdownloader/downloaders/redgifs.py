@@ -1,18 +1,16 @@
 import json
 import os
+import pathlib
 import urllib.request
 
 from bs4 import BeautifulSoup
 
-from src.downloaders.downloaderUtils import getExtension, getFile
-from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.errors import NotADownloadableLinkError
-from src.utils import GLOBAL
-import pathlib
+from bulkredditdownloader.downloaders.downloaderUtils import getExtension, getFile
+from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.utils import GLOBAL
 
 
-
-class Gfycat:
+class Redgifs:
     def __init__(self, directory: pathlib.Path, post: dict):
         try:
             post['MEDIAURL'] = self.getLink(post['CONTENTURL'])
@@ -40,7 +38,12 @@ class Gfycat:
         if url[-1:] == '/':
             url = url[:-1]
 
-        url = "https://gfycat.com/" + url.split('/')[-1]
+        url = urllib.request.Request(
+            "https://redgifs.com/watch/" + url.split('/')[-1])
+
+        url.add_header(
+            'User-Agent',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64')
 
         page_source = (urllib.request.urlopen(url).read().decode())
 
@@ -49,6 +52,6 @@ class Gfycat:
         content = soup.find("script", attrs=attributes)
 
         if content is None:
-            return GifDeliveryNetwork.getLink(url)
+            raise NotADownloadableLinkError("Could not read the page source")
 
         return json.loads(content.contents[0])["video"]["contentUrl"]

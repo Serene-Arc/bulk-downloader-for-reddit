@@ -4,9 +4,9 @@ import sys
 import urllib.request
 from pathlib import Path
 
-from src.errors import DomainInSkip, FailedToDownload, FileAlreadyExistsError, TypeInSkip
-from src.utils import GLOBAL
-from src.utils import printToFile as print
+from bulkredditdownloader.errors import DomainInSkip, FailedToDownload, FileAlreadyExistsError, TypeInSkip
+from bulkredditdownloader.utils import GLOBAL
+from bulkredditdownloader.utils import printToFile as print
 
 
 def dlProgress(count: int, block_size: int, total_size: int):
