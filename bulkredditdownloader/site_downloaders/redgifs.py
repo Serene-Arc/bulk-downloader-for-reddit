@@ -5,24 +5,22 @@ import pathlib
 import urllib.request
 
 from bs4 import BeautifulSoup
+from praw.models import Submission
 
-from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
 class Redgifs(GifDeliveryNetwork):
-    def __init__(self, directory: pathlib.Path, post: dict):
+    def __init__(self, directory: pathlib.Path, post: Submission):
         super().__init__(directory, post)
-        self.download()
 
     def download(self):
         super().download()
 
     @staticmethod
     def _get_link(url: str) -> str:
-        """Extract direct link to the video from page's source
-        and return it
-        """
+        """Extract direct link to the video from page's source and return it"""
         if '.webm' in url or '.mp4' in url or '.gif' in url:
             return url
 

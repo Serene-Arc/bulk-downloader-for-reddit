@@ -1,42 +1,30 @@
-#!/uasr/bin/env python3
+#!/usr/bin/env python3
 # coding=utf-8
 
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 
-@pytest.mark.parametrize(('test_bytes', 'expected'), ((b'test', '098f6bcd4621d373cade4e832627b4f6'),
-                                                      (b'test2', 'ad0234829205b9033196ba818f7a872b')))
-def test_create_hash(test_bytes: bytes, expected: str):
-    result = BaseDownloader._create_hash(test_bytes)
-    assert result == expected
+class BlankDownloader(BaseDownloader):
+    def __init__(self, directory, post):
+        super().__init__(directory, post)
+
+    def download(self) -> list[Resource]:
+        return [self._download_resource(self.post.url)]
 
 
-@pytest.mark.parametrize(('test_url', 'expected'), (('test.png', '.png'),
-                                                    ('random.jpg', '.jpg'),
-                                                    ('http://random.com/test.png', '.png'),
-                                                    ('https://example.net/picture.jpg', '.jpg'),
-                                                    ('https://v.redd.it/picture', '.mp4'),
-                                                    ('https://v.redd.it/picture.jpg', '.jpg'),
-                                                    ('https:/random.url', '.jpg')
-                                                    ))
-def test_get_extension(test_url: str, expected: str):
-    result = BaseDownloader._get_extension(test_url)
-    assert result == expected
-
-
-@pytest.mark.skip
-@pytest.mark.parametrize(('test_url', 'expected_hash'), (('https://www.iana.org/_img/2013.1/iana-logo-header.svg', ''),
-                                                         ('', '')
-                                                         ))
-def test_download_resource(test_url: str, expected_hash: str, tmp_path: Path):
-    test_file = tmp_path / 'test'
-    BaseDownloader._download_resource(test_file, tmp_path, test_url)
-    assert test_file.exists()
-    with open(test_file, 'rb') as file:
-        content = file.read()
-    hash_result = BaseDownloader._create_hash(content)
-    assert hash_result == expected_hash
+@pytest.mark.parametrize(('test_url', 'expected_hash'), (
+    ('https://docs.python.org/3/_static/py.png', 'a721fc7ec672275e257bbbfde49a4d4e'),
+))
+def test_get_resource(test_url: str, expected_hash: str):
+    mock_submission = Mock
+    mock_submission.url = test_url
+    downloader = BlankDownloader(Path('.'), mock_submission)
+    result = downloader.download()
+    assert isinstance(result[0], Resource)
+    assert result[0].hash.hexdigest() == expected_hash

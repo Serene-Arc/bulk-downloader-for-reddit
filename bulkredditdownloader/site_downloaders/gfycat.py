@@ -6,14 +6,14 @@ import re
 import urllib.request
 
 from bs4 import BeautifulSoup
+from praw.models import Submission
 
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
 class Gfycat(GifDeliveryNetwork):
-    def __init__(self, directory: pathlib.Path, post: dict):
+    def __init__(self, directory: pathlib.Path, post: Submission):
         super().__init__(directory, post)
-        self.download()
 
     def download(self):
         super().download()

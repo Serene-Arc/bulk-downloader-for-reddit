@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
 
 import json
-import pathlib
 import logging
-import urllib.parse
+import pathlib
 
 import requests
+from praw.models import Submission
 
+from bulkredditdownloader.errors import ImageNotFound, NotADownloadableLinkError
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
-from bulkredditdownloader.errors import (AlbumNotDownloadedCompletely, FileAlreadyExistsError, ImageNotFound,
-                                         NotADownloadableLinkError, TypeInSkip)
-from bulkredditdownloader.utils import GLOBAL
 
 logger = logging.getLogger(__name__)
 
 
 class Gallery(BaseDownloader):
-    def __init__(self, directory: pathlib.Path, post):
+    def __init__(self, directory: pathlib.Path, post: Submission):
         super().__init__(directory, post)
-        link = self.post['CONTENTURL']
+        link = self.post.url
         self.raw_data = self._get_data(link)
-        self.download()
 
     def download(self):
         images = {}
@@ -37,7 +34,7 @@ class Gallery(BaseDownloader):
             except KeyError:
                 continue
 
-        self._download_album(images, count)
+        return [self._download_album(images)]
 
     @staticmethod
     def _get_data(link: str) -> dict:
@@ -63,44 +60,9 @@ class Gallery(BaseDownloader):
         data = json.loads(page_source[start_index - 1:end_index + 1].strip()[:-1])
         return data
 
-    def _download_album(self, images: dict, count: int):
-        folder_name = GLOBAL.config['filename'].format(**self.post)
-        folder_dir = self.directory / folder_name
-
-        how_many_downloaded = 0
-        duplicates = 0
-
-        folder_dir.mkdir(exist_ok=True)
-        logger.info(folder_name)
-
+    def _download_album(self, images: dict):
+        out = []
         for i, image in enumerate(images):
-            path = urllib.parse.urlparse(image['url']).path
-            extension = pathlib.Path(path).suffix
+            out.append(self._download_resource(image['url']))
 
-            filename = pathlib.Path("_".join([str(i + 1), image['id']]) + extension)
-
-            logger.info("\n  ({}/{})".format(i + 1, count))
-
-            try:
-                self._download_resource(filename, folder_dir, image['url'], indent=2)
-                how_many_downloaded += 1
-
-            except FileAlreadyExistsError:
-                logger.info("  The file already exists" + " " * 10, end="\n\n")
-                duplicates += 1
-
-            except TypeInSkip:
-                logger.info("  Skipping...")
-                how_many_downloaded += 1
-
-            except Exception as exception:
-                logger.info("\n  Could not get the file")
-                logger.info("  " + "{class_name}: {info}\nSee CONSOLE_LOG.txt for more information".format(
-                    class_name=exception.__class__.__name__, info=str(exception)) + "\n"
-                )
-                logger.info(GLOBAL.log_stream.getvalue(), no_print=True)
-
-        if duplicates == count:
-            raise FileAlreadyExistsError
-        elif how_many_downloaded + duplicates < count:
-            raise AlbumNotDownloadedCompletely("Album Not Downloaded Completely")
+        return out

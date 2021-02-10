@@ -4,61 +4,49 @@ import logging
 import os
 import pathlib
 import subprocess
+import tempfile
 
+import requests
+from praw.models import Submission
+
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
-from bulkredditdownloader.utils import GLOBAL
 
 logger = logging.getLogger(__name__)
 
 
 class VReddit(BaseDownloader):
-    def __init__(self, directory: pathlib.Path, post: dict):
+    def __init__(self, directory: pathlib.Path, post: Submission):
         super().__init__(directory, post)
-        self.download()
 
     def download(self):
-        extension = ".mp4"
-        self.directory.mkdir(exist_ok=True)
-
-        filename = GLOBAL.config['filename'].format(**self.post) + extension
-
         try:
             fnull = open(os.devnull, 'w')
             subprocess.call("ffmpeg", stdout=fnull, stderr=subprocess.STDOUT)
-        except Exception:
-            self._download_resource(filename, self.directory, self.post['CONTENTURL'])
-            logger.info("FFMPEG library not found, skipping merging video and audio")
+        except subprocess.SubprocessError:
+            return self._download_resource(self.post.url)
         else:
-            video_name = self.post['POSTID'] + "_video"
-            video_url = self.post['CONTENTURL']
-            audio_name = self.post['POSTID'] + "_audio"
+            video_url = self.post.url
             audio_url = video_url[:video_url.rfind('/')] + '/DASH_audio.mp4'
 
-            logger.info(self.directory, filename, sep="\n")
-
-            self._download_resource(video_name, self.directory, video_url, silent=True)
-            self._download_resource(audio_name, self.directory, audio_url, silent=True)
-            try:
-                self._merge_audio(video_name, audio_name, filename, self.directory)
-            except KeyboardInterrupt:
-                (self.directory / filename).unlink()
-                (self.directory / audio_name).unlink()
-                (self.directory / video_name).unlink()
-                (self.directory / filename).unlink()
+            with tempfile.TemporaryDirectory() as temp_dir:
+                video = requests.get(video_url).content
+                audio = requests.get(audio_url).content
+                with open(temp_dir / 'video', 'wb')as file:
+                    file.write(video)
+                with open(temp_dir / 'audio', 'wb') as file:
+                    file.write(audio)
+                self._merge_audio(temp_dir)
+                with open(temp_dir / 'output.mp4', 'rb') as file:
+                    content = file.read()
+            return Resource(self.post, self.post.url, content)
 
     @staticmethod
-    def _merge_audio(
-            video: pathlib.Path,
-            audio: pathlib.Path,
-            filename: pathlib.Path,
-            directory: pathlib.Path):
-        input_video = str(directory / video)
-        input_audio = str(directory / audio)
+    def _merge_audio(working_directory: pathlib.Path):
+        input_video = working_directory / 'video'
+        input_audio = working_directory / 'audio'
 
         fnull = open(os.devnull, 'w')
         cmd = "ffmpeg -i {} -i {} -c:v copy -c:a aac -strict experimental {}".format(
-            input_audio, input_video, str(directory / filename))
+            input_audio, input_video, str(working_directory / 'output.mp4'))
         subprocess.call(cmd.split(), stdout=fnull, stderr=subprocess.STDOUT)
-
-        (directory / video).unlink()
-        (directory / audio).unlink()
