@@ -90,15 +90,18 @@ class RedditDownloader:
     def _get_subreddits(self, args: argparse.Namespace) -> list[praw.models.ListingGenerator]:
         if args.subreddit:
             subreddits = [self.reddit_instance.subreddit(chosen_subreddit) for chosen_subreddit in args.subreddit]
-            if self.sort_filter is RedditTypes.SortType.NEW:
-                sort_function = praw.models.Subreddit.new
-            elif self.sort_filter is RedditTypes.SortType.RISING:
-                sort_function = praw.models.Subreddit.rising
-            elif self.sort_filter is RedditTypes.SortType.CONTROVERSIAL:
-                sort_function = praw.models.Subreddit.controversial
+            if args.search:
+                return [reddit.search(args.search, sort=self.sort_filter.name.lower()) for reddit in subreddits]
             else:
-                sort_function = praw.models.Subreddit.hot
-            return [sort_function(reddit) for reddit in subreddits]
+                if self.sort_filter is RedditTypes.SortType.NEW:
+                    sort_function = praw.models.Subreddit.new
+                elif self.sort_filter is RedditTypes.SortType.RISING:
+                    sort_function = praw.models.Subreddit.rising
+                elif self.sort_filter is RedditTypes.SortType.CONTROVERSIAL:
+                    sort_function = praw.models.Subreddit.controversial
+                else:
+                    sort_function = praw.models.Subreddit.hot
+                return [sort_function(reddit) for reddit in subreddits]
         else:
             return []
 
