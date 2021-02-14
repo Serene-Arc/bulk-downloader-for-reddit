@@ -52,6 +52,7 @@ class RedditDownloader:
         self.sort_filter = RedditDownloader._create_sort_filter(args)
         self.file_name_formatter = RedditDownloader._create_file_name_formatter(args)
         self._determine_directories(args)
+        self._create_file_logger()
         self.master_hash_list = []
         self._load_config(args)
         if self.cfg_parser.has_option('DEFAULT', 'username') and self.cfg_parser.has_option('DEFAULT', 'password'):
@@ -86,6 +87,15 @@ class RedditDownloader:
             self.cfg_parser.read(Path('./config.cfg'))
         else:
             self.cfg_parser.read(Path('./default_config.cfg').resolve())
+
+    def _create_file_logger(self):
+        main_logger = logging.getLogger()
+        file_handler = logging.FileHandler(self.logfile_directory)
+        formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(0)
+
+        main_logger.addHandler(file_handler)
 
     def _get_subreddits(self, args: argparse.Namespace) -> list[praw.models.ListingGenerator]:
         if args.subreddit:
