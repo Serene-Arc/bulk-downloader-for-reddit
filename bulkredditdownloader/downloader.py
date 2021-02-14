@@ -40,21 +40,22 @@ class RedditTypes:
 
 class RedditDownloader:
     def __init__(self, args: argparse.Namespace):
+        self.args = args
         self.config_directories = appdirs.AppDirs('bulk_reddit_downloader')
         self.run_time = datetime.now().isoformat()
-        self._setup_internal_objects(args)
+        self._setup_internal_objects()
 
-        self.reddit_lists = self._retrieve_reddit_lists(args)
+        self.reddit_lists = self._retrieve_reddit_lists()
 
-    def _setup_internal_objects(self, args: argparse.Namespace):
-        self.download_filter = RedditDownloader._create_download_filter(args)
-        self.time_filter = RedditDownloader._create_time_filter(args)
-        self.sort_filter = RedditDownloader._create_sort_filter(args)
-        self.file_name_formatter = RedditDownloader._create_file_name_formatter(args)
-        self._determine_directories(args)
+    def _setup_internal_objects(self):
+        self.download_filter = self._create_download_filter()
+        self.time_filter = self._create_time_filter()
+        self.sort_filter = self._create_sort_filter()
+        self.file_name_formatter = self._create_file_name_formatter()
+        self._determine_directories()
         self._create_file_logger()
         self.master_hash_list = []
-        self._load_config(args)
+        self._load_config()
         if self.cfg_parser.has_option('DEFAULT', 'username') and self.cfg_parser.has_option('DEFAULT', 'password'):
             self.authenticated = True
 
@@ -69,21 +70,21 @@ class RedditDownloader:
                                                client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
                                                user_agent=socket.gethostname())
 
-    def _retrieve_reddit_lists(self, args: argparse.Namespace) -> list[praw.models.ListingGenerator]:
+    def _retrieve_reddit_lists(self) -> list[praw.models.ListingGenerator]:
         master_list = []
-        master_list.extend(self._get_subreddits(args))
-        master_list.extend(self._get_multireddits(args))
-        master_list.extend(self._get_user_data(args))
+        master_list.extend(self._get_subreddits())
+        master_list.extend(self._get_multireddits())
+        master_list.extend(self._get_user_data())
         return master_list
 
-    def _determine_directories(self, args: argparse.Namespace):
-        self.download_directory = Path(args.directory)
+    def _determine_directories(self):
+        self.download_directory = Path(self.args.directory)
         self.logfile_directory = self.download_directory / 'LOG_FILES'
         self.config_directory = self.config_directories.user_config_dir
 
-    def _load_config(self, args: argparse.Namespace):
+    def _load_config(self):
         self.cfg_parser = configparser.ConfigParser()
-        if args.use_local_config and Path('./config.cfg').exists():
+        if self.args.use_local_config and Path('./config.cfg').exists():
             self.cfg_parser.read(Path('./config.cfg'))
         else:
             self.cfg_parser.read(Path('./default_config.cfg').resolve())
@@ -97,11 +98,11 @@ class RedditDownloader:
 
         main_logger.addHandler(file_handler)
 
-    def _get_subreddits(self, args: argparse.Namespace) -> list[praw.models.ListingGenerator]:
-        if args.subreddit:
-            subreddits = [self.reddit_instance.subreddit(chosen_subreddit) for chosen_subreddit in args.subreddit]
-            if args.search:
-                return [reddit.search(args.search, sort=self.sort_filter.name.lower()) for reddit in subreddits]
+    def _get_subreddits(self) -> list[praw.models.ListingGenerator]:
+        if self.args.subreddit:
+            subreddits = [self.reddit_instance.subreddit(chosen_subreddit) for chosen_subreddit in self.args.subreddit]
+            if self.args.search:
+                return [reddit.search(self.args.search, sort=self.sort_filter.name.lower()) for reddit in subreddits]
             else:
                 if self.sort_filter is RedditTypes.SortType.NEW:
                     sort_function = praw.models.Subreddit.new
@@ -115,25 +116,25 @@ class RedditDownloader:
         else:
             return []
 
-    def _get_multireddits(self, args: argparse.Namespace) -> list[praw.models.ListingGenerator]:
-        if args.multireddit:
+    def _get_multireddits(self) -> list[praw.models.ListingGenerator]:
+        if self.args.multireddit:
             if self.authenticated:
-                return [self.reddit_instance.multireddit(m_reddit_choice) for m_reddit_choice in args.multireddit]
+                return [self.reddit_instance.multireddit(m_reddit_choice) for m_reddit_choice in self.args.multireddit]
             else:
                 raise RedditAuthenticationError('Accessing multireddits requires authentication')
         else:
             return []
 
-    def _get_user_data(self, args: argparse.Namespace) -> list[praw.models.ListingGenerator]:
-        if any((args.upvoted, args.submitted, args.saved)):
+    def _get_user_data(self) -> list[praw.models.ListingGenerator]:
+        if any((self.args.upvoted, self.args.submitted, self.args.saved)):
             if self.authenticated:
                 generators = []
-                if args.upvoted:
-                    generators.append(self.reddit_instance.redditor(args.user).upvoted)
-                if args.submitted:
-                    generators.append(self.reddit_instance.redditor(args.user).submissions)
-                if args.saved:
-                    generators.append(self.reddit_instance.redditor(args.user).saved)
+                if self.args.upvoted:
+                    generators.append(self.reddit_instance.redditor(self.args.user).upvoted)
+                if self.args.submitted:
+                    generators.append(self.reddit_instance.redditor(self.args.user).submissions)
+                if self.args.saved:
+                    generators.append(self.reddit_instance.redditor(self.args.user).saved)
 
                 return generators
             else:
@@ -141,34 +142,30 @@ class RedditDownloader:
         else:
             return []
 
-    @staticmethod
-    def _create_file_name_formatter(args: argparse.Namespace) -> FileNameFormatter:
-        return FileNameFormatter(args.set_filename, args.set_folderpath)
+    def _create_file_name_formatter(self) -> FileNameFormatter:
+        return FileNameFormatter(self.args.set_filename, self.args.set_folderpath)
 
-    @staticmethod
-    def _create_time_filter(args: argparse.Namespace) -> RedditTypes.TimeType:
+    def _create_time_filter(self) -> RedditTypes.TimeType:
         try:
-            return RedditTypes.TimeType[args.sort.upper()]
+            return RedditTypes.TimeType[self.args.sort.upper()]
         except (KeyError, AttributeError):
             return RedditTypes.TimeType.ALL
 
-    @staticmethod
-    def _create_sort_filter(args: argparse.Namespace) -> RedditTypes.SortType:
+    def _create_sort_filter(self) -> RedditTypes.SortType:
         try:
-            return RedditTypes.SortType[args.time.upper()]
+            return RedditTypes.SortType[self.args.time.upper()]
         except (KeyError, AttributeError):
             return RedditTypes.SortType.HOT
 
-    @staticmethod
-    def _create_download_filter(args: argparse.Namespace) -> DownloadFilter:
+    def _create_download_filter(self) -> DownloadFilter:
         formats = {
             "videos": [".mp4", ".webm"],
             "images": [".jpg", ".jpeg", ".png", ".bmp"],
             "gifs": [".gif"],
             "self": []
         }
-        excluded_extensions = [extension for ext_type in args.skip for extension in formats.get(ext_type, ())]
-        return DownloadFilter(excluded_extensions, args.skip_domain)
+        excluded_extensions = [extension for ext_type in self.args.skip for extension in formats.get(ext_type, ())]
+        return DownloadFilter(excluded_extensions, self.args.skip_domain)
 
     def download(self):
         for generator in self.reddit_lists:
