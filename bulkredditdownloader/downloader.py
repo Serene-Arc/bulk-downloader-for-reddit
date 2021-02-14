@@ -176,7 +176,6 @@ class RedditDownloader:
                 self._download_submission(submission)
 
     def _download_submission(self, submission: praw.models.Submission):
-        # TODO: check existence here
         if self.download_filter.check_url(submission.url):
             try:
                 downloader_class = DownloadFactory.pull_lever(submission.url)
@@ -184,13 +183,17 @@ class RedditDownloader:
                 content = downloader.download()
                 for res in content:
                     destination = self.file_name_formatter.format_path(res, self.download_directory)
-                    if res.hash.hexdigest() not in self.master_hash_list:
-                        destination.parent.mkdir(parents=True, exist_ok=True)
-                        with open(destination, 'wb') as file:
-                            file.write(res.content)
-                        logger.debug('Written file to {}'.format(destination))
-                        self.master_hash_list.append(res.hash.hexdigest())
-                        logger.debug('Hash added to master list: {}'.format(res.hash.hexdigest()))
+                    if destination.exists():
+                        logger.debug('File already exists: {}'.format(destination))
+                    else:
+                        if res.hash.hexdigest() not in self.master_hash_list:
+                            # TODO: consider making a hard link/symlink here
+                            destination.parent.mkdir(parents=True, exist_ok=True)
+                            with open(destination, 'wb') as file:
+                                file.write(res.content)
+                            logger.debug('Written file to {}'.format(destination))
+                            self.master_hash_list.append(res.hash.hexdigest())
+                            logger.debug('Hash added to master list: {}'.format(res.hash.hexdigest()))
 
                 logger.info('Downloaded submission {}'.format(submission.name))
             except NotADownloadableLinkError as e:
