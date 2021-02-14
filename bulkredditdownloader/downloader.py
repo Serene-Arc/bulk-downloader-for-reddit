@@ -186,7 +186,7 @@ class RedditDownloader:
                         if destination.exists():
                             logger.debug('File already exists: {}'.format(destination))
                         else:
-                            if res.hash.hexdigest() not in self.master_hash_list:
+                            if res.hash.hexdigest() not in self.master_hash_list and self.args.no_dupes:
                                 # TODO: consider making a hard link/symlink here
                                 destination.parent.mkdir(parents=True, exist_ok=True)
                                 with open(destination, 'wb') as file:
@@ -194,6 +194,8 @@ class RedditDownloader:
                                 logger.debug('Written file to {}'.format(destination))
                                 self.master_hash_list.append(res.hash.hexdigest())
                                 logger.debug('Hash added to master list: {}'.format(res.hash.hexdigest()))
+                            else:
+                                logger.debug(f'Resource from {res.url} downloaded elsewhere')
 
                 logger.info('Downloaded submission {}'.format(submission.name))
             except NotADownloadableLinkError as e:
