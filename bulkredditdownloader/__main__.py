@@ -31,6 +31,7 @@ def _add_options():
                         default=False)
     parser.add_argument("--link", "-l",
                         help="Get posts from link",
+                        action='append',
                         metavar="link")
     parser.add_argument("--saved",
                         action="store_true",

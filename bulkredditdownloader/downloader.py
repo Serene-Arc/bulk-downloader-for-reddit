@@ -75,6 +75,7 @@ class RedditDownloader:
         master_list.extend(self._get_subreddits())
         master_list.extend(self._get_multireddits())
         master_list.extend(self._get_user_data())
+        master_list.extend(self._get_submissions_from_link())
         return master_list
 
     def _determine_directories(self):
@@ -111,6 +112,12 @@ class RedditDownloader:
                 return [sort_function(reddit, limit=self.args.limit) for reddit in subreddits]
         else:
             return []
+
+    def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
+        supplied_submissions = []
+        for url in self.args.link:
+            supplied_submissions.append(self.reddit_instance.submission(url=url))
+        return [supplied_submissions]
 
     def _determine_sort_function(self):
         if self.sort_filter is RedditTypes.SortType.NEW:
