@@ -197,7 +197,7 @@ class RedditDownloader:
                         if destination.exists():
                             logger.debug('File already exists: {}'.format(destination))
                         else:
-                            if res.hash.hexdigest() not in self.master_hash_list and self.args.no_dupes:
+                            if res.hash.hexdigest() not in self.master_hash_list and not self.args.no_dupes:
                                 # TODO: consider making a hard link/symlink here
                                 destination.parent.mkdir(parents=True, exist_ok=True)
                                 with open(destination, 'wb') as file:
