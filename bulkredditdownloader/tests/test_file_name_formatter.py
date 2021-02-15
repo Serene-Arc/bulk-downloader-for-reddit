@@ -25,9 +25,8 @@ def submission() -> Mock:
 
 
 @pytest.fixture()
-def reddit_submission() -> praw.models.Submission:
-    rd = praw.Reddit(client_id='U-6gk4ZCh3IeNQ', client_secret='7CZHY6AmKweZME5s50SfDGylaPg', user_agent='test')
-    return rd.submission(id='lgilgt')
+def reddit_submission(reddit_instance) -> praw.models.Submission:
+    return reddit_instance.submission(id='lgilgt')
 
 
 @pytest.mark.parametrize(('format_string', 'expected'), (('{SUBREDDIT}', 'randomreddit'),
