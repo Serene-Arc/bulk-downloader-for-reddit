@@ -82,6 +82,9 @@ class RedditDownloader:
         self.logfile_directory = self.download_directory / 'LOG_FILES'
         self.config_directory = self.config_directories.user_config_dir
 
+        self.download_directory.mkdir(exist_ok=True, parents=True)
+        self.logfile_directory.mkdir(exist_ok=True, parents=True)
+
     def _load_config(self):
         self.cfg_parser = configparser.ConfigParser()
         if self.args.use_local_config and Path('./config.cfg').exists():
@@ -91,7 +94,7 @@ class RedditDownloader:
 
     def _create_file_logger(self):
         main_logger = logging.getLogger()
-        file_handler = logging.FileHandler(self.logfile_directory)
+        file_handler = logging.FileHandler(self.logfile_directory / 'log_output.txt')
         formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
         file_handler.setFormatter(formatter)
         file_handler.setLevel(0)
