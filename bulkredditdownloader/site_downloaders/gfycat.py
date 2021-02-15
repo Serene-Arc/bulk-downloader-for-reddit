@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import json
-import pathlib
 import re
 import urllib.request
 
@@ -12,8 +11,8 @@ from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDelive
 
 
 class Gfycat(GifDeliveryNetwork):
-    def __init__(self, directory: pathlib.Path, post: Submission):
-        super().__init__(directory, post)
+    def __init__(self, post: Submission):
+        super().__init__(post)
 
     def download(self):
         super().download()

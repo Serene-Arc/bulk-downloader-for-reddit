@@ -187,7 +187,7 @@ class RedditDownloader:
         if self.download_filter.check_url(submission.url):
             try:
                 downloader_class = DownloadFactory.pull_lever(submission.url)
-                downloader = downloader_class(self.download_directory, submission)
+                downloader = downloader_class(submission)
                 if self.args.no_download:
                     logger.info('Skipping download for submission {}'.format(submission.id))
                 else:

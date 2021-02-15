@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import logging
-import pathlib
 
 from praw.models import Submission
 
@@ -12,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class SelfPost(BaseDownloader):
-    def __init__(self, directory: pathlib.Path, post: Submission):
-        super().__init__(directory, post)
+    def __init__(self, post: Submission):
+        super().__init__(post)
 
     def download(self):
         return Resource(self.post, self.post.url, bytes(self.export_to_string()))

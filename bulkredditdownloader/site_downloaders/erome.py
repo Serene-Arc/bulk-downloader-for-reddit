@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import logging
-import pathlib
 import re
 import urllib.error
 import urllib.request
@@ -16,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 class Erome(BaseDownloader):
-    def __init__(self, directory: pathlib.Path, post: Submission):
-        super().__init__(directory, post)
+    def __init__(self, post: Submission):
+        super().__init__(post)
 
     def download(self):
         try:

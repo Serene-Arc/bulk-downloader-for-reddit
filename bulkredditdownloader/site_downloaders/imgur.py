@@ -2,7 +2,6 @@
 
 import json
 import logging
-import pathlib
 
 import requests
 from praw.models import Submission
@@ -18,15 +17,15 @@ class Imgur(BaseDownloader):
 
     imgur_image_domain = "https://i.imgur.com/"
 
-    def __init__(self, directory: pathlib.Path, post: Submission):
-        super().__init__(directory, post)
+    def __init__(self, post: Submission):
+        super().__init__(post)
         self.raw_data = {}
 
     def download(self):
         link = self.post.url
 
         if link.endswith(".gifv"):
-            direct_thing = Direct(self.directory, self.post)
+            direct_thing = Direct(self.post)
             return direct_thing.download()
 
         self.raw_data = self._get_data(link)

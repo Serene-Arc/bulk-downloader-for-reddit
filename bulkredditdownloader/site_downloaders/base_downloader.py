@@ -3,7 +3,6 @@
 
 import logging
 from abc import ABC, abstractmethod
-from pathlib import Path
 
 import requests
 from praw.models import Submission
@@ -15,8 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseDownloader(ABC):
-    def __init__(self, directory: Path, post: Submission):
-        self.directory = directory
+    def __init__(self, post: Submission):
         self.post = post
         self.hashes = []
 

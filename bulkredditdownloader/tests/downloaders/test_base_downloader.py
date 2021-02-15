@@ -11,8 +11,8 @@ from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 
 class BlankDownloader(BaseDownloader):
-    def __init__(self, directory, post):
-        super().__init__(directory, post)
+    def __init__(self, post):
+        super().__init__(post)
 
     def download(self) -> list[Resource]:
         return [self._download_resource(self.post.url)]
@@ -24,7 +24,7 @@ class BlankDownloader(BaseDownloader):
 def test_get_resource(test_url: str, expected_hash: str):
     mock_submission = Mock
     mock_submission.url = test_url
-    downloader = BlankDownloader(Path('.'), mock_submission)
+    downloader = BlankDownloader(mock_submission)
     result = downloader.download()
     assert isinstance(result[0], Resource)
     assert result[0].hash.hexdigest() == expected_hash

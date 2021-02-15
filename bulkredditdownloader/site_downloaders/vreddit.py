@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class VReddit(BaseDownloader):
-    def __init__(self, directory: pathlib.Path, post: Submission):
-        super().__init__(directory, post)
+    def __init__(self, post: Submission):
+        super().__init__(post)
 
     def download(self):
         try:
