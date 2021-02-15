@@ -104,17 +104,21 @@ class RedditDownloader:
             if self.args.search:
                 return [reddit.search(self.args.search, sort=self.sort_filter.name.lower()) for reddit in subreddits]
             else:
-                if self.sort_filter is RedditTypes.SortType.NEW:
-                    sort_function = praw.models.Subreddit.new
-                elif self.sort_filter is RedditTypes.SortType.RISING:
-                    sort_function = praw.models.Subreddit.rising
-                elif self.sort_filter is RedditTypes.SortType.CONTROVERSIAL:
-                    sort_function = praw.models.Subreddit.controversial
-                else:
-                    sort_function = praw.models.Subreddit.hot
-                return [sort_function(reddit) for reddit in subreddits]
+                sort_function = self._determine_sort_function()
+                return [sort_function(reddit, limit=self.args.limit) for reddit in subreddits]
         else:
             return []
+
+    def _determine_sort_function(self):
+        if self.sort_filter is RedditTypes.SortType.NEW:
+            sort_function = praw.models.Subreddit.new
+        elif self.sort_filter is RedditTypes.SortType.RISING:
+            sort_function = praw.models.Subreddit.rising
+        elif self.sort_filter is RedditTypes.SortType.CONTROVERSIAL:
+            sort_function = praw.models.Subreddit.controversial
+        else:
+            sort_function = praw.models.Subreddit.hot
+        return sort_function
 
     def _get_multireddits(self) -> list[praw.models.ListingGenerator]:
         if self.args.multireddit:
@@ -129,10 +133,14 @@ class RedditDownloader:
         if any((self.args.upvoted, self.args.submitted, self.args.saved)):
             if self.authenticated:
                 generators = []
+                sort_function = self._determine_sort_function()
                 if self.args.upvoted:
                     generators.append(self.reddit_instance.redditor(self.args.user).upvoted)
                 if self.args.submitted:
-                    generators.append(self.reddit_instance.redditor(self.args.user).submissions)
+                    generators.append(
+                        sort_function(
+                            self.reddit_instance.redditor(self.args.user).submissions,
+                            limit=self.args.limit))
                 if self.args.saved:
                     generators.append(self.reddit_instance.redditor(self.args.user).saved)
 

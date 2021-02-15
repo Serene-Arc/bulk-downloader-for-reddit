@@ -76,6 +76,7 @@ def _add_options():
     parser.add_argument("--limit",
                         help="default: unlimited",
                         metavar="Limit",
+                        default=None,
                         type=int)
     parser.add_argument("--time",
                         help="Either hour, day, week, month, year or all. default: all",
