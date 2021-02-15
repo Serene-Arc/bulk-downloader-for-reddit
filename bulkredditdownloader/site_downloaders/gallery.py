@@ -6,7 +6,7 @@ import logging
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.errors import ResourceNotFound, NotADownloadableLinkError
+from bulkredditdownloader.errors import NotADownloadableLinkError, ResourceNotFound
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class Gallery(BaseDownloader):
             except KeyError:
                 continue
 
-        return [self._download_album(images)]
+        return self._download_album(images)
 
     @staticmethod
     def _get_data(link: str) -> dict:
@@ -62,7 +62,6 @@ class Gallery(BaseDownloader):
 
     def _download_album(self, images: dict):
         out = []
-        for i, image in enumerate(images):
-            out.append(self._download_resource(image['url']))
-
+        for image_key in images.keys():
+            out.append(self._download_resource(images[image_key]['url']))
         return out
