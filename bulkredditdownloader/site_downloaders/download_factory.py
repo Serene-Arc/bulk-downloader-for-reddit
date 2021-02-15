@@ -8,6 +8,7 @@ from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.site_downloaders.direct import Direct
 from bulkredditdownloader.site_downloaders.erome import Erome
+from bulkredditdownloader.site_downloaders.gallery import Gallery
 from bulkredditdownloader.site_downloaders.gfycat import Gfycat
 from bulkredditdownloader.site_downloaders.imgur import Imgur
 from bulkredditdownloader.site_downloaders.redgifs import Redgifs
@@ -27,5 +28,7 @@ class DownloadFactory:
             return Redgifs
         elif re.match(url_beginning + r'[vi].redd\.it.*', url):
             return Direct
+        elif re.match(url_beginning + r'reddit.com/gallery/.*', url):
+            return Gallery
         else:
             raise NotADownloadableLinkError('No downloader module exists for url {}'.format(url))
