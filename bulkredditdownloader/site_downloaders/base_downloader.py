@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.errors import FailedToDownload
+from bulkredditdownloader.errors import SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class BaseDownloader(ABC):
             try:
                 download_content = requests.get(resource_url, headers=headers).content
             except ConnectionResetError:
-                raise FailedToDownload
+                raise SiteDownloaderError
             return Resource(self.post, resource_url, download_content)
 
-        raise FailedToDownload
+        raise SiteDownloaderError

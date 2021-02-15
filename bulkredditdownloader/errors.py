@@ -4,25 +4,17 @@ class BulkDownloaderException(Exception):
     pass
 
 
-class NotADownloadableLinkError(BulkDownloaderException):
-    pass
-
-
 class RedditAuthenticationError(BulkDownloaderException):
     pass
 
 
-class InvalidJSONFile(BulkDownloaderException):
+class SiteDownloaderError(BulkDownloaderException):
     pass
 
 
-class FailedToDownload(BulkDownloaderException):
+class NotADownloadableLinkError(SiteDownloaderError):
     pass
 
 
-class ImageNotFound(BulkDownloaderException):
-    pass
-
-
-class ExtensionError(BulkDownloaderException):
+class ResourceNotFound(SiteDownloaderError):
     pass

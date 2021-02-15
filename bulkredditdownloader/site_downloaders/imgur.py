@@ -6,7 +6,7 @@ import logging
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.errors import ExtensionError, ImageNotFound, NotADownloadableLinkError
+from bulkredditdownloader.errors import NotADownloadableLinkError, ResourceNotFound, SiteDownloaderError
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.site_downloaders.direct import Direct
 
@@ -63,7 +63,7 @@ class Imgur(BaseDownloader):
         cookies = {"over18": "1", "postpagebeta": "0"}
         res = requests.get(link, cookies=cookies)
         if res.status_code != 200:
-            raise ImageNotFound(f"Server responded with {res.status_code} to {link}")
+            raise ResourceNotFound(f"Server responded with {res.status_code} to {link}")
         page_source = requests.get(link, cookies=cookies).text
 
         starting_string = "image               : "
@@ -94,4 +94,4 @@ class Imgur(BaseDownloader):
             if extension in extension_suffix:
                 return extension
         else:
-            raise ExtensionError(f'"{extension_suffix}" is not recognized as a valid extension for Imgur')
+            raise SiteDownloaderError(f'"{extension_suffix}" is not recognized as a valid extension for Imgur')

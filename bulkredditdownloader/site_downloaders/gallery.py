@@ -6,7 +6,7 @@ import logging
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.errors import ImageNotFound, NotADownloadableLinkError
+from bulkredditdownloader.errors import ResourceNotFound, NotADownloadableLinkError
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 logger = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ class Gallery(BaseDownloader):
         }
         res = requests.get(link, headers=headers)
         if res.status_code != 200:
-            raise ImageNotFound(f"Server responded with {res.status_code} to {link}")
+            raise ResourceNotFound(f"Server responded with {res.status_code} to {link}")
         page_source = res.text
 
         starting_string = "_r = {"
