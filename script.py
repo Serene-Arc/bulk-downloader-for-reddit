@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 This program downloads imgur, gfycat and direct image and video links of 
