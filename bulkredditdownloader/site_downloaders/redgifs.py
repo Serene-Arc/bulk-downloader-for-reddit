@@ -2,11 +2,14 @@
 
 import json
 import urllib.request
+from typing import Optional
 
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
@@ -14,8 +17,8 @@ class Redgifs(GifDeliveryNetwork):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def download(self):
-        super().download()
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+        return super().find_resources(authenticator)
 
     @staticmethod
     def _get_link(url: str) -> str:
@@ -31,7 +34,8 @@ class Redgifs(GifDeliveryNetwork):
 
         url.add_header(
             'User-Agent',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64')
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+            ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64')
 
         page_source = (urllib.request.urlopen(url).read().decode())
 

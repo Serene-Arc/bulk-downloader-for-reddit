@@ -3,10 +3,13 @@
 import json
 import re
 import urllib.request
+from typing import Optional
 
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
@@ -14,14 +17,12 @@ class Gfycat(GifDeliveryNetwork):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def download(self):
-        super().download()
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+        return super().find_resources(authenticator)
 
     @staticmethod
     def _get_link(url: str) -> str:
-        """Extract direct link to the video from page's source
-        and return it
-        """
+        """Extract direct link to the video from page's source and return it """
         if re.match(r'\.(webm|mp4|gif)$', url):
             return url
 

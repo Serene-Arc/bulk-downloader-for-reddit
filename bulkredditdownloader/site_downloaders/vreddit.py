@@ -5,10 +5,12 @@ import os
 import pathlib
 import subprocess
 import tempfile
+from typing import Optional
 
 import requests
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
@@ -19,12 +21,12 @@ class VReddit(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def download(self):
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
         try:
             fnull = open(os.devnull, 'w')
             subprocess.call("ffmpeg", stdout=fnull, stderr=subprocess.STDOUT)
         except subprocess.SubprocessError:
-            return self._download_resource(self.post.url)
+            return [Resource(self.post, self.post.url)]
         else:
             video_url = self.post.url
             audio_url = video_url[:video_url.rfind('/')] + '/DASH_audio.mp4'
@@ -39,7 +41,9 @@ class VReddit(BaseDownloader):
                 self._merge_audio(temp_dir)
                 with open(temp_dir / 'output.mp4', 'rb') as file:
                     content = file.read()
-            return Resource(self.post, self.post.url, content)
+            out = Resource(self.post, self.post.url)
+            out.content = content
+            return out
 
     @staticmethod
     def _merge_audio(working_directory: pathlib.Path):

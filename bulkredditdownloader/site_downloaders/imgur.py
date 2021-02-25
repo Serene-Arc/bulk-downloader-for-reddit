@@ -2,11 +2,14 @@
 
 import json
 import logging
+from typing import Optional
 
 import requests
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError, ResourceNotFound, SiteDownloaderError
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.site_downloaders.direct import Direct
 
@@ -14,19 +17,18 @@ logger = logging.getLogger(__name__)
 
 
 class Imgur(BaseDownloader):
-
     imgur_image_domain = "https://i.imgur.com/"
 
     def __init__(self, post: Submission):
         super().__init__(post)
         self.raw_data = {}
 
-    def download(self):
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
         link = self.post.url
 
         if link.endswith(".gifv"):
             direct_thing = Direct(self.post)
-            return direct_thing.download()
+            return direct_thing.find_resources(authenticator)
 
         self.raw_data = self._get_data(link)
 
@@ -47,13 +49,13 @@ class Imgur(BaseDownloader):
         for i in range(images_length):
             extension = self._validate_extension(images["images"][i]["ext"])
             image_url = self.imgur_image_domain + images["images"][i]["hash"] + extension
-            out.append(self._download_resource(image_url))
+            out.append(Resource(self.post, image_url))
         return out
 
     def _download_image(self, image: dict):
         extension = self._validate_extension(image["ext"])
         image_url = self.imgur_image_domain + image["hash"] + extension
-        return [self._download_resource(image_url)]
+        return [Resource(self.post, image_url)]
 
     def _is_album(self) -> bool:
         return "album_images" in self.raw_data

@@ -2,10 +2,12 @@
 
 import logging
 import tempfile
+from typing import Optional
 
 import youtube_dl
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
@@ -16,8 +18,8 @@ class Youtube(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def download(self):
-        return self._download_video()
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+        return [self._download_video()]
 
     def _download_video(self) -> Resource:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -33,4 +35,6 @@ class Youtube(BaseDownloader):
 
             with open(temp_dir / 'test.mp4', 'rb') as file:
                 content = file.read()
-        return Resource(self.post, self.post.url, content)
+        out = Resource(self.post, self.post.url)
+        out.content = content
+        return out

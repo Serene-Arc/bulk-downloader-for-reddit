@@ -15,6 +15,6 @@ def reddit_submission(reddit_instance) -> praw.models.Submission:
 
 def test_gallery(reddit_submission: praw.models.Submission):
     gallery = Gallery(reddit_submission)
-    results = gallery.download()
+    results = gallery.find_resources()
     assert len(results) == 4
     assert all([isinstance(result, Resource) for result in results])

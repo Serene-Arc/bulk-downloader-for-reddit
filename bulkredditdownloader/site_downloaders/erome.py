@@ -5,10 +5,13 @@ import re
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
+from typing import Optional
 
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 logger = logging.getLogger(__name__)
@@ -18,7 +21,7 @@ class Erome(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def download(self):
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
         try:
             images = self._get_links(self.post.url)
         except urllib.error.HTTPError:
@@ -29,15 +32,14 @@ class Erome(BaseDownloader):
             image = images[0]
             if not re.match(r'https?://.*', image):
                 image = "https://" + image
-            return [self._download_resource(image)]
+            return [Resource(self.post, image)]
 
         else:
             out = []
             for i, image in enumerate(images):
                 if not re.match(r'https?://.*', image):
                     image = "https://" + image
-
-                    out.append(self._download_resource(image))
+                    out.append(Resource(self.post, image))
             return out
 
     @staticmethod

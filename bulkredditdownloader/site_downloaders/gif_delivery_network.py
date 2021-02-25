@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
 import urllib.request
+from typing import Optional
 
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 
@@ -13,19 +16,17 @@ class GifDeliveryNetwork(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def download(self):
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
         try:
             media_url = self._get_link(self.post.url)
         except IndexError:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        return [self._download_resource(media_url)]
+        return [Resource(self.post, media_url)]
 
     @staticmethod
     def _get_link(url: str) -> str:
-        """Extract direct link to the video from page's source
-        and return it
-        """
+        """Extract direct link to the video from page's source and return it"""
         if '.webm' in url.split('/')[-1] or '.mp4' in url.split('/')[-1] or '.gif' in url.split('/')[-1]:
             return url
 

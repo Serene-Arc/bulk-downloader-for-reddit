@@ -2,11 +2,14 @@
 
 import json
 import logging
+from typing import Optional
 
 import requests
 from praw.models import Submission
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError, ResourceNotFound
+from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 logger = logging.getLogger(__name__)
@@ -18,7 +21,7 @@ class Gallery(BaseDownloader):
         link = self.post.url
         self.raw_data = self._get_data(link)
 
-    def download(self):
+    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
         images = {}
         count = 0
         for model in self.raw_data['posts']['models']:
@@ -61,7 +64,5 @@ class Gallery(BaseDownloader):
         return data
 
     def _download_album(self, images: dict):
-        out = []
-        for image_key in images.keys():
-            out.append(self._download_resource(images[image_key]['url']))
+        out = [Resource(self.post, images[image_key]['url']) for image_key in images.keys()]
         return out
