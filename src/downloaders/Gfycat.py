@@ -4,27 +4,27 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 from src.downloaders.downloaderUtils import getFile, getExtension
-from src.errors import (FileNameTooLong, AlbumNotDownloadedCompletely, 
-                        NotADownloadableLinkError, FileAlreadyExistsError)
+from src.errors import (NotADownloadableLinkError)
 from src.utils import GLOBAL
-from src.utils import printToFile as print
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
 
+
 class Gfycat:
-    def __init__(self,directory,POST):
+    def __init__(self, directory, POST):
         try:
             POST['MEDIAURL'] = self.getLink(POST['CONTENTURL'])
         except IndexError:
             raise NotADownloadableLinkError("Could not read the page source")
 
         POST['EXTENSION'] = getExtension(POST['MEDIAURL'])
-        
-        if not os.path.exists(directory): os.makedirs(directory)
 
-        filename = GLOBAL.config['filename'].format(**POST)+POST["EXTENSION"]
-        shortFilename = POST['POSTID']+POST['EXTENSION']
-       
-        getFile(filename,shortFilename,directory,POST['MEDIAURL'])
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        filename = GLOBAL.config['filename'].format(**POST) + POST["EXTENSION"]
+        shortFilename = POST['POSTID'] + POST['EXTENSION']
+
+        getFile(filename, shortFilename, directory, POST['MEDIAURL'])
 
     @staticmethod
     def getLink(url):
@@ -43,8 +43,9 @@ class Gfycat:
         pageSource = (urllib.request.urlopen(url).read().decode())
 
         soup = BeautifulSoup(pageSource, "html.parser")
-        attributes = {"data-react-helmet":"true","type":"application/ld+json"}
-        content = soup.find("script",attrs=attributes)
+        attributes = {"data-react-helmet": "true",
+                      "type": "application/ld+json"}
+        content = soup.find("script", attrs=attributes)
 
         if content is None:
             return GifDeliveryNetwork.getLink(url)

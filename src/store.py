@@ -1,7 +1,8 @@
 from os import path
 
+
 class Store:
-    def __init__(self,directory=None):
+    def __init__(self, directory=None):
         self.directory = directory
         if self.directory:
             if path.exists(directory):

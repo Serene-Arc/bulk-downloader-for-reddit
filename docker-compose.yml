@@ -1,12 +1,17 @@
 version: "3"
+
 services:
+
   bdfr:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     image: bdfr
-    build: .
+    container_name: bdfr
     ports:
       - "8080:8080"
       - "7634:7634"
     volumes:
-      - "./:/root/Bulk Downloader for Reddit"
+      - .:/bdfr:z
     container_name: bdfr_container
     network_mode: bridge 

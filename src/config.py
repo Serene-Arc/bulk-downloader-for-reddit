@@ -1,15 +1,12 @@
-import os
-import socket
-import webbrowser
-import random
 
 from src.reddit import Reddit
 from src.jsonHelper import JsonFile
 from src.utils import nameCorrector
 
+
 class Config():
 
-    def __init__(self,filename):
+    def __init__(self, filename):
         self.filename = filename
         self.file = JsonFile(self.filename)
 
@@ -45,7 +42,7 @@ Existing filename template:""", None if "filename" not in self.file.read() else 
     def _readCustomFileName(self):
         content = self.file.read()
 
-        if not "filename" in content:
+        if "filename" not in content:
             self.file.add({
                 "filename": "{REDDITOR}_{TITLE}_{POSTID}"
             })
@@ -75,9 +72,9 @@ Existing folder structure""", None if "folderpath" not in self.file.read() else 
             "folderpath": folderpath
         })
 
-    def _readCustomFolderPath(self,path=None):
+    def _readCustomFolderPath(self, path=None):
         content = self.file.read()
-        if not "folderpath" in content:
+        if "folderpath" not in content:
             self.file.add({
                 "folderpath": "{SUBREDDIT}"
             })
@@ -96,9 +93,9 @@ Existing default options:""", None if "options" not in self.file.read() else sel
             "options": options
         })
 
-    def _readDefaultOptions(self,path=None):
+    def _readDefaultOptions(self, path=None):
         content = self.file.read()
-        if not "options" in content:
+        if "options" not in content:
             self.file.add({
                 "options": ""
             })
@@ -108,17 +105,17 @@ Existing default options:""", None if "options" not in self.file.read() else sel
 
         try:
             content = self.file.read()["credentials"]
-        except:
+        except BaseException:
             self.file.add({
-                "credentials":{}
+                "credentials": {}
             })
             content = self.file.read()["credentials"]
-            
+
         if "reddit" in content and len(content["reddit"]) != 0:
             pass
         else:
             Reddit().begin()
-            
+
         print()
 
     def setDefaultDirectory(self):
@@ -126,7 +123,8 @@ Existing default options:""", None if "options" not in self.file.read() else sel
 Leave blank to reset it. You can use {time} in foler names to use to timestamp it
 For example: D:/archive/BDFR_{time}
 """)
-        print("Current default directory:", self.file.read()["default_directory"] if "default_directory" in self.file.read() else "")
+        print("Current default directory:", self.file.read()[
+              "default_directory"] if "default_directory" in self.file.read() else "")
         self.file.add({
             "default_directory": input(">> ")
         })
