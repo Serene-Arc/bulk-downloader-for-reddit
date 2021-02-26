@@ -42,6 +42,7 @@ def test_format_name_mock(format_string: str, expected: str, submission: Mock):
     assert result == expected
 
 
+@pytest.mark.online
 @pytest.mark.parametrize(('format_string', 'expected'),
                          (('{SUBREDDIT}', 'Mindustry'),
                           ('{REDDITOR}', 'Gamer_player_boi'),
@@ -55,6 +56,7 @@ def test_format_name_real(format_string: str, expected: str, reddit_submission: 
     assert result == expected
 
 
+@pytest.mark.online
 @pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'expected'),
                          (('{SUBREDDIT}', '{POSTID}', 'test/Mindustry/lgilgt.png'),
                           ('{SUBREDDIT}', '{TITLE}_{POSTID}',
@@ -67,7 +69,7 @@ def test_format_full(
         format_string_file: str,
         expected: str,
         reddit_submission: praw.models.Submission):
-    test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png', b'')
+    test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
     result = test_formatter.format_path(test_resource, Path('test'))
     assert str(result) == expected

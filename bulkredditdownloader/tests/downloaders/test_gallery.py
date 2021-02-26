@@ -13,6 +13,7 @@ def reddit_submission(reddit_instance) -> praw.models.Submission:
     return reddit_instance.submission(id='ljyy27')
 
 
+@pytest.mark.online
 def test_gallery(reddit_submission: praw.models.Submission):
     gallery = Gallery(reddit_submission)
     results = gallery.find_resources()
