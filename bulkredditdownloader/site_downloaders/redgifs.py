@@ -31,11 +31,10 @@ class Redgifs(GifDeliveryNetwork):
 
         url = "https://redgifs.com/watch/" + url.split('/')[-1]
 
-        headers = [
-            'User-Agent',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-            ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64'
-        ]
+        headers = {'User-Agent':
+                   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                   ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64'
+                   }
 
         page_source = requests.get(url, headers=headers).text
 
