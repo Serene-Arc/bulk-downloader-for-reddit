@@ -14,6 +14,7 @@ def reddit_submission(reddit_instance) -> praw.models.Submission:
 
 
 @pytest.mark.online
+@pytest.mark.reddit
 def test_gallery(reddit_submission: praw.models.Submission):
     gallery = Gallery(reddit_submission)
     results = gallery.find_resources()

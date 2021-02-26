@@ -43,6 +43,7 @@ def test_format_name_mock(format_string: str, expected: str, submission: Mock):
 
 
 @pytest.mark.online
+@pytest.mark.reddit
 @pytest.mark.parametrize(('format_string', 'expected'),
                          (('{SUBREDDIT}', 'Mindustry'),
                           ('{REDDITOR}', 'Gamer_player_boi'),
@@ -57,6 +58,7 @@ def test_format_name_real(format_string: str, expected: str, reddit_submission: 
 
 
 @pytest.mark.online
+@pytest.mark.reddit
 @pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'expected'),
                          (('{SUBREDDIT}', '{POSTID}', 'test/Mindustry/lgilgt.png'),
                           ('{SUBREDDIT}', '{TITLE}_{POSTID}',
