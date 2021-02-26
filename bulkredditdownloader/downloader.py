@@ -13,6 +13,7 @@ import appdirs
 import praw
 import praw.models
 
+from bulkredditdownloader.authenticator import Authenticator
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.errors import NotADownloadableLinkError, RedditAuthenticationError
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
@@ -52,18 +53,18 @@ class RedditDownloader:
         self.time_filter = self._create_time_filter()
         self.sort_filter = self._create_sort_filter()
         self.file_name_formatter = self._create_file_name_formatter()
+        self.authenticator = self._create_authenticator()
         self._determine_directories()
         self._create_file_logger()
         self.master_hash_list = []
         self._load_config()
-        if self.cfg_parser.has_option('DEFAULT', 'username') and self.cfg_parser.has_option('DEFAULT', 'password'):
+        if self.cfg_parser.has_option('DEFAULT', 'reddit_token'):
+            # TODO: implement OAuth2 authentication
             self.authenticated = True
-
             self.reddit_instance = praw.Reddit(client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
                                                client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
                                                user_agent=socket.gethostname(),
-                                               username=self.cfg_parser.get('DEFAULT', 'username'),
-                                               password=self.cfg_parser.get('DEFAULT', 'password'))
+                                               )
         else:
             self.authenticated = False
             self.reddit_instance = praw.Reddit(client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
@@ -185,6 +186,9 @@ class RedditDownloader:
         excluded_extensions = [extension for ext_type in self.args.skip for extension in formats.get(ext_type, ())]
         return DownloadFilter(excluded_extensions, self.args.skip_domain)
 
+    def _create_authenticator(self) -> Authenticator:
+        raise NotImplementedError
+
     def download(self):
         for generator in self.reddit_lists:
             for submission in generator:
@@ -199,7 +203,7 @@ class RedditDownloader:
                 if self.args.no_download:
                     logger.info('Skipping download for submission {}'.format(submission.id))
                 else:
-                    content = downloader.download()
+                    content = downloader.find_resources(self.authenticator)
                     for res in content:
                         destination = self.file_name_formatter.format_path(res, self.download_directory)
                         if destination.exists():
