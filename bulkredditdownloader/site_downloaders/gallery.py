@@ -7,7 +7,7 @@ from typing import Optional
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError, ResourceNotFound
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -21,7 +21,7 @@ class Gallery(BaseDownloader):
         link = self.post.url
         self.raw_data = self._get_data(link)
 
-    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+    def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         images = {}
         count = 0
         for model in self.raw_data['posts']['models']:

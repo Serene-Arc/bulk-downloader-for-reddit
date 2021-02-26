@@ -7,7 +7,7 @@ from typing import Optional
 import youtube_dl
 from praw.models import Submission
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
@@ -18,7 +18,7 @@ class Youtube(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+    def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         return [self._download_video()]
 
     def _download_video(self) -> Resource:

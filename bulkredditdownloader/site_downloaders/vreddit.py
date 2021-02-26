@@ -10,7 +10,7 @@ from typing import Optional
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
@@ -21,7 +21,7 @@ class VReddit(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+    def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         try:
             fnull = open(os.devnull, 'w')
             subprocess.call("ffmpeg", stdout=fnull, stderr=subprocess.STDOUT)

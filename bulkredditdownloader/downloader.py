@@ -13,7 +13,7 @@ import appdirs
 import praw
 import praw.models
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.errors import NotADownloadableLinkError, RedditAuthenticationError
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
@@ -186,7 +186,7 @@ class RedditDownloader:
         excluded_extensions = [extension for ext_type in self.args.skip for extension in formats.get(ext_type, ())]
         return DownloadFilter(excluded_extensions, self.args.skip_domain)
 
-    def _create_authenticator(self) -> Authenticator:
+    def _create_authenticator(self) -> SiteAuthenticator:
         raise NotImplementedError
 
     def download(self):

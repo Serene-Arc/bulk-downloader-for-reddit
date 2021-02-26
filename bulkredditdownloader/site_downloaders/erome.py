@@ -9,7 +9,7 @@ from typing import Optional
 
 from praw.models import Submission
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -21,7 +21,7 @@ class Erome(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+    def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         try:
             images = self._get_links(self.post.url)
         except urllib.error.HTTPError:

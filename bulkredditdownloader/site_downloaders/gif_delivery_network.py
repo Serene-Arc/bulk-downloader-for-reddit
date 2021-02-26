@@ -6,7 +6,7 @@ from typing import Optional
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -16,7 +16,7 @@ class GifDeliveryNetwork(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
-    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+    def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         try:
             media_url = self._get_link(self.post.url)
         except IndexError:

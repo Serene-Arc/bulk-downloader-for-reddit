@@ -7,7 +7,7 @@ from typing import Optional
 
 from praw.models import Submission
 
-from bulkredditdownloader.authenticator import Authenticator
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.resource import Resource
 
 logger = logging.getLogger(__name__)
@@ -19,6 +19,6 @@ class BaseDownloader(ABC):
         self.typical_extension = typical_extension
 
     @abstractmethod
-    def find_resources(self, authenticator: Optional[Authenticator] = None) -> list[Resource]:
+    def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         """Return list of all un-downloaded Resources from submission"""
         raise NotImplementedError

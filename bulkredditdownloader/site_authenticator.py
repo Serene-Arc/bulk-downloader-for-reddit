@@ -2,6 +2,6 @@
 # coding=utf-8
 
 
-class Authenticator:
+class SiteAuthenticator:
     def __init__(self):
         self.imgur_authentication = None
