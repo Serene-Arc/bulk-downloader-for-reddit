@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-import urllib.request
 from typing import Optional
 
+import requests
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.resource import Resource
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 
@@ -34,7 +34,7 @@ class GifDeliveryNetwork(BaseDownloader):
             url = url[:-1]
 
         url = "https://www.gifdeliverynetwork.com/" + url.split('/')[-1]
-        page_source = (urllib.request.urlopen(url).read().decode())
+        page_source = requests.get(url).text
 
         soup = BeautifulSoup(page_source, "html.parser")
         attributes = {"id": "mp4Source", "type": "video/mp4"}

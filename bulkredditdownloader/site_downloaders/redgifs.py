@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 import json
-import urllib.request
 from typing import Optional
 
+import requests
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.errors import NotADownloadableLinkError
 from bulkredditdownloader.resource import Resource
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
@@ -29,15 +29,15 @@ class Redgifs(GifDeliveryNetwork):
         if url[-1:] == '/':
             url = url[:-1]
 
-        url = urllib.request.Request(
-            "https://redgifs.com/watch/" + url.split('/')[-1])
+        url = "https://redgifs.com/watch/" + url.split('/')[-1]
 
-        url.add_header(
+        headers = [
             'User-Agent',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-            ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64')
+            ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64'
+        ]
 
-        page_source = (urllib.request.urlopen(url).read().decode())
+        page_source = requests.get(url, headers=headers).text
 
         soup = BeautifulSoup(page_source, "html.parser")
         attributes = {"data-react-helmet": "true", "type": "application/ld+json"}

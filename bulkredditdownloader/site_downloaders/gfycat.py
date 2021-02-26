@@ -2,14 +2,14 @@
 
 import json
 import re
-import urllib.request
 from typing import Optional
 
+import requests
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.resource import Resource
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 
 
@@ -31,7 +31,7 @@ class Gfycat(GifDeliveryNetwork):
 
         url = "https://gfycat.com/" + url.split('/')[-1]
 
-        page_source = (urllib.request.urlopen(url).read().decode())
+        page_source = requests.get(url).text
 
         soup = BeautifulSoup(page_source, "html.parser")
         attributes = {"data-react-helmet": "true", "type": "application/ld+json"}
