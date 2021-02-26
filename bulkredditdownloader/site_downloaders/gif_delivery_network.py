@@ -22,7 +22,7 @@ class GifDeliveryNetwork(BaseDownloader):
         except IndexError:
             raise NotADownloadableLinkError("Could not read the page source")
 
-        return [Resource(self.post, media_url)]
+        return [Resource(self.post, media_url, '.mp4')]
 
     @staticmethod
     def _get_link(url: str) -> str:
