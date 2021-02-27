@@ -23,13 +23,13 @@ class Erome(BaseDownloader):
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         try:
-            images = self._get_links(self.post.url)
+            images = set(self._get_links(self.post.url))
         except urllib.error.HTTPError:
             raise NotADownloadableLinkError("Not a downloadable link")
 
         if len(images) == 1:
 
-            image = images[0]
+            image = images.pop()
             if not re.match(r'https?://.*', image):
                 image = "https://" + image
             return [Resource(self.post, image)]
@@ -39,7 +39,7 @@ class Erome(BaseDownloader):
             for i, image in enumerate(images):
                 if not re.match(r'https?://.*', image):
                     image = "https://" + image
-                    out.append(Resource(self.post, image))
+                out.append(Resource(self.post, image))
             return out
 
     @staticmethod
