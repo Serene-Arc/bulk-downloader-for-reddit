@@ -32,7 +32,7 @@ class Imgur(BaseDownloader):
 
         self.raw_data = self._get_data(link)
 
-        if self._is_album:
+        if self._is_album():
             if self.raw_data["album_images"]["count"] != 1:
                 out = self._download_album(self.raw_data["album_images"])
             else:
