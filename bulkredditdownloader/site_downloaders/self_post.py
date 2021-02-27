@@ -5,8 +5,8 @@ from typing import Optional
 
 from praw.models import Submission
 
-from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.resource import Resource
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 
 logger = logging.getLogger(__name__)
@@ -18,8 +18,9 @@ class SelfPost(BaseDownloader):
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         out = Resource(self.post, self.post.url)
-        out.content = self.export_to_string()
-        return out
+        out.content = self.export_to_string().encode('utf-8')
+        out.create_hash()
+        return [out]
 
     def export_to_string(self) -> str:
         """Self posts are formatted here"""

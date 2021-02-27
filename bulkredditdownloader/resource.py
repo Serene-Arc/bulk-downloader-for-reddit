@@ -43,9 +43,12 @@ class Resource:
             content = self.retry_download(self.url, 0)
             if content:
                 self.content = content
-                self.hash = hashlib.md5(self.content)
+                self.create_hash()
             else:
                 raise BulkDownloaderException('Could not download resource')
+
+    def create_hash(self):
+        self.hash = hashlib.md5(self.content)
 
     def _determine_extension(self) -> str:
         extension_pattern = r'.*(\..{3,5})$'
