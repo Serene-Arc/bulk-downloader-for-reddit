@@ -26,8 +26,15 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
     ('lu29zn', SelfPost),
     ('lu2ykk', Direct),  # Imgur direct link
     ('luh2pd', Direct),  # Reddit direct link
+    ('luo9eo', Direct),  # Imgur direct link gif
+    ('lumulo', Direct),  # Imgur direct link gif
+    ('lui5t3', Imgur),
     ('lu93m7', Gallery),
     ('luf1nu', Gfycat),
+    ('luxmgx', Erome),
+    ('lupb4r', Youtube),
+    ('lul6l7', Redgifs),
+    ('luu376', GifDeliveryNetwork),
 ))
 def test_factory_lever_good(test_submission_id: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     submission = reddit_instance.submission(id=test_submission_id)
