@@ -20,19 +20,20 @@ class Youtube(BaseDownloader):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
-        return [self._download_video()]
+        ytdl_options = {
+            "format": "best",
+            "playlistend": 1,
+            "nooverwrites": True,
+        }
+        out = self._download_video(ytdl_options)
+        return [out]
 
-    def _download_video(self) -> Resource:
+    def _download_video(self, ytdl_options: dict) -> Resource:
+        ytdl_options['quiet'] = True
         with tempfile.TemporaryDirectory() as temp_dir:
             download_path = Path(temp_dir).resolve()
-            ydl_opts = {
-                "format": "best",
-                "outtmpl": str(download_path) + '/' + 'test.%(ext)s',
-                "playlistend": 1,
-                "nooverwrites": True,
-                "quiet": True
-            }
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ytdl_options['outtmpl'] = str(download_path) + '/' + 'test.%(ext)s'
+            with youtube_dl.YoutubeDL(ytdl_options) as ydl:
                 ydl.download([self.post.url])
 
             downloaded_file = list(download_path.iterdir())[0]

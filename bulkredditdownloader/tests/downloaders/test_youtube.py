@@ -10,6 +10,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.long
 @pytest.mark.parametrize(('test_submission_id', 'expected_hash'), (
     ('ltnoqp', '468136300a106c67f1463a7011a6db4a'),
 ))
