@@ -6,12 +6,19 @@ from pathlib import Path
 
 import praw.models
 
+from bulkredditdownloader.errors import BulkDownloaderException
 from bulkredditdownloader.resource import Resource
 
 
 class FileNameFormatter:
+    key_terms = ('title', 'subreddit', 'redditor', 'postid', 'upvotes', 'flair', 'date')
+
     def __init__(self, file_format_string: str, directory_format_string: str):
+        if not self.validate_string(file_format_string):
+            raise BulkDownloaderException(f'"{file_format_string}" is not a valid format string')
         self.file_format_string = file_format_string
+        if not self.validate_string(directory_format_string):
+            raise BulkDownloaderException(f'"{directory_format_string}" is not a valid format string')
         self.directory_format_string = directory_format_string
 
     @staticmethod
@@ -38,3 +45,9 @@ class FileNameFormatter:
         file_path = subfolder / (str(self._format_name(resource.source_submission,
                                                        self.file_format_string)) + resource.extension)
         return file_path
+
+    @staticmethod
+    def validate_string(test_string: str) -> bool:
+        if not test_string:
+            return False
+        return any([f'{{{key}}}' in test_string.lower() for key in FileNameFormatter.key_terms])

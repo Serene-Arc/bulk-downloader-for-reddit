@@ -42,6 +42,20 @@ def test_format_name_mock(format_string: str, expected: str, submission: Mock):
     assert result == expected
 
 
+@pytest.mark.parametrize(('test_string', 'expected'), (
+    ('', False),
+    ('test', False),
+    ('{POSTID}', True),
+    ('POSTID', False),
+    ('{POSTID}_test', True),
+    ('test_{TITLE}', True),
+    ('TITLE_POSTID', False),
+))
+def test_check_format_string_validity(test_string: str, expected: bool):
+    result = FileNameFormatter.validate_string(test_string)
+    assert result == expected
+
+
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('format_string', 'expected'),
