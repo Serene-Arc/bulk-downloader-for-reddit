@@ -3,6 +3,7 @@
 
 import argparse
 from pathlib import Path
+from typing import Iterator
 from unittest.mock import MagicMock
 
 import praw
@@ -11,7 +12,7 @@ import pytest
 
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
-from bulkredditdownloader.errors import BulkDownloaderException
+from bulkredditdownloader.errors import BulkDownloaderException, RedditAuthenticationError, RedditUserError
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 
@@ -25,6 +26,7 @@ def args() -> argparse.Namespace:
     args.link = []
     args.submitted = False
     args.upvoted = False
+    args.saved = False
     args.subreddit = []
     args.multireddit = []
     args.user = None
@@ -46,6 +48,14 @@ def downloader_mock(args: argparse.Namespace):
     mock_downloader = MagicMock()
     mock_downloader.args = args
     return mock_downloader
+
+
+def assert_all_results_are_submissions(result_limit: int, results: list[Iterator]):
+    results = [sub for res in results for sub in res]
+    assert all([isinstance(res, praw.models.Submission) for res in results])
+    if result_limit is not None:
+        assert len(results) == result_limit
+    return results
 
 
 def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
@@ -172,17 +182,15 @@ def test_get_subreddit_normal(
         limit: int,
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit):
-    downloader_mock.reddit_instance = reddit_instance
-    downloader_mock.args.subreddit = test_subreddits
-    downloader_mock.args.limit = limit
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
+    downloader_mock.args.limit = limit
+    downloader_mock.args.subreddit = test_subreddits
+    downloader_mock.reddit_instance = reddit_instance
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
     results = RedditDownloader._get_subreddits(downloader_mock)
-    results = [sub for res in results for sub in res]
-    assert all([isinstance(res, praw.models.Submission) for res in results])
-    assert all([res.subreddit.display_name for res in results])
-    if limit is not None:
-        assert len(results) == (limit * len(test_subreddits))
+    results = assert_all_results_are_submissions(
+        (limit * len(test_subreddits)) if limit else None, results)
+    assert all([res.subreddit.display_name in test_subreddits for res in results])
 
 
 @pytest.mark.online
@@ -190,6 +198,7 @@ def test_get_subreddit_normal(
 @pytest.mark.parametrize(('test_subreddits', 'search_term', 'limit'), (
     (('Python',), 'scraper', 10),
     (('Python',), '', 10),
+    (('Python',), 'djsdsgewef', 0),
 ))
 def test_get_subreddit_search(
         test_subreddits: list[str],
@@ -197,39 +206,99 @@ def test_get_subreddit_search(
         limit: int,
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit):
-    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
+    downloader_mock.args.limit = limit
+    downloader_mock.args.search = search_term
     downloader_mock.args.subreddit = test_subreddits
+    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock.sort_filter = RedditTypes.SortType.HOT
+    results = RedditDownloader._get_subreddits(downloader_mock)
+    results = assert_all_results_are_submissions(
+        (limit * len(test_subreddits)) if limit else None, results)
+    assert all([res.subreddit.display_name in test_subreddits for res in results])
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_user', 'test_multireddits', 'limit'), (
+    ('helen_darten', ('cuteanimalpics',), 10),
+    ('korfor', ('chess',), 100),
+))
+# Good sources at https://www.reddit.com/r/multihub/
+def test_get_multireddits_public(
+        test_user: str,
+        test_multireddits: list[str],
+        limit: int,
+        reddit_instance: praw.Reddit,
+        downloader_mock: MagicMock):
+    downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
+    downloader_mock.sort_filter = RedditTypes.SortType.HOT
+    downloader_mock.args.limit = limit
+    downloader_mock.args.multireddit = test_multireddits
+    downloader_mock.args.user = test_user
+    downloader_mock.reddit_instance = reddit_instance
+    results = RedditDownloader._get_multireddits(downloader_mock)
+    assert_all_results_are_submissions((limit * len(test_multireddits)) if limit else None, results)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+def test_get_multireddits_no_user(downloader_mock: MagicMock, reddit_instance: praw.Reddit):
+    downloader_mock.args.multireddit = ['test']
+    with pytest.raises(BulkDownloaderException):
+        RedditDownloader._get_multireddits(downloader_mock)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+def test_get_multireddits_not_authenticated(downloader_mock: MagicMock, reddit_instance: praw.Reddit):
+    downloader_mock.args.multireddit = ['test']
+    downloader_mock.authenticated = False
+    downloader_mock.reddit_instance = reddit_instance
+    with pytest.raises(RedditAuthenticationError):
+        RedditDownloader._get_multireddits(downloader_mock)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_user', 'limit'), (
+    ('danigirl3694', 10),
+    ('danigirl3694', 50),
+    ('CapitanHam', None),
+))
+def test_get_user_submissions(test_user: str, limit: int, downloader_mock: MagicMock, reddit_instance: praw.Reddit):
     downloader_mock.args.limit = limit
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
-    downloader_mock.args.search = search_term
-    results = RedditDownloader._get_subreddits(downloader_mock)
-    results = [sub for res in results for sub in res]
-    assert all([isinstance(res, praw.models.Submission) for res in results])
-    assert all([res.subreddit.display_name for res in results])
-    if limit is not None:
-        assert len(results) == (limit * len(test_subreddits))
+    downloader_mock.args.submitted = True
+    downloader_mock.args.user = test_user
+    downloader_mock.authenticated = False
+    downloader_mock.reddit_instance = reddit_instance
+    results = RedditDownloader._get_user_data(downloader_mock)
+    results = assert_all_results_are_submissions(limit, results)
+    assert all([res.author.name == test_user for res in results])
 
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skip
-def test_get_subreddits_search_bad():
-    raise NotImplementedError
+def test_get_user_no_user(downloader_mock: MagicMock):
+    with pytest.raises(BulkDownloaderException):
+        RedditDownloader._get_user_data(downloader_mock)
 
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skip
-def test_get_multireddits():
-    raise NotImplementedError
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.skip
-def test_get_user_submissions():
-    raise NotImplementedError
+@pytest.mark.parametrize('test_user', (
+    'rockcanopicjartheme',
+    'exceptionalcatfishracecarbatter',
+))
+def test_get_user_nonexistent_user(test_user: str, downloader_mock: MagicMock, reddit_instance: praw.Reddit):
+    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock.args.user = test_user
+    downloader_mock._check_user_existence.return_value = RedditDownloader._check_user_existence(
+        downloader_mock, test_user)
+    with pytest.raises(RedditUserError):
+        RedditDownloader._get_user_data(downloader_mock)
 
 
 @pytest.mark.online
@@ -242,7 +311,21 @@ def test_get_user_upvoted():
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.skip
+def test_get_user_upvoted_unauthenticated():
+    raise NotImplementedError
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skip
 def test_get_user_saved():
+    raise NotImplementedError
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skip
+def test_get_user_saved_unauthenticated():
     raise NotImplementedError
 
 
