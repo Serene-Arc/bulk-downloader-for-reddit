@@ -26,6 +26,9 @@ def _add_options():
     parser.add_argument("--submitted",
                         action="store_true",
                         help="Gets posts of --user")
+    parser.add_argument("--saved",
+                        action="store_true",
+                        help="Gets upvoted posts of --user")
     parser.add_argument("--upvoted",
                         action="store_true",
                         help="Gets upvoted posts of --user")
