@@ -4,7 +4,11 @@ class BulkDownloaderException(Exception):
     pass
 
 
-class RedditAuthenticationError(BulkDownloaderException):
+class RedditUserError(BulkDownloaderException):
+    pass
+
+
+class RedditAuthenticationError(RedditUserError):
     pass
 
 
