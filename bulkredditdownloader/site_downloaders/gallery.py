@@ -8,7 +8,7 @@ import requests
 from praw.models import Submission
 
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
-from bulkredditdownloader.errors import NotADownloadableLinkError, ResourceNotFound
+from bulkredditdownloader.exceptions import NotADownloadableLinkError, ResourceNotFound
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 

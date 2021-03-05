@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from bulkredditdownloader.errors import SiteDownloaderError
+from bulkredditdownloader.exceptions import SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.imgur import Imgur
 

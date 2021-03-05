@@ -12,7 +12,7 @@ import pytest
 
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
-from bulkredditdownloader.errors import BulkDownloaderException, RedditAuthenticationError, RedditUserError
+from bulkredditdownloader.exceptions import BulkDownloaderException, RedditAuthenticationError, RedditUserError
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 

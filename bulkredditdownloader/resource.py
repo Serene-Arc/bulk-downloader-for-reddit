@@ -10,7 +10,7 @@ import _hashlib
 import requests
 from praw.models import Submission
 
-from bulkredditdownloader.errors import BulkDownloaderException
+from bulkredditdownloader.exceptions import BulkDownloaderException
 
 
 class Resource:

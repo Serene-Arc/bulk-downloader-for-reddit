@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork

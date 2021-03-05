@@ -4,7 +4,7 @@
 import praw
 import pytest
 
-from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.site_downloaders.direct import Direct
 from bulkredditdownloader.site_downloaders.download_factory import DownloadFactory

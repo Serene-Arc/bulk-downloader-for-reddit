@@ -5,7 +5,7 @@ import logging
 import sys
 
 from bulkredditdownloader.downloader import RedditDownloader
-from bulkredditdownloader.errors import BulkDownloaderException
+from bulkredditdownloader.exceptions import BulkDownloaderException
 
 logger = logging.getLogger()
 parser = argparse.ArgumentParser(allow_abbrev=False,

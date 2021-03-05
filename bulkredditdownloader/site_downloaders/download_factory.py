@@ -4,7 +4,7 @@
 import re
 from typing import Type
 
-from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 from bulkredditdownloader.site_downloaders.direct import Direct
 from bulkredditdownloader.site_downloaders.erome import Erome

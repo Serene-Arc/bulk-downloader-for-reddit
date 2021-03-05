@@ -10,7 +10,7 @@ from typing import Optional
 from praw.models import Submission
 
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
-from bulkredditdownloader.errors import NotADownloadableLinkError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
 

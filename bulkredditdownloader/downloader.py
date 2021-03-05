@@ -15,7 +15,7 @@ import praw
 import praw.models
 import prawcore
 
-import bulkredditdownloader.errors as errors
+import bulkredditdownloader.exceptions as errors
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
 from bulkredditdownloader.site_authenticator import SiteAuthenticator

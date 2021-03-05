@@ -6,7 +6,7 @@ from pathlib import Path
 
 import praw.models
 
-from bulkredditdownloader.errors import BulkDownloaderException
+from bulkredditdownloader.exceptions import BulkDownloaderException
 from bulkredditdownloader.resource import Resource
 
 
