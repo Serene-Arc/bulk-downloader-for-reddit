@@ -4,7 +4,6 @@
 import configparser
 from unittest.mock import MagicMock
 
-import praw
 import pytest
 
 from bulkredditdownloader.exceptions import BulkDownloaderException
@@ -28,6 +27,17 @@ def example_config() -> configparser.ConfigParser:
 ))
 def test_check_scopes(test_scopes: list[str]):
     OAuth2Authenticator._check_scopes(test_scopes)
+
+
+@pytest.mark.parametrize(('test_scopes', 'expected'), (
+    ('history', {'history', }),
+    ('history creddits', {'history', 'creddits'}),
+    ('history, creddits, account', {'history', 'creddits', 'account'}),
+    ('history,creddits,account,flair', {'history', 'creddits', 'account', 'flair'}),
+))
+def test_split_scopes(test_scopes: str, expected: set[str]):
+    result = OAuth2Authenticator.split_scopes(test_scopes)
+    assert result == expected
 
 
 @pytest.mark.online

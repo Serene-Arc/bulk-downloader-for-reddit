@@ -4,6 +4,7 @@
 import configparser
 import logging
 import random
+import re
 import socket
 
 import praw
@@ -21,7 +22,7 @@ class OAuth2Authenticator:
         self.scopes = wanted_scopes
 
     @staticmethod
-    def _check_scopes(wanted_scopes: list[str]):
+    def _check_scopes(wanted_scopes: set[str]):
         response = requests.get('https://www.reddit.com/api/v1/scopes.json',
                                 headers={'User-Agent': 'fetch-scopes test'})
         known_scopes = [scope for scope, data in response.json().items()]
@@ -29,6 +30,11 @@ class OAuth2Authenticator:
         for scope in wanted_scopes:
             if scope not in known_scopes:
                 raise BulkDownloaderException(f'Scope {scope} is not known to reddit')
+
+    @staticmethod
+    def split_scopes(scopes: str) -> set[str]:
+        scopes = re.split(r'[,: ]+', scopes)
+        return set(scopes)
 
     def retrieve_new_token(self) -> str:
         reddit = praw.Reddit(redirect_uri='http://localhost:8080', user_agent='obtain_refresh_token for BDFR')
