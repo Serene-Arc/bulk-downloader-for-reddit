@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class OAuth2Authenticator:
 
-    def __init__(self, wanted_scopes: list[str]):
+    def __init__(self, wanted_scopes: set[str]):
         self._check_scopes(wanted_scopes)
         self.scopes = wanted_scopes
 
