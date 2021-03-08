@@ -17,8 +17,9 @@ def _add_options():
                         help='Specifies the directory where posts will be downloaded to',
                         metavar='DIRECTORY')
     parser.add_argument('--verbose', '-v',
-                        action='store_true',
-                        count=True)
+                        action='count',
+                        default=0,
+                        )
     parser.add_argument('--link', '-l',
                         help='Get posts from link',
                         action='append',
