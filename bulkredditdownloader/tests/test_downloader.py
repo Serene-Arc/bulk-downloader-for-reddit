@@ -163,11 +163,6 @@ def test_get_submissions_from_link(
     assert len(results[0]) == len(test_submission_ids)
 
 
-@pytest.mark.skip
-def test_load_config(downloader_mock: MagicMock):
-    raise NotImplementedError
-
-
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_subreddits', 'limit'), (
