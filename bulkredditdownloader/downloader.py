@@ -72,7 +72,10 @@ class RedditDownloader:
             if not self.cfg_parser.has_option('DEFAULT', 'user_token'):
                 scopes = self.cfg_parser.get('DEFAULT', 'scopes')
                 scopes = OAuth2Authenticator.split_scopes(scopes)
-                oauth2_authenticator = OAuth2Authenticator(scopes)
+                oauth2_authenticator = OAuth2Authenticator(
+                    scopes,
+                    self.cfg_parser.get('DEFAULT', 'client_id'),
+                    self.cfg_parser.get('DEFAULT', 'client_secret'))
                 token = oauth2_authenticator.retrieve_new_token()
                 self.cfg_parser['DEFAULT']['user_token'] = token
             token_manager = OAuth2TokenManager(self.cfg_parser)

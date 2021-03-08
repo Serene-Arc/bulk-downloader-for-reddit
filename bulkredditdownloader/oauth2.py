@@ -17,9 +17,11 @@ logger = logging.getLogger(__name__)
 
 class OAuth2Authenticator:
 
-    def __init__(self, wanted_scopes: set[str]):
+    def __init__(self, wanted_scopes: set[str], client_id: str, client_secret: str):
         self._check_scopes(wanted_scopes)
         self.scopes = wanted_scopes
+        self.client_id = client_id
+        self.client_secret = client_secret
 
     @staticmethod
     def _check_scopes(wanted_scopes: set[str]):
@@ -37,7 +39,11 @@ class OAuth2Authenticator:
         return set(scopes)
 
     def retrieve_new_token(self) -> str:
-        reddit = praw.Reddit(redirect_uri='http://localhost:8080', user_agent='obtain_refresh_token for BDFR')
+        reddit = praw.Reddit(
+            redirect_uri='http://localhost:7634',
+            user_agent='obtain_refresh_token for BDFR',
+            client_id=self.client_id,
+            client_secret=self.client_secret)
         state = str(random.randint(0, 65000))
         url = reddit.auth.url(self.scopes, state, 'permanent')
         logger.warning('Authentication action required before the program can proceed')
@@ -62,7 +68,7 @@ class OAuth2Authenticator:
     def receive_connection() -> socket.socket:
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server.bind(('localhost', 8080))
+        server.bind(('localhost', 7634))
         logger.debug('Server listening on localhost:8080')
 
         server.listen(1)
