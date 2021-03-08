@@ -181,26 +181,27 @@ class RedditDownloader:
             return []
 
     def _get_user_data(self) -> list[Iterator]:
-        if self.args.user:
-            if not self._check_user_existence(self.args.user):
-                raise errors.RedditUserError(f'User {self.args.user} does not exist')
-            generators = []
-            sort_function = self._determine_sort_function()
-            if self.args.submitted:
-                generators.append(
-                    sort_function(
-                        self.reddit_instance.redditor(self.args.user).submissions,
-                        limit=self.args.limit))
-            if not self.authenticated and any((self.args.upvoted, self.args.saved)):
-                raise errors.RedditAuthenticationError('Accessing user lists requires authentication')
+        if any([self.args.submitted, self.args.upvoted, self.args.saved]):
+            if self.args.user:
+                if not self._check_user_existence(self.args.user):
+                    raise errors.RedditUserError(f'User {self.args.user} does not exist')
+                generators = []
+                sort_function = self._determine_sort_function()
+                if self.args.submitted:
+                    generators.append(
+                        sort_function(
+                            self.reddit_instance.redditor(self.args.user).submissions,
+                            limit=self.args.limit))
+                if not self.authenticated and any((self.args.upvoted, self.args.saved)):
+                    raise errors.RedditAuthenticationError('Accessing user lists requires authentication')
+                else:
+                    if self.args.upvoted:
+                        generators.append(self.reddit_instance.redditor(self.args.user).upvoted)
+                    if self.args.saved:
+                        generators.append(self.reddit_instance.redditor(self.args.user).saved)
+                return generators
             else:
-                if self.args.upvoted:
-                    generators.append(self.reddit_instance.redditor(self.args.user).upvoted)
-                if self.args.saved:
-                    generators.append(self.reddit_instance.redditor(self.args.user).saved)
-            return generators
-        else:
-            raise errors.BulkDownloaderException('A user must be supplied to download user data')
+                raise errors.BulkDownloaderException('A user must be supplied to download user data')
 
     def _check_user_existence(self, name: str) -> bool:
         user = self.reddit_instance.redditor(name=name)
