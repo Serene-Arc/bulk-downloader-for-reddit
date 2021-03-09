@@ -78,7 +78,7 @@ class RedditDownloader:
                     self.cfg_parser.get('DEFAULT', 'client_secret'))
                 token = oauth2_authenticator.retrieve_new_token()
                 self.cfg_parser['DEFAULT']['user_token'] = token
-            token_manager = OAuth2TokenManager(self.cfg_parser)
+            token_manager = OAuth2TokenManager(self.cfg_parser, self.config_location)
 
             self.authenticated = True
             self.reddit_instance = praw.Reddit(client_id=self.cfg_parser.get('DEFAULT', 'client_id'),

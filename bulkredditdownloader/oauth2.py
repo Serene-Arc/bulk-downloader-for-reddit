@@ -6,6 +6,7 @@ import logging
 import random
 import re
 import socket
+from pathlib import Path
 
 import praw
 import requests
@@ -85,9 +86,10 @@ class OAuth2Authenticator:
 
 
 class OAuth2TokenManager(praw.reddit.BaseTokenManager):
-    def __init__(self, config: configparser.ConfigParser):
+    def __init__(self, config: configparser.ConfigParser, config_location: Path):
         super(OAuth2TokenManager, self).__init__()
         self.config = config
+        self.config_location = config_location
 
     def pre_refresh_callback(self, authorizer: praw.reddit.Authorizer):
         if authorizer.refresh_token is None:
@@ -98,3 +100,5 @@ class OAuth2TokenManager(praw.reddit.BaseTokenManager):
 
     def post_refresh_callback(self, authorizer: praw.reddit.Authorizer):
         self.config.set('DEFAULT', 'user_token', authorizer.refresh_token)
+        with open(self.config_location, 'w') as file:
+            self.config.write(file, True)
