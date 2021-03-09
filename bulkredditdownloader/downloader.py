@@ -87,6 +87,8 @@ class RedditDownloader:
                     self.cfg_parser.get('DEFAULT', 'client_secret'))
                 token = oauth2_authenticator.retrieve_new_token()
                 self.cfg_parser['DEFAULT']['user_token'] = token
+                with open(self.config_location, 'w') as file:
+                    self.cfg_parser.write(file, True)
             token_manager = OAuth2TokenManager(self.cfg_parser, self.config_location)
 
             self.authenticated = True
