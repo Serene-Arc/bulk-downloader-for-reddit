@@ -202,6 +202,8 @@ class RedditDownloader:
                 return generators
             else:
                 raise errors.BulkDownloaderException('A user must be supplied to download user data')
+        else:
+            return []
 
     def _check_user_existence(self, name: str) -> bool:
         user = self.reddit_instance.redditor(name=name)
