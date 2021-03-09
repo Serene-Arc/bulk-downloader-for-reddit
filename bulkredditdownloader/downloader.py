@@ -57,14 +57,14 @@ class RedditDownloader:
         self.time_filter = self._create_time_filter()
         self.sort_filter = self._create_sort_filter()
         self.file_name_formatter = self._create_file_name_formatter()
-        # self.authenticator = self._create_authenticator()
 
         self._resolve_user_name()
         self._determine_directories()
         self._create_file_logger()
-        self.master_hash_list = []
         self._load_config()
 
+        self.master_hash_list = []
+        self.authenticator = self._create_authenticator()
         self._create_reddit_instance()
 
     def _create_reddit_instance(self):
@@ -231,7 +231,7 @@ class RedditDownloader:
         return DownloadFilter(self.args.skip, self.args.skip_domain)
 
     def _create_authenticator(self) -> SiteAuthenticator:
-        raise NotImplementedError
+        return SiteAuthenticator(self.cfg_parser)
 
     def download(self):
         for generator in self.reddit_lists:
