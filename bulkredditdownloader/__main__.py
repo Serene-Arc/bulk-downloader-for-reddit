@@ -23,6 +23,7 @@ def _add_options():
     parser.add_argument('--link', '-l',
                         help='Get posts from link',
                         action='append',
+                        default=[],
                         metavar='link')
     parser.add_argument('--submitted',
                         action='store_true',
