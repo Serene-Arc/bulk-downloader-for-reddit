@@ -53,23 +53,32 @@ class RedditDownloader:
         self.reddit_lists = self._retrieve_reddit_lists()
 
     def _setup_internal_objects(self):
-        self.download_filter = self._create_download_filter()
-        self.time_filter = self._create_time_filter()
-        self.sort_filter = self._create_sort_filter()
-        self.file_name_formatter = self._create_file_name_formatter()
-
-        self._resolve_user_name()
         self._determine_directories()
         self._create_file_logger()
+
+        self.download_filter = self._create_download_filter()
+        logger.debug('Created download filter')
+        self.time_filter = self._create_time_filter()
+        logger.debug('Created time filter')
+        self.sort_filter = self._create_sort_filter()
+        logger.debug('Created sort filter')
+        self.file_name_formatter = self._create_file_name_formatter()
+        logger.debug('Create file name formatter')
+
+        self._resolve_user_name()
         self._load_config()
+        logger.debug(f'Configuration loaded from {self.config_location}')
 
         self.master_hash_list = []
         self.authenticator = self._create_authenticator()
+        logger.debug('Created site authenticator')
         self._create_reddit_instance()
 
     def _create_reddit_instance(self):
         if self.args.authenticate:
+            logger.debug('Using authenticated Reddit instance')
             if not self.cfg_parser.has_option('DEFAULT', 'user_token'):
+                logger.debug('Commencing OAuth2 authentication')
                 scopes = self.cfg_parser.get('DEFAULT', 'scopes')
                 scopes = OAuth2Authenticator.split_scopes(scopes)
                 oauth2_authenticator = OAuth2Authenticator(
@@ -86,6 +95,7 @@ class RedditDownloader:
                                                user_agent=socket.gethostname(),
                                                token_manager=token_manager)
         else:
+            logger.debug('Using unauthenticated Reddit instance')
             self.authenticated = False
             self.reddit_instance = praw.Reddit(client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
                                                client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
@@ -94,9 +104,13 @@ class RedditDownloader:
     def _retrieve_reddit_lists(self) -> list[praw.models.ListingGenerator]:
         master_list = []
         master_list.extend(self._get_subreddits())
+        logger.debug('Retrieved subreddits')
         master_list.extend(self._get_multireddits())
+        logger.debug('Retrieved multireddits')
         master_list.extend(self._get_user_data())
+        logger.debug('Retrieved user data')
         master_list.extend(self._get_submissions_from_link())
+        logger.debug('Retrieved submissions for given links')
         return master_list
 
     def _determine_directories(self):
@@ -113,10 +127,13 @@ class RedditDownloader:
                           Path(self.config_directory, 'config.cfg'),
                           Path('./default_config.cfg'),
                           ]
+        self.config_location = None
         for path in possible_paths:
             if path.resolve().expanduser().exists():
                 self.config_location = path
                 break
+        if not self.config_location:
+            raise errors.BulkDownloaderException('Could not find a configuration file to load')
         self.cfg_parser.read(self.config_location)
 
     def _create_file_logger(self):

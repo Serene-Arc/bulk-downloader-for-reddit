@@ -70,7 +70,7 @@ class OAuth2Authenticator:
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind(('localhost', 7634))
-        logger.debug('Server listening on localhost:8080')
+        logger.debug('Server listening on localhost:7634')
 
         server.listen(1)
         client = server.accept()[0]
@@ -95,6 +95,7 @@ class OAuth2TokenManager(praw.reddit.BaseTokenManager):
         if authorizer.refresh_token is None:
             if self.config.has_option('DEFAULT', 'user_token'):
                 authorizer.refresh_token = self.config.get('DEFAULT', 'user_token')
+                logger.debug('Loaded OAuth2 token for authoriser')
             else:
                 raise RedditAuthenticationError('No auth token loaded in configuration')
 
@@ -102,3 +103,4 @@ class OAuth2TokenManager(praw.reddit.BaseTokenManager):
         self.config.set('DEFAULT', 'user_token', authorizer.refresh_token)
         with open(self.config_location, 'w') as file:
             self.config.write(file, True)
+        logger.debug(f'Written OAuth2 token from authoriser to {self.config_location}')
