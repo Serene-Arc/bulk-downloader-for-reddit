@@ -277,6 +277,7 @@ def test_get_user_submissions(test_user: str, limit: int, downloader_mock: Magic
 @pytest.mark.online
 @pytest.mark.reddit
 def test_get_user_no_user(downloader_mock: MagicMock):
+    downloader_mock.args.upvoted = True
     with pytest.raises(BulkDownloaderException):
         RedditDownloader._get_user_data(downloader_mock)
 
@@ -290,6 +291,7 @@ def test_get_user_no_user(downloader_mock: MagicMock):
 def test_get_user_nonexistent_user(test_user: str, downloader_mock: MagicMock, reddit_instance: praw.Reddit):
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.args.user = test_user
+    downloader_mock.args.upvoted = True
     downloader_mock._check_user_existence.return_value = RedditDownloader._check_user_existence(
         downloader_mock, test_user)
     with pytest.raises(RedditUserError):
