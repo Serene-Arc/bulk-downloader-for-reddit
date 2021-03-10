@@ -141,7 +141,6 @@ def test_create_file_name_formatter_bad(test_file_scheme: str, test_folder_schem
         RedditDownloader._create_file_name_formatter(downloader_mock)
 
 
-@pytest.mark.skip
 def test_create_authenticator(downloader_mock: MagicMock):
     result = RedditDownloader._create_authenticator(downloader_mock)
     assert isinstance(result, SiteAuthenticator)
