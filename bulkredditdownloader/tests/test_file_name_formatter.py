@@ -2,7 +2,8 @@
 # coding=utf-8
 
 from pathlib import Path
-from unittest.mock import Mock
+from typing import Optional
+from unittest.mock import MagicMock
 
 import praw.models
 import pytest
@@ -12,8 +13,8 @@ from bulkredditdownloader.resource import Resource
 
 
 @pytest.fixture()
-def submission() -> Mock:
-    test = Mock()
+def submission() -> MagicMock:
+    test = MagicMock()
     test.title = 'name'
     test.subreddit.display_name = 'randomreddit'
     test.author.name = 'person'
@@ -37,7 +38,7 @@ def reddit_submission(reddit_instance) -> praw.models.Submission:
                                                          ('{DATE}', '123456789'),
                                                          ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345')
                                                          ))
-def test_format_name_mock(format_string: str, expected: str, submission: Mock):
+def test_format_name_mock(format_string: str, expected: str, submission: MagicMock):
     result = FileNameFormatter._format_name(submission, format_string)
     assert result == expected
 
@@ -87,5 +88,40 @@ def test_format_full(
         reddit_submission: praw.models.Submission):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
-    result = test_formatter.format_path(test_resource, Path('test'))
+    result = test_formatter._format_path(test_resource, Path('test'))
     assert str(result) == expected
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'index', 'expected'),
+                         (('{SUBREDDIT}', '{POSTID}', None, 'test/Mindustry/lgilgt.png'),
+                          ('{SUBREDDIT}', '{POSTID}', 1, 'test/Mindustry/lgilgt_1.png'),
+                          ('{SUBREDDIT}', '{POSTID}', 2, 'test/Mindustry/lgilgt_2.png'),
+                          ('{SUBREDDIT}', '{TITLE}_{POSTID}', 2,
+                           'test/Mindustry/Toxopid that is NOT humane >:(_lgilgt_2.png'),
+                          ))
+def test_format_full_with_index_suffix(
+        format_string_directory: str,
+        format_string_file: str,
+        index: Optional[int],
+        expected: str,
+        reddit_submission: praw.models.Submission):
+    test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
+    test_formatter = FileNameFormatter(format_string_file, format_string_directory)
+    result = test_formatter._format_path(test_resource, Path('test'), index)
+    assert str(result) == expected
+
+
+def test_format_multiple_resources():
+    mocks = []
+    for i in range(1, 5):
+        new_mock = MagicMock()
+        new_mock.url = 'https://example.com/test.png'
+        new_mock.extension = '.png'
+        new_mock.source_submission.title = 'test'
+        mocks.append(new_mock)
+    test_formatter = FileNameFormatter('{TITLE}', '')
+    results = test_formatter.format_resource_paths(mocks, Path('.'))
+    results = set([str(res[0]) for res in results])
+    assert results == {'test_1.png', 'test_2.png', 'test_3.png', 'test_4.png'}

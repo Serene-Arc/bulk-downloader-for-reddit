@@ -3,6 +3,7 @@
 
 import re
 from pathlib import Path
+from typing import Optional
 
 import praw.models
 
@@ -38,13 +39,21 @@ class FileNameFormatter:
         result = result.replace('/', '')
         return result
 
-    def format_path(self, resource: Resource, destination_directory: Path) -> Path:
+    def _format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
         subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
+        index = f'_{str(index)}' if index else ''
         file_path = subfolder / (str(self._format_name(resource.source_submission,
-                                                       self.file_format_string)) + resource.extension)
+                                                       self.file_format_string)) + index + resource.extension)
         return file_path
 
-    @staticmethod
+    def format_resource_paths(self, resources: list[Resource],
+                              destination_directory: Path) -> list[tuple[Path, Resource]]:
+        out = []
+        for i, res in enumerate(resources, start=1):
+            out.append((self._format_path(res, destination_directory, i), res))
+        return out
+
+    @ staticmethod
     def validate_string(test_string: str) -> bool:
         if not test_string:
             return False
