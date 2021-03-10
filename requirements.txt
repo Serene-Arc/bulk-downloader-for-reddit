@@ -1,6 +1,7 @@
 appdirs
 bs4
+click
 ffmpeg-python
-requests
 praw
+requests
 youtube-dl
