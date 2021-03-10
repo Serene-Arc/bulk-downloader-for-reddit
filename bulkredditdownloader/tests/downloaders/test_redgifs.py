@@ -11,10 +11,10 @@ from bulkredditdownloader.site_downloaders.redgifs import Redgifs
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected'), (
-    ('https://www.redgifs.com/watch/forcefulenchantedanaconda',
-     'https://thumbs2.redgifs.com/ForcefulEnchantedAnaconda.mp4'),
-    ('https://www.redgifs.com/watch/ficklelightirishsetter',
-     'https://thumbs2.redgifs.com/FickleLightIrishsetter.mp4'),
+    ('https://redgifs.com/watch/frighteningvictorioussalamander',
+     'https://thumbs2.redgifs.com/FrighteningVictoriousSalamander.mp4'),
+    ('https://redgifs.com/watch/springgreendecisivetaruca',
+     'https://thumbs2.redgifs.com/SpringgreenDecisiveTaruca.mp4'),
 ))
 def test_get_link(test_url: str, expected: str):
     result = Redgifs._get_link(test_url)
@@ -23,8 +23,8 @@ def test_get_link(test_url: str, expected: str):
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_hash'), (
-    ('https://www.redgifs.com/watch/forcefulenchantedanaconda', '75a23fff6ddec5de3b61d53db1f265a4'),
-    ('https://www.redgifs.com/watch/ficklelightirishsetter', 'd0ea030883c9a3a6a2991f5aa61369e7'),
+    ('https://redgifs.com/watch/frighteningvictorioussalamander', '4007c35d9e1f4b67091b5f12cffda00a'),
+    ('https://redgifs.com/watch/springgreendecisivetaruca', '8dac487ac49a1f18cc1b4dabe23f0869'),
 ))
 def test_download_resource(test_url: str, expected_hash: str):
     mock_submission = Mock
