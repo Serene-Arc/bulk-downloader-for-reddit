@@ -270,24 +270,20 @@ class RedditDownloader:
                 logger.error(f'Could not download submission {submission.name}: {e}')
                 return
 
-            if self.args.no_download:
-                logger.info(f'Skipping download for submission {submission.id}')
-            else:
-                content = downloader.find_resources(self.authenticator)
-                for res in content:
-                    destination = self.file_name_formatter.format_path(res, self.download_directory)
-                    if destination.exists():
-                        logger.debug(f'File already exists: {destination}')
+            content = downloader.find_resources(self.authenticator)
+            for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
+                if destination.exists():
+                    logger.debug(f'File already exists: {destination}')
+                else:
+                    res.download()
+                    if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
+                        logger.debug(f'Resource from {res.url} downloaded elsewhere')
                     else:
-                        if res.hash.hexdigest() not in self.master_hash_list and not self.args.no_dupes:
-                            # TODO: consider making a hard link/symlink here
-                            destination.parent.mkdir(parents=True, exist_ok=True)
-                            with open(destination, 'wb') as file:
-                                file.write(res.content)
-                            logger.debug(f'Written file to {destination}')
-                            self.master_hash_list.append(res.hash.hexdigest())
-                            logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
-                        else:
-                            logger.debug(f'Resource from {res.url} downloaded elsewhere')
-
-            logger.info(f'Downloaded submission {submission.name}')
+                        # TODO: consider making a hard link/symlink here
+                        destination.parent.mkdir(parents=True, exist_ok=True)
+                        with open(destination, 'wb') as file:
+                            file.write(res.content)
+                        logger.debug(f'Written file to {destination}')
+                        self.master_hash_list.append(res.hash.hexdigest())
+                        logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
+                        logger.info(f'Downloaded submission {submission.name}')

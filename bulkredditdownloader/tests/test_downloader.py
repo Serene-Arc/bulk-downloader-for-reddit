@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import argparse
+import re
 from pathlib import Path
 from typing import Iterator
 from unittest.mock import MagicMock
@@ -10,6 +11,7 @@ import praw
 import praw.models
 import pytest
 
+from bulkredditdownloader.__main__ import _setup_logging
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
 from bulkredditdownloader.exceptions import BulkDownloaderException, RedditAuthenticationError, RedditUserError
@@ -114,6 +116,8 @@ def test_create_sort_filter(test_sort: str, expected: str, downloader_mock: Magi
 @pytest.mark.parametrize(('test_file_scheme', 'test_folder_scheme'), (
     ('{POSTID}', '{SUBREDDIT}'),
     ('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}'),
+    ('{POSTID}', 'test'),
+    ('{POSTID}', ''),
 ))
 def test_create_file_name_formatter(test_file_scheme: str, test_folder_scheme: str, downloader_mock: MagicMock):
     downloader_mock.args.set_file_scheme = test_file_scheme
@@ -127,10 +131,8 @@ def test_create_file_name_formatter(test_file_scheme: str, test_folder_scheme: s
 
 @pytest.mark.parametrize(('test_file_scheme', 'test_folder_scheme'), (
     ('', ''),
-    ('{POSTID}', ''),
     ('', '{SUBREDDIT}'),
     ('test', '{SUBREDDIT}'),
-    ('{POSTID}', 'test'),
 ))
 def test_create_file_name_formatter_bad(test_file_scheme: str, test_folder_scheme: str, downloader_mock: MagicMock):
     downloader_mock.args.set_file_scheme = test_file_scheme
@@ -350,20 +352,60 @@ def test_get_user_saved_unauthenticated(downloader_mock: MagicMock, reddit_insta
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skip
-def test_download_submission():
-    raise NotImplementedError
+def test_download_submission(downloader_mock: MagicMock, reddit_instance: praw.Reddit, tmp_path: Path):
+    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock.download_filter.check_url.return_value = True
+    downloader_mock.args.set_folder_scheme = ''
+    downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
+    downloader_mock.download_directory = tmp_path
+    downloader_mock.master_hash_list = []
+    submission = downloader_mock.reddit_instance.submission(id='ljyy27')
+    RedditDownloader._download_submission(downloader_mock, submission)
+    folder_contents = list(tmp_path.iterdir())
+    assert len(folder_contents) == 4
 
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skip
-def test_download_submission_file_exists():
-    raise NotImplementedError
+def test_download_submission_file_exists(
+        downloader_mock: MagicMock,
+        reddit_instance: praw.Reddit,
+        tmp_path: Path,
+        capsys: pytest.CaptureFixture):
+    _setup_logging(3)
+    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock.download_filter.check_url.return_value = True
+    downloader_mock.args.set_folder_scheme = ''
+    downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
+    downloader_mock.download_directory = tmp_path
+    downloader_mock.master_hash_list = []
+    submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
+    Path(tmp_path, 'Arneeman_Metagaming isn\'t always a bad thing_m1hqw6_1.png').touch()
+    RedditDownloader._download_submission(downloader_mock, submission)
+    folder_contents = list(tmp_path.iterdir())
+    output = capsys.readouterr()
+    assert len(folder_contents) == 1
+    assert 'File already exists: ' in output.out
 
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skip
-def test_download_submission_hash_exists():
-    raise NotImplementedError
+def test_download_submission_hash_exists(
+        downloader_mock: MagicMock,
+        reddit_instance: praw.Reddit,
+        tmp_path: Path,
+        capsys: pytest.CaptureFixture):
+    _setup_logging(3)
+    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock.download_filter.check_url.return_value = True
+    downloader_mock.args.set_folder_scheme = ''
+    downloader_mock.args.no_dupes = True
+    downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
+    downloader_mock.download_directory = tmp_path
+    downloader_mock.master_hash_list = ['a912af8905ae468e0121e9940f797ad7']
+    submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
+    RedditDownloader._download_submission(downloader_mock, submission)
+    folder_contents = list(tmp_path.iterdir())
+    output = capsys.readouterr()
+    assert len(folder_contents) == 0
+    assert re.search(r'Resource from .*? downloaded elsewhere', output.out)
