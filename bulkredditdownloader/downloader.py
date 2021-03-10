@@ -164,7 +164,7 @@ class RedditDownloader:
 
     def _resolve_user_name(self):
         if self.args.user == 'me':
-            self.args.user = self.reddit_instance.user.me()
+            self.args.user = self.reddit_instance.user.me().name
 
     def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
@@ -215,9 +215,9 @@ class RedditDownloader:
                     raise errors.RedditAuthenticationError('Accessing user lists requires authentication')
                 else:
                     if self.args.upvoted:
-                        generators.append(self.reddit_instance.redditor(self.args.user).upvoted)
+                        generators.append(self.reddit_instance.redditor(self.args.user).upvoted(limit=self.args.limit))
                     if self.args.saved:
-                        generators.append(self.reddit_instance.redditor(self.args.user).saved)
+                        generators.append(self.reddit_instance.redditor(self.args.user).saved(limit=self.args.limit))
                 return generators
             else:
                 raise errors.BulkDownloaderException('A user must be supplied to download user data')
