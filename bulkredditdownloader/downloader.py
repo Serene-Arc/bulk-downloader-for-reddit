@@ -261,33 +261,33 @@ class RedditDownloader:
 
     def _download_submission(self, submission: praw.models.Submission):
         if self.download_filter.check_url(submission.url):
-            logger.debug('Attempting to download submission {}'.format(submission.id))
+            logger.debug(f'Attempting to download submission {submission.id}')
 
             try:
                 downloader_class = DownloadFactory.pull_lever(submission.url)
                 downloader = downloader_class(submission)
             except errors.NotADownloadableLinkError as e:
-                logger.error('Could not download submission {}: {}'.format(submission.name, e))
+                logger.error(f'Could not download submission {submission.name}: {e}')
                 return
 
             if self.args.no_download:
-                logger.info('Skipping download for submission {}'.format(submission.id))
+                logger.info(f'Skipping download for submission {submission.id}')
             else:
                 content = downloader.find_resources(self.authenticator)
                 for res in content:
                     destination = self.file_name_formatter.format_path(res, self.download_directory)
                     if destination.exists():
-                        logger.debug('File already exists: {}'.format(destination))
+                        logger.debug(f'File already exists: {destination}')
                     else:
                         if res.hash.hexdigest() not in self.master_hash_list and not self.args.no_dupes:
                             # TODO: consider making a hard link/symlink here
                             destination.parent.mkdir(parents=True, exist_ok=True)
                             with open(destination, 'wb') as file:
                                 file.write(res.content)
-                            logger.debug('Written file to {}'.format(destination))
+                            logger.debug(f'Written file to {destination}')
                             self.master_hash_list.append(res.hash.hexdigest())
-                            logger.debug('Hash added to master list: {}'.format(res.hash.hexdigest()))
+                            logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
                         else:
                             logger.debug(f'Resource from {res.url} downloaded elsewhere')
 
-            logger.info('Downloaded submission {}'.format(submission.name))
+            logger.info(f'Downloaded submission {submission.name}')
