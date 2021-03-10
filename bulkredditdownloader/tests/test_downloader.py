@@ -12,6 +12,7 @@ import praw.models
 import pytest
 
 from bulkredditdownloader.__main__ import _setup_logging
+from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
 from bulkredditdownloader.exceptions import BulkDownloaderException, RedditAuthenticationError, RedditUserError
@@ -20,28 +21,8 @@ from bulkredditdownloader.site_authenticator import SiteAuthenticator
 
 
 @pytest.fixture()
-def args() -> argparse.Namespace:
-    args = argparse.Namespace()
-
-    args.directory = '.'
-    args.verbose = 0
-    args.link = []
-    args.submitted = False
-    args.upvoted = False
-    args.saved = False
-    args.subreddit = []
-    args.multireddit = []
-    args.user = None
-    args.search = None
-    args.sort = 'hot'
-    args.limit = None
-    args.time = 'all'
-    args.skip = []
-    args.skip_domain = []
-    args.set_folder_scheme = '{SUBREDDIT}'
-    args.set_file_scheme = '{REDDITOR}_{TITLE}_{POSTID}'
-    args.no_dupes = False
-
+def args() -> Configuration:
+    args = Configuration()
     return args
 
 

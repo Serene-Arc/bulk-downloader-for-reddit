@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import argparse
 import configparser
 import logging
-import re
 import socket
 from datetime import datetime
 from enum import Enum, auto
@@ -17,6 +15,7 @@ import praw.models
 import prawcore
 
 import bulkredditdownloader.exceptions as errors
+from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
 from bulkredditdownloader.oauth2 import OAuth2Authenticator, OAuth2TokenManager
@@ -44,7 +43,7 @@ class RedditTypes:
 
 
 class RedditDownloader:
-    def __init__(self, args: argparse.Namespace):
+    def __init__(self, args: Configuration):
         self.args = args
         self.config_directories = appdirs.AppDirs('bulk_reddit_downloader', 'BDFR')
         self.run_time = datetime.now().isoformat()

@@ -4,6 +4,7 @@ import argparse
 import logging
 import sys
 
+from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.downloader import RedditDownloader
 from bulkredditdownloader.exceptions import BulkDownloaderException
 
@@ -116,7 +117,7 @@ def _setup_logging(verbosity: int):
     logging.getLogger('urllib3').setLevel(logging.CRITICAL)
 
 
-def main(args: argparse.Namespace):
+def main(args: Configuration):
     _setup_logging(args.verbose)
     try:
         reddit_downloader = RedditDownloader(args)
@@ -127,5 +128,6 @@ def main(args: argparse.Namespace):
 
 if __name__ == '__main__':
     _add_options()
-    args = parser.parse_args()
+    read_configuration = Configuration()
+    args = parser.parse_args(namespace=read_configuration)
     main(args)
