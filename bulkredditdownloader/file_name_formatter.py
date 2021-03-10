@@ -17,8 +17,6 @@ class FileNameFormatter:
         if not self.validate_string(file_format_string):
             raise BulkDownloaderException(f'"{file_format_string}" is not a valid format string')
         self.file_format_string = file_format_string
-        if not self.validate_string(directory_format_string):
-            raise BulkDownloaderException(f'"{directory_format_string}" is not a valid format string')
         self.directory_format_string = directory_format_string
 
     @staticmethod
