@@ -4,6 +4,8 @@
 from argparse import Namespace
 from typing import Optional
 
+import click
+
 
 class Configuration(Namespace):
     def __init__(self):
@@ -26,3 +28,8 @@ class Configuration(Namespace):
         self.upvoted: bool = False
         self.user: Optional[str] = None
         self.verbose: int = 0
+
+    def process_click_arguments(self, context: click.Context):
+        for arg_key in context.params.keys():
+            if arg_key in vars(self) and context.params[arg_key] is not None:
+                vars(self)[arg_key] = context.params[arg_key]
