@@ -67,14 +67,14 @@ class RedditDownloader:
         self.file_name_formatter = self._create_file_name_formatter()
         logger.log(9, 'Create file name formatter')
 
-        self._resolve_user_name()
         self._load_config()
         logger.debug(f'Configuration loaded from {self.config_location}')
+        self._create_reddit_instance()
+        self._resolve_user_name()
 
         self.master_hash_list = []
         self.authenticator = self._create_authenticator()
         logger.log(9, 'Created site authenticator')
-        self._create_reddit_instance()
 
     def _create_reddit_instance(self):
         if self.args.authenticate:
@@ -182,8 +182,12 @@ class RedditDownloader:
 
     def _resolve_user_name(self):
         if self.args.user == 'me':
-            self.args.user = self.reddit_instance.user.me().name
-            logger.log(9, f'Resolved user to {self.args.user}')
+            if self.authenticated:
+                self.args.user = self.reddit_instance.user.me().name
+                logger.log(9, f'Resolved user to {self.args.user}')
+            else:
+                self.args.user = None
+                logger.error('To use "me" as a user, an authenticated Reddit instance must be used')
 
     def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
