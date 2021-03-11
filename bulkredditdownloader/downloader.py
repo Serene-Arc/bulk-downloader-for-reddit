@@ -2,7 +2,9 @@
 # coding=utf-8
 
 import configparser
+import hashlib
 import logging
+import os
 import re
 import socket
 from datetime import datetime
@@ -116,7 +118,7 @@ class RedditDownloader:
         return master_list
 
     def _determine_directories(self):
-        self.download_directory = Path(self.args.directory)
+        self.download_directory = Path(self.args.directory).resolve().expanduser()
         self.logfile_directory = self.download_directory / 'LOG_FILES'
         self.config_directory = self.config_directories.user_config_dir
 
@@ -313,3 +315,15 @@ class RedditDownloader:
                         self.master_hash_list.append(res.hash.hexdigest())
                         logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
                         logger.info(f'Downloaded submission {submission.name}')
+
+    def scan_existing_files(self) -> list[str]:
+        files = []
+        for (dirpath, dirnames, filenames) in os.walk(self.download_directory):
+            files.extend([Path(dirpath, file) for file in filenames])
+        logger.info(f'Calculating hashes for {len(files)} files')
+        hash_list = []
+        for existing_file in files:
+            with open(existing_file, 'rb') as file:
+                hash_list.append(hashlib.md5(file.read()).hexdigest())
+                logger.log(9, f'Hash calculated for file at {existing_file}')
+        return hash_list

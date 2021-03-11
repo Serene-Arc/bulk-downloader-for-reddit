@@ -19,6 +19,7 @@ class Configuration(Namespace):
         self.no_dupes: bool = False
         self.saved: bool = False
         self.search: Optional[str] = None
+        self.search_existing: bool = False
         self.set_file_scheme: str = '{REDDITOR}_{TITLE}_{POSTID}'
         self.set_folder_scheme: str = '{SUBREDDIT}'
         self.skip: list[str] = []

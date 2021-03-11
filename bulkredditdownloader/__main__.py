@@ -39,6 +39,7 @@ def cli():
 @click.option('--set-folder-scheme', default=None, type=str)
 @click.option('--no-dupes', is_flag=True, default=None)
 @click.option('--config', type=str, default=None)
+@click.option('--search-existing', is_flag=True, default=None)
 @click.pass_context
 def cli_download(context: click.Context, **_):
     config = Configuration()

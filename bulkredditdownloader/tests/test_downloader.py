@@ -407,3 +407,10 @@ def test_download_submission_hash_exists(
 def test_sanitise_subreddit_name(test_name: str, expected: str):
     result = RedditDownloader._sanitise_subreddit_name(test_name)
     assert result == expected
+
+
+def test_search_existing_files(downloader_mock: MagicMock):
+    downloader_mock.download_directory = Path('.').resolve().expanduser()
+    results = RedditDownloader.scan_existing_files(downloader_mock)
+    assert all([isinstance(result, str) for result in results])
+    assert len(results) >= 40
