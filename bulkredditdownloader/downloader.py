@@ -14,6 +14,7 @@ from typing import Iterator
 
 import appdirs
 import praw
+import praw.exceptions
 import praw.models
 import prawcore
 
@@ -166,17 +167,26 @@ class RedditDownloader:
 
     def _get_subreddits(self) -> list[praw.models.ListingGenerator]:
         if self.args.subreddit:
-            subreddits = [self._sanitise_subreddit_name(subreddit) for subreddit in self.args.subreddit]
-            subreddits = [self.reddit_instance.subreddit(chosen_subreddit) for chosen_subreddit in subreddits]
-            if self.args.search:
-                return [
-                    reddit.search(
-                        self.args.search,
-                        sort=self.sort_filter.name.lower(),
-                        limit=self.args.limit) for reddit in subreddits]
-            else:
-                sort_function = self._determine_sort_function()
-                return [sort_function(reddit, limit=self.args.limit) for reddit in subreddits]
+            out = []
+            sort_function = self._determine_sort_function()
+            for reddit in self.args.subreddit:
+                try:
+                    reddit = self._sanitise_subreddit_name(reddit)
+                    reddit = self.reddit_instance.subreddit(reddit)
+                    if self.args.search:
+                        out.append(
+                            reddit.search(
+                                self.args.search,
+                                sort=self.sort_filter.name.lower(),
+                                limit=self.args.limit))
+                        logger.debug(
+                            f'Added submissions from subreddit {reddit} with the search term "{self.args.search}"')
+                    else:
+                        out.append(sort_function(reddit, limit=self.args.limit))
+                        logger.debug(f'Added submissions from subreddit {reddit}')
+                except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
+                    logger.error(f'Failed to get submissions for subreddit {reddit}: {e}')
+            return out
         else:
             return []
 
@@ -211,18 +221,18 @@ class RedditDownloader:
 
     def _get_multireddits(self) -> list[Iterator]:
         if self.args.multireddit:
-            if self.authenticated:
-                if self.args.user:
-                    sort_function = self._determine_sort_function()
-                    multireddits = [self._sanitise_subreddit_name(multi) for multi in self.args.multireddit]
-                    return [
-                        sort_function(self.reddit_instance.multireddit(
-                            self.args.user,
-                            m_reddit_choice), limit=self.args.limit) for m_reddit_choice in multireddits]
-                else:
-                    raise errors.BulkDownloaderException('A user must be provided to download a multireddit')
-            else:
-                raise errors.RedditAuthenticationError('Accessing multireddits requires authentication')
+            out = []
+            sort_function = self._determine_sort_function()
+            for multi in self.args.multireddit:
+                try:
+                    multi = self._sanitise_subreddit_name(multi)
+                    out.append(sort_function(
+                        self.reddit_instance.multireddit(self.args.user, multi),
+                        limit=self.args.limit))
+                    logger.debug(f'Added submissions from multireddit {multi}')
+                except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
+                    logger.error(f'Failed to get submissions for multireddit {multi}: {e}')
+            return out
         else:
             return []
 

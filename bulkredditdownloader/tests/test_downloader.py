@@ -219,24 +219,6 @@ def test_get_multireddits_public(
 
 @pytest.mark.online
 @pytest.mark.reddit
-def test_get_multireddits_no_user(downloader_mock: MagicMock, reddit_instance: praw.Reddit):
-    downloader_mock.args.multireddit = ['test']
-    with pytest.raises(BulkDownloaderException):
-        RedditDownloader._get_multireddits(downloader_mock)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-def test_get_multireddits_not_authenticated(downloader_mock: MagicMock, reddit_instance: praw.Reddit):
-    downloader_mock.args.multireddit = ['test']
-    downloader_mock.authenticated = False
-    downloader_mock.reddit_instance = reddit_instance
-    with pytest.raises(RedditAuthenticationError):
-        RedditDownloader._get_multireddits(downloader_mock)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
 @pytest.mark.parametrize(('test_user', 'limit'), (
     ('danigirl3694', 10),
     ('danigirl3694', 50),
