@@ -160,13 +160,13 @@ def test_get_subreddit_normal(
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit):
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
+    downloader_mock._sanitise_subreddit_name = RedditDownloader._sanitise_subreddit_name
     downloader_mock.args.limit = limit
     downloader_mock.args.subreddit = test_subreddits
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
     results = RedditDownloader._get_subreddits(downloader_mock)
-    results = assert_all_results_are_submissions(
-        (limit * len(test_subreddits)) if limit else None, results)
+    results = assert_all_results_are_submissions((limit * len(test_subreddits)) if limit else None, results)
     assert all([res.subreddit.display_name in test_subreddits for res in results])
 
 
@@ -184,6 +184,7 @@ def test_get_subreddit_search(
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit):
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
+    downloader_mock._sanitise_subreddit_name = RedditDownloader._sanitise_subreddit_name
     downloader_mock.args.limit = limit
     downloader_mock.args.search = search_term
     downloader_mock.args.subreddit = test_subreddits
@@ -209,6 +210,7 @@ def test_get_multireddits_public(
         reddit_instance: praw.Reddit,
         downloader_mock: MagicMock):
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
+    downloader_mock._sanitise_subreddit_name = RedditDownloader._sanitise_subreddit_name
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
     downloader_mock.args.limit = limit
     downloader_mock.args.multireddit = test_multireddits
@@ -389,3 +391,19 @@ def test_download_submission_hash_exists(
     output = capsys.readouterr()
     assert len(folder_contents) == 0
     assert re.search(r'Resource from .*? downloaded elsewhere', output.out)
+
+
+@pytest.mark.parametrize(('test_name', 'expected'), (
+    ('Mindustry', 'Mindustry'),
+    ('Futurology', 'Futurology'),
+    ('r/Mindustry', 'Mindustry'),
+    ('TrollXChromosomes', 'TrollXChromosomes'),
+    ('r/TrollXChromosomes', 'TrollXChromosomes'),
+    ('https://www.reddit.com/r/TrollXChromosomes/', 'TrollXChromosomes'),
+    ('https://www.reddit.com/r/TrollXChromosomes', 'TrollXChromosomes'),
+    ('https://www.reddit.com/r/Futurology/', 'Futurology'),
+    ('https://www.reddit.com/r/Futurology', 'Futurology'),
+))
+def test_sanitise_subreddit_name(test_name: str, expected: str):
+    result = RedditDownloader._sanitise_subreddit_name(test_name)
+    assert result == expected

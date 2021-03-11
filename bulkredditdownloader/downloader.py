@@ -3,6 +3,7 @@
 
 import configparser
 import logging
+import re
 import socket
 from datetime import datetime
 from enum import Enum, auto
@@ -153,9 +154,18 @@ class RedditDownloader:
 
         main_logger.addHandler(file_handler)
 
+    @staticmethod
+    def _sanitise_subreddit_name(subreddit: str) -> str:
+        pattern = re.compile(r'^(?:https://www\.reddit\.com/)?(?:r/)?(.*?)(?:/)?$')
+        match = re.match(pattern, subreddit)
+        if not match:
+            raise errors.RedditAuthenticationError('')
+        return match.group(1)
+
     def _get_subreddits(self) -> list[praw.models.ListingGenerator]:
         if self.args.subreddit:
-            subreddits = [self.reddit_instance.subreddit(chosen_subreddit) for chosen_subreddit in self.args.subreddit]
+            subreddits = [self._sanitise_subreddit_name(subreddit) for subreddit in self.args.subreddit]
+            subreddits = [self.reddit_instance.subreddit(chosen_subreddit) for chosen_subreddit in subreddits]
             if self.args.search:
                 return [
                     reddit.search(
@@ -197,10 +207,11 @@ class RedditDownloader:
             if self.authenticated:
                 if self.args.user:
                     sort_function = self._determine_sort_function()
+                    multireddits = [self._sanitise_subreddit_name(multi) for multi in self.args.multireddit]
                     return [
                         sort_function(self.reddit_instance.multireddit(
                             self.args.user,
-                            m_reddit_choice), limit=self.args.limit) for m_reddit_choice in self.args.multireddit]
+                            m_reddit_choice), limit=self.args.limit) for m_reddit_choice in multireddits]
                 else:
                     raise errors.BulkDownloaderException('A user must be provided to download a multireddit')
             else:
