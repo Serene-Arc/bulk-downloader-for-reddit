@@ -44,10 +44,7 @@ def assert_all_results_are_submissions(result_limit: int, results: list[Iterator
 def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
     downloader_mock.args.directory = tmp_path / 'test'
     RedditDownloader._determine_directories(downloader_mock)
-
     assert Path(tmp_path / 'test').exists()
-    assert downloader_mock.logfile_directory == Path(tmp_path / 'test' / 'LOG_FILES')
-    assert downloader_mock.logfile_directory.exists()
 
 
 @pytest.mark.parametrize(('skip_extensions', 'skip_domains'), (
