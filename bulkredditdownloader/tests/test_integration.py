@@ -21,6 +21,13 @@ from bulkredditdownloader.__main__ import cli
     ['-s', 'r/TrollXChromosomes/', '-L', 1],
     ['-s', 'TrollXChromosomes/', '-L', 1],
     ['-s', 'trollxchromosomes', '-L', 1],
+    ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day'],
+    ['-s', 'trollxchromosomes', '-L', 1, '--sort', 'new'],
+    ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day', '--sort', 'new'],
+    ['-s', 'trollxchromosomes', '-L', 1, '--search', 'women'],
+    ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day', '--search', 'women'],
+    ['-s', 'trollxchromosomes', '-L', 1, '--sort', 'new', '--search', 'women'],
+    ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day', '--sort', 'new', '--search', 'women'],
 ))
 def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
@@ -50,6 +57,9 @@ def test_cli_download_links(test_args: list[str], tmp_path: Path):
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10],
+    ['--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10, '--sort', 'rising'],
+    ['--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10, '--time', 'week'],
+    ['--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10, '--time', 'week', '--sort', 'rising'],
 ))
 def test_cli_download_multireddit(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
@@ -61,13 +71,30 @@ def test_cli_download_multireddit(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--user', 'helen_darten', '-m', 'xxyyzzqwertty', '-L', 10],
+))
+def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'Failed to get submissions for multireddit xxyyzzqwerty' in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
 @pytest.mark.authenticated
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--user', 'me', '--upvoted', '--authenticate', '-L', 10, '--set-folder-scheme', ''],
-    ['--user', 'me', '--saved', '--authenticate', '-L', 10, '--set-folder-scheme', ''],
-    ['--user', 'me', '--submitted', '--authenticate', '-L', 10, '--set-folder-scheme', ''],
-    ['--user', 'djnish', '--submitted', '-L', 10, '--set-folder-scheme', ''],
+    ['--user', 'me', '--upvoted', '--authenticate', '-L', 10],
+    ['--user', 'me', '--saved', '--authenticate', '-L', 10],
+    ['--user', 'me', '--submitted', '--authenticate', '-L', 10],
+    ['--user', 'djnish', '--submitted', '-L', 10],
+    ['--user', 'djnish', '--submitted', '-L', 10, '--time', 'month'],
+    ['--user', 'djnish', '--submitted', '-L', 10, '--sort', 'controversial'],
+    ['--user', 'djnish', '--submitted', '-L', 10, '--sort', 'controversial', '--time', 'month'],
 ))
 def test_cli_download_user_data_good(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

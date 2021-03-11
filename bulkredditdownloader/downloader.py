@@ -226,11 +226,12 @@ class RedditDownloader:
             for multi in self.args.multireddit:
                 try:
                     multi = self._sanitise_subreddit_name(multi)
-                    out.append(sort_function(
-                        self.reddit_instance.multireddit(self.args.user, multi),
-                        limit=self.args.limit))
+                    multi = self.reddit_instance.multireddit(self.args.user, multi)
+                    if not multi.subreddits:
+                        raise errors.BulkDownloaderException
+                    out.append(sort_function(multi, limit=self.args.limit))
                     logger.debug(f'Added submissions from multireddit {multi}')
-                except (errors.BulkDownloaderException, praw.exceptions.PRAWException) as e:
+                except (errors.BulkDownloaderException, praw.exceptions.PRAWException, prawcore.PrawcoreException) as e:
                     logger.error(f'Failed to get submissions for multireddit {multi}: {e}')
             return out
         else:
