@@ -10,6 +10,8 @@ import click
 class Configuration(Namespace):
     def __init__(self):
         super(Configuration, self).__init__()
+        self.authenticate = False
+        self.config = None
         self.directory: str = '.'
         self.limit: Optional[int] = None
         self.link: list[str] = []
