@@ -124,6 +124,13 @@ class RedditDownloader:
 
     def _load_config(self):
         self.cfg_parser = configparser.ConfigParser()
+        if self.args.config:
+            if (cfg_path := Path(self.args.config)).exists():
+                self.cfg_parser.read(cfg_path)
+                self.config_location = cfg_path
+                return
+            else:
+                logger.error(f'Could not find config file at {self.args.config}, attempting to find elsewhere')
         possible_paths = [Path('./config.cfg'),
                           Path(self.config_directory, 'config.cfg'),
                           Path('./default_config.cfg'),
