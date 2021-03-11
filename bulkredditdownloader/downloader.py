@@ -175,7 +175,10 @@ class RedditDownloader:
     def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
         for sub_id in self.args.link:
-            supplied_submissions.append(self.reddit_instance.submission(id=sub_id))
+            if len(sub_id) == 6:
+                supplied_submissions.append(self.reddit_instance.submission(id=sub_id))
+            else:
+                supplied_submissions.append(self.reddit_instance.submission(url=sub_id))
         return [supplied_submissions]
 
     def _determine_sort_function(self):
