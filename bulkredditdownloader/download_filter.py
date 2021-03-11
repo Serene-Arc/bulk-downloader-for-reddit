@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadFilter:
@@ -24,6 +27,7 @@ class DownloadFilter:
         combined_extensions = '|'.join(self.excluded_extensions)
         pattern = re.compile(r'.*({})$'.format(combined_extensions))
         if re.match(pattern, url):
+            logger.log(9, f'Url "{url}" matched with "{str(pattern)}"')
             return False
         else:
             return True
@@ -34,6 +38,7 @@ class DownloadFilter:
         combined_domains = '|'.join(self.excluded_domains)
         pattern = re.compile(r'https?://.*({}).*'.format(combined_domains))
         if re.match(pattern, url):
+            logger.log(9, f'Url "{url}" matched with "{str(pattern)}"')
             return False
         else:
             return True

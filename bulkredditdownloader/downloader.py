@@ -57,13 +57,13 @@ class RedditDownloader:
         self._create_file_logger()
 
         self.download_filter = self._create_download_filter()
-        logger.debug('Created download filter')
+        logger.log(9, 'Created download filter')
         self.time_filter = self._create_time_filter()
-        logger.debug('Created time filter')
+        logger.log(9, 'Created time filter')
         self.sort_filter = self._create_sort_filter()
-        logger.debug('Created sort filter')
+        logger.log(9, 'Created sort filter')
         self.file_name_formatter = self._create_file_name_formatter()
-        logger.debug('Create file name formatter')
+        logger.log(9, 'Create file name formatter')
 
         self._resolve_user_name()
         self._load_config()
@@ -71,14 +71,14 @@ class RedditDownloader:
 
         self.master_hash_list = []
         self.authenticator = self._create_authenticator()
-        logger.debug('Created site authenticator')
+        logger.log(9, 'Created site authenticator')
         self._create_reddit_instance()
 
     def _create_reddit_instance(self):
         if self.args.authenticate:
             logger.debug('Using authenticated Reddit instance')
             if not self.cfg_parser.has_option('DEFAULT', 'user_token'):
-                logger.debug('Commencing OAuth2 authentication')
+                logger.log(9, 'Commencing OAuth2 authentication')
                 scopes = self.cfg_parser.get('DEFAULT', 'scopes')
                 scopes = OAuth2Authenticator.split_scopes(scopes)
                 oauth2_authenticator = OAuth2Authenticator(
@@ -106,13 +106,13 @@ class RedditDownloader:
     def _retrieve_reddit_lists(self) -> list[praw.models.ListingGenerator]:
         master_list = []
         master_list.extend(self._get_subreddits())
-        logger.debug('Retrieved subreddits')
+        logger.log(9, 'Retrieved subreddits')
         master_list.extend(self._get_multireddits())
-        logger.debug('Retrieved multireddits')
+        logger.log(9, 'Retrieved multireddits')
         master_list.extend(self._get_user_data())
-        logger.debug('Retrieved user data')
+        logger.log(9, 'Retrieved user data')
         master_list.extend(self._get_submissions_from_link())
-        logger.debug('Retrieved submissions for given links')
+        logger.log(9, 'Retrieved submissions for given links')
         return master_list
 
     def _determine_directories(self):
@@ -140,6 +140,7 @@ class RedditDownloader:
         for path in possible_paths:
             if path.resolve().expanduser().exists():
                 self.config_location = path
+                logger.debug(f'Loading configuration from {path}')
                 break
         if not self.config_location:
             raise errors.BulkDownloaderException('Could not find a configuration file to load')
@@ -181,6 +182,7 @@ class RedditDownloader:
     def _resolve_user_name(self):
         if self.args.user == 'me':
             self.args.user = self.reddit_instance.user.me().name
+            logger.log(9, f'Resolved user to {self.args.user}')
 
     def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
@@ -227,6 +229,7 @@ class RedditDownloader:
                 generators = []
                 sort_function = self._determine_sort_function()
                 if self.args.submitted:
+                    logger.debug(f'Retrieving submitted posts of user {self.args.user}')
                     generators.append(
                         sort_function(
                             self.reddit_instance.redditor(self.args.user).submissions,
@@ -235,8 +238,10 @@ class RedditDownloader:
                     raise errors.RedditAuthenticationError('Accessing user lists requires authentication')
                 else:
                     if self.args.upvoted:
+                        logger.debug(f'Retrieving upvoted posts of user {self.args.user}')
                         generators.append(self.reddit_instance.redditor(self.args.user).upvoted(limit=self.args.limit))
                     if self.args.saved:
+                        logger.debug(f'Retrieving saved posts of user {self.args.user}')
                         generators.append(self.reddit_instance.redditor(self.args.user).saved(limit=self.args.limit))
                 return generators
             else:
@@ -277,11 +282,11 @@ class RedditDownloader:
     def download(self):
         for generator in self.reddit_lists:
             for submission in generator:
+                logger.debug(f'Attempting to download submission {submission.id}')
                 self._download_submission(submission)
 
     def _download_submission(self, submission: praw.models.Submission):
         if self.download_filter.check_url(submission.url):
-            logger.debug(f'Attempting to download submission {submission.id}')
 
             try:
                 downloader_class = DownloadFactory.pull_lever(submission.url)
@@ -293,11 +298,12 @@ class RedditDownloader:
             content = downloader.find_resources(self.authenticator)
             for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
                 if destination.exists():
-                    logger.debug(f'File already exists: {destination}')
+                    logger.warning(f'File already exists: {destination}')
                 else:
                     res.download()
                     if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
-                        logger.debug(f'Resource from {res.url} downloaded elsewhere')
+                        logger.warning(
+                            f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
                     else:
                         # TODO: consider making a hard link/symlink here
                         destination.parent.mkdir(parents=True, exist_ok=True)

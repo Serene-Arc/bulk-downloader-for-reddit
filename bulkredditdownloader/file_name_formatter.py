@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import logging
 import re
 from pathlib import Path
 from typing import Optional
@@ -9,6 +10,8 @@ import praw.models
 
 from bulkredditdownloader.exceptions import BulkDownloaderException
 from bulkredditdownloader.resource import Resource
+
+logger = logging.getLogger(__name__)
 
 
 class FileNameFormatter:
@@ -35,6 +38,7 @@ class FileNameFormatter:
         for key in submission_attributes.keys():
             if re.search(r'(?i).*{{{}}}.*'.format(key), result):
                 result = re.sub(r'(?i){{{}}}'.format(key), str(submission_attributes.get(key, 'unknown')), result)
+                logger.log(9, f'Found key string {key} in name')
 
         result = result.replace('/', '')
         return result
@@ -42,14 +46,18 @@ class FileNameFormatter:
     def _format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
         subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
         index = f'_{str(index)}' if index else ''
-        file_path = subfolder / (str(self._format_name(resource.source_submission,
-                                                       self.file_format_string)) + index + resource.extension)
+        try:
+            file_path = subfolder / (str(self._format_name(resource.source_submission,
+                                                           self.file_format_string)) + index + resource.extension)
+        except TypeError:
+            raise BulkDownloaderException(f'Could not determine path name: {subfolder}, {index}, {resource.extension}')
         return file_path
 
     def format_resource_paths(self, resources: list[Resource],
                               destination_directory: Path) -> list[tuple[Path, Resource]]:
         out = []
         for i, res in enumerate(resources, start=1):
+            logger.log(9, f'Formatting filename with index {i}')
             out.append((self._format_path(res, destination_directory, i), res))
         return out
 

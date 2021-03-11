@@ -57,10 +57,12 @@ def _setup_logging(verbosity: int):
     formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
     stream.setFormatter(formatter)
     logger.addHandler(stream)
-    if verbosity < 0:
+    if verbosity <= 0:
         stream.setLevel(logging.INFO)
-    else:
+    elif verbosity == 1:
         stream.setLevel(logging.DEBUG)
+    else:
+        stream.setLevel(9)
     logging.getLogger('praw').setLevel(logging.CRITICAL)
     logging.getLogger('prawcore').setLevel(logging.CRITICAL)
     logging.getLogger('urllib3').setLevel(logging.CRITICAL)

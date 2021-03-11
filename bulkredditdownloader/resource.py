@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import hashlib
+import logging
 import re
 import time
 from typing import Optional
@@ -11,6 +12,8 @@ import requests
 from praw.models import Submission
 
 from bulkredditdownloader.exceptions import BulkDownloaderException
+
+logger = logging.getLogger(__name__)
 
 
 class Resource:
@@ -32,10 +35,12 @@ class Resource:
             else:
                 raise requests.exceptions.ConnectionError
         except requests.exceptions.ConnectionError:
+            logger.log(9, f'Error occured downloading resource, waiting {wait_time} seconds')
             time.sleep(wait_time)
             if wait_time < 300:
                 return Resource.retry_download(url, wait_time + 60)
             else:
+                logger.error(f'Max wait time exceeded for resource at url {url}')
                 return None
 
     def download(self):
