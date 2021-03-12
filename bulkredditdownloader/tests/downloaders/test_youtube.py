@@ -13,6 +13,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
 @pytest.mark.long
 @pytest.mark.parametrize(('test_submission_id', 'expected_hash'), (
     ('ltnoqp', '468136300a106c67f1463a7011a6db4a'),
+    ('m2l5oo', 'a70512f7782f13922258297bb12055d9'),
 ))
 def test_find_resources(test_submission_id: str, expected_hash: str, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)

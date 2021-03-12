@@ -35,6 +35,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
     ('lupb4r', Youtube),
     ('lul6l7', Redgifs),
     ('luu376', GifDeliveryNetwork),
+    ('m2l5oo', Youtube),
 ))
 def test_factory_lever_good(test_submission_id: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     submission = reddit_instance.submission(id=test_submission_id)
