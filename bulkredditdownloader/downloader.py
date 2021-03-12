@@ -74,6 +74,8 @@ class RedditDownloader:
         self._resolve_user_name()
 
         self.master_hash_list = []
+        if self.args.search_existing:
+            self.master_hash_list.extend(self.scan_existing_files(self.download_directory))
         self.authenticator = self._create_authenticator()
         logger.log(9, 'Created site authenticator')
 
@@ -302,37 +304,39 @@ class RedditDownloader:
                 self._download_submission(submission)
 
     def _download_submission(self, submission: praw.models.Submission):
-        if self.download_filter.check_url(submission.url):
+        if not self.download_filter.check_url(submission.url):
+            logger.debug(f'Download filter remove submission {submission.id} with URL {submission.url}')
+            return
+        try:
+            downloader_class = DownloadFactory.pull_lever(submission.url)
+            downloader = downloader_class(submission)
+        except errors.NotADownloadableLinkError as e:
+            logger.error(f'Could not download submission {submission.name}: {e}')
+            return
 
-            try:
-                downloader_class = DownloadFactory.pull_lever(submission.url)
-                downloader = downloader_class(submission)
-            except errors.NotADownloadableLinkError as e:
-                logger.error(f'Could not download submission {submission.name}: {e}')
-                return
-
-            content = downloader.find_resources(self.authenticator)
-            for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
-                if destination.exists():
-                    logger.warning(f'File already exists: {destination}')
+        content = downloader.find_resources(self.authenticator)
+        for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
+            if destination.exists():
+                logger.warning(f'File already exists: {destination}')
+            else:
+                res.download()
+                if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
+                    logger.warning(
+                        f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
                 else:
-                    res.download()
-                    if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
-                        logger.warning(
-                            f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
-                    else:
-                        # TODO: consider making a hard link/symlink here
-                        destination.parent.mkdir(parents=True, exist_ok=True)
-                        with open(destination, 'wb') as file:
-                            file.write(res.content)
-                        logger.debug(f'Written file to {destination}')
-                        self.master_hash_list.append(res.hash.hexdigest())
-                        logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
-                        logger.info(f'Downloaded submission {submission.name}')
+                    # TODO: consider making a hard link/symlink here
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    with open(destination, 'wb') as file:
+                        file.write(res.content)
+                    logger.debug(f'Written file to {destination}')
+                    self.master_hash_list.append(res.hash.hexdigest())
+                    logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
+                    logger.info(f'Downloaded submission {submission.name}')
 
-    def scan_existing_files(self) -> list[str]:
+    @staticmethod
+    def scan_existing_files(directory: Path) -> list[str]:
         files = []
-        for (dirpath, dirnames, filenames) in os.walk(self.download_directory):
+        for (dirpath, dirnames, filenames) in os.walk(directory):
             files.extend([Path(dirpath, file) for file in filenames])
         logger.info(f'Calculating hashes for {len(files)} files')
         hash_list = []

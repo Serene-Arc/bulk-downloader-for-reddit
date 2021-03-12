@@ -388,8 +388,7 @@ def test_sanitise_subreddit_name(test_name: str, expected: str):
     assert result == expected
 
 
-def test_search_existing_files(downloader_mock: MagicMock):
-    downloader_mock.download_directory = Path('.').resolve().expanduser()
-    results = RedditDownloader.scan_existing_files(downloader_mock)
+def test_search_existing_files():
+    results = RedditDownloader.scan_existing_files(Path('.'))
     assert all([isinstance(result, str) for result in results])
     assert len(results) >= 40

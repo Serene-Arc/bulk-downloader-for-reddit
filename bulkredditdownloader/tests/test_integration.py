@@ -73,14 +73,15 @@ def test_cli_download_multireddit(test_args: list[str], tmp_path: Path):
 @pytest.mark.reddit
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--user', 'helen_darten', '-m', 'xxyyzzqwertty', '-L', 10],
+    ['--user', 'helen_darten', '-m', 'xxyyzzqwerty', '-L', 10],
 ))
 def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert 'Failed to get submissions for multireddit xxyyzzqwerty' in result.output
+    assert 'Failed to get submissions for multireddit' in result.output
+    assert 'received 404 HTTP response' in result.output
 
 
 @pytest.mark.online
@@ -117,3 +118,19 @@ def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'To use "me" as a user, an authenticated Reddit instance must be used' in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.authenticated
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--subreddit', 'python', '-L', 10, '--search-existing'],
+))
+def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
+    Path(tmp_path, 'test.txt').touch()
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'Calculating hashes for' in result.output
