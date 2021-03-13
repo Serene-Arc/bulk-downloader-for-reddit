@@ -45,13 +45,9 @@ def cli_download(context: click.Context, **_):
     config = Configuration()
     config.process_click_arguments(context)
     _setup_logging(config.verbose)
-    try:
-        reddit_downloader = RedditDownloader(config)
-        reddit_downloader.download()
-    except BulkDownloaderException as e:
-        logger.critical(f'An error occured {e}')
-    finally:
-        logger.info('Program complete')
+    reddit_downloader = RedditDownloader(config)
+    reddit_downloader.download()
+    logger.info('Program complete')
 
 
 def _setup_logging(verbosity: int):
