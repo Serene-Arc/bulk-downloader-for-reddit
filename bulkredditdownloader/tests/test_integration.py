@@ -44,6 +44,7 @@ def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
     ['-l', 'm2601g'],
     ['-l', 'https://www.reddit.com/r/TrollXChromosomes/comments/m2601g/its_a_step_in_the_right_direction/'],
     ['-l', 'm3hxzd'],  # Really long title used to overflow filename limit
+    ['-l', 'm3kua3'],  # Has a deleted user
 ))
 def test_cli_download_links(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
@@ -123,7 +124,6 @@ def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.authenticated
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'python', '-L', 10, '--search-existing'],
@@ -135,3 +135,31 @@ def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Calculating hashes for' in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--subreddit', 'tumblr', '-L', '25', '--skip', 'png', '--skip', 'jpg'],
+))
+def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'Download filter removed submission' in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.long
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--subreddit', 'all', '-L', '100'],
+))
+def test_cli_download_long(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
