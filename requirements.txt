@@ -1,7 +1,9 @@
 appdirs
 bs4
 click
+dict2xml
 ffmpeg-python
 praw
+pyyaml
 requests
 youtube-dl

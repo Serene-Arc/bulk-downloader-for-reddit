@@ -26,11 +26,31 @@ def test_write_submission_json(test_submission_id: str, tmp_path: Path, reddit_i
     assert test_path.exists()
 
 
-@pytest.mark.skip
-def test_write_submission_xml():
-    raise NotImplementedError
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_submission_id', (
+    'm3reby',
+))
+def test_write_submission_xml(test_submission_id: str, tmp_path: Path, reddit_instance: praw.Reddit):
+    archiver_mock = MagicMock()
+    test_path = Path(tmp_path, 'test.xml')
+    test_submission = reddit_instance.submission(id=test_submission_id)
+    archiver_mock.file_name_formatter.format_path.return_value = test_path
+    test_entry = ArchiveEntry(test_submission)
+    Archiver._write_submission_xml(archiver_mock, test_entry)
+    assert test_path.exists()
 
 
-@pytest.mark.skip
-def test_write_submission_yaml():
-    raise NotImplementedError
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_submission_id', (
+    'm3reby',
+))
+def test_write_submission_yaml(test_submission_id: str, tmp_path: Path, reddit_instance: praw.Reddit):
+    archiver_mock = MagicMock()
+    test_path = Path(tmp_path, 'test.yaml')
+    test_submission = reddit_instance.submission(id=test_submission_id)
+    archiver_mock.file_name_formatter.format_path.return_value = test_path
+    test_entry = ArchiveEntry(test_submission)
+    Archiver._write_submission_yaml(archiver_mock, test_entry)
+    assert test_path.exists()

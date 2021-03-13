@@ -4,7 +4,9 @@
 import json
 import logging
 
+import dict2xml
 import praw.models
+import yaml
 
 from bulkredditdownloader.archive_entry import ArchiveEntry
 from bulkredditdownloader.configuration import Configuration
@@ -45,7 +47,16 @@ class Archiver(RedditDownloader):
             json.dump(entry.compile(), file)
 
     def _write_submission_xml(self, entry: ArchiveEntry):
-        raise NotImplementedError
+        resource = Resource(entry.submission, '', '.xml')
+        file_path = self.file_name_formatter.format_path(resource, self.download_directory)
+        with open(file_path, 'w') as file:
+            logger.debug(f'Writing submission {entry.submission.id} to file in XML format at {file_path}')
+            xml_entry = dict2xml.dict2xml(entry.compile(), wrap='root')
+            file.write(xml_entry)
 
     def _write_submission_yaml(self, entry: ArchiveEntry):
-        raise NotImplementedError
+        resource = Resource(entry.submission, '', '.yaml')
+        file_path = self.file_name_formatter.format_path(resource, self.download_directory)
+        with open(file_path, 'w') as file:
+            logger.debug(f'Writing submission {entry.submission.id} to file in YAML format at {file_path}')
+            yaml.dump(entry.compile(), file)
