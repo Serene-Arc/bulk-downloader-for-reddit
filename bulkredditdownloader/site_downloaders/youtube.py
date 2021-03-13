@@ -8,6 +8,7 @@ from typing import Optional
 import youtube_dl
 from praw.models import Submission
 
+from bulkredditdownloader.exceptions import SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -33,8 +34,11 @@ class Youtube(BaseDownloader):
         with tempfile.TemporaryDirectory() as temp_dir:
             download_path = Path(temp_dir).resolve()
             ytdl_options['outtmpl'] = str(download_path) + '/' + 'test.%(ext)s'
-            with youtube_dl.YoutubeDL(ytdl_options) as ydl:
-                ydl.download([self.post.url])
+            try:
+                with youtube_dl.YoutubeDL(ytdl_options) as ydl:
+                    ydl.download([self.post.url])
+            except youtube_dl.DownloadError as e:
+                raise SiteDownloaderError(f'Youtube download failed: {e}')
 
             downloaded_file = list(download_path.iterdir())[0]
             extension = downloaded_file.suffix

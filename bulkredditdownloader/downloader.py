@@ -314,15 +314,18 @@ class RedditDownloader:
             logger.error(f'Could not download submission {submission.name}: {e}')
             return
 
-        content = downloader.find_resources(self.authenticator)
+        try:
+            content = downloader.find_resources(self.authenticator)
+        except errors.SiteDownloaderError:
+            logger.error(f'Site {downloader_class.__name__} failed to download submission {submission.id}')
+            return
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
                 logger.warning(f'File already exists: {destination}')
             else:
                 res.download()
                 if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
-                    logger.warning(
-                        f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
+                    logger.warning(f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
                 else:
                     # TODO: consider making a hard link/symlink here
                     destination.parent.mkdir(parents=True, exist_ok=True)
