@@ -28,7 +28,7 @@ class FileNameFormatter:
         submission_attributes = {
             'title': submission.title,
             'subreddit': submission.subreddit.display_name,
-            'redditor': submission.author.name,
+            'redditor': submission.author.name if submission.author else 'DELETED',
             'postid': submission.id,
             'upvotes': submission.score,
             'flair': submission.link_flair_text,
