@@ -43,6 +43,7 @@ def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
 @pytest.mark.parametrize('test_args', (
     ['-l', 'm2601g'],
     ['-l', 'https://www.reddit.com/r/TrollXChromosomes/comments/m2601g/its_a_step_in_the_right_direction/'],
+    ['-l', 'm3hxzd'],  # Really long title used to overflow filename limit
 ))
 def test_cli_download_links(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

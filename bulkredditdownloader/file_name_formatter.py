@@ -46,12 +46,23 @@ class FileNameFormatter:
     def _format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
         subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
         index = f'_{str(index)}' if index else ''
+        if not resource.extension:
+            raise BulkDownloaderException(f'Resource from {resource.url} has no extension')
+        ending = index + resource.extension
+        file_name = str(self._format_name(resource.source_submission, self.file_format_string))
+        file_name = self._limit_file_name_length(file_name, ending)
         try:
-            file_path = subfolder / (str(self._format_name(resource.source_submission,
-                                                           self.file_format_string)) + index + resource.extension)
+            file_path = Path(subfolder, file_name)
         except TypeError:
             raise BulkDownloaderException(f'Could not determine path name: {subfolder}, {index}, {resource.extension}')
         return file_path
+
+    @staticmethod
+    def _limit_file_name_length(filename: str, ending: str) -> str:
+        max_length = 255 - len(ending)
+        if len(filename) > max_length:
+            filename = filename[:max_length]
+        return filename + ending
 
     def format_resource_paths(self, resources: list[Resource],
                               destination_directory: Path) -> list[tuple[Path, Resource]]:

@@ -125,3 +125,28 @@ def test_format_multiple_resources():
     results = test_formatter.format_resource_paths(mocks, Path('.'))
     results = set([str(res[0]) for res in results])
     assert results == {'test_1.png', 'test_2.png', 'test_3.png', 'test_4.png'}
+
+
+@pytest.mark.parametrize(('test_filename', 'test_ending'), (
+    ('A' * 300, '.png'),
+    ('A' * 300, '_1.png'),
+    ('a' * 300, '_1000.jpeg'),
+))
+def test_limit_filename_length(test_filename: str, test_ending: str):
+    result = FileNameFormatter._limit_file_name_length(test_filename, test_ending)
+    assert len(result) <= 255
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+def test_shorten_filenames(reddit_instance: praw.Reddit, tmp_path: Path):
+    test_submission = MagicMock()
+    test_submission.title = 'A' * 300
+    test_submission.author.name = 'test'
+    test_submission.subreddit.display_name = 'test'
+    test_submission.id = 'BBBBBB'
+    test_resource = Resource(test_submission, 'www.example.com/empty', '.jpeg')
+    test_formatter = FileNameFormatter('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}')
+    result = test_formatter._format_path(test_resource, tmp_path)
+    result.parent.mkdir(parents=True)
+    result.touch()
