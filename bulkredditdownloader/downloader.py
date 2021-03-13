@@ -305,7 +305,7 @@ class RedditDownloader:
 
     def _download_submission(self, submission: praw.models.Submission):
         if not self.download_filter.check_url(submission.url):
-            logger.debug(f'Download filter remove submission {submission.id} with URL {submission.url}')
+            logger.debug(f'Download filter removed submission {submission.id} with URL {submission.url}')
             return
         try:
             downloader_class = DownloadFactory.pull_lever(submission.url)
