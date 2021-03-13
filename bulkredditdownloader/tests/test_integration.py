@@ -153,10 +153,10 @@ def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.long
+@pytest.mark.slow
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--subreddit', 'all', '-L', '100'],
+    ['--subreddit', 'all', '-L', '100', '--sort', 'new'],
 ))
 def test_cli_download_long(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
