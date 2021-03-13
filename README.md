@@ -1,213 +1,125 @@
-# [Bulk Downloader for Reddit v2-beta](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/v2) is out!
-[Serene-Arc](https://github.com/Serene-Arc) has reimplemented the Bulk Downloader for Reddit so that it is more flexible, roboust and is easier to contribute. If you are having issues with master, v2 is worth checking out. After cloning the repository, switch to the branch *v2* with `git checkout v2`
+# Bulk Downloader for Reddit
 
-# 📥 Bulk Downloader for Reddit
+This is a tool to download data from Reddit.
 
-Downloads reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
-  
-Please give feedback *(errors, feature requests, etc.)* on the [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) page. I will try to resolve them ASAP.
+## Usage
 
-## [Download the latest release here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
+The BDFR works by taking submissions from a variety of "sources" from Reddit and then parsing them to download. These sources might be a subreddit, multireddit, a user list, or individual links. These sources are combined and downloaded to disk, according to a naming and organisational scheme defined by the user.
 
-## 🚀 How to use
-If you run **Windows**, after you extract the zip file, double-click on the *bulk-downloader-for-reddit.exe*. The program will guide you through. Also, take a look at the [Setting up the program](#🔨-setting-up-the-program) section. **However**, Bulk Dowloader for Reddit has a plenty of features which can only be activated via command line arguments. See [Options](#⚙-Options) for it.
+Many websites and links are supported:
 
-Unfortunately, there is no binary for **MacOS** or **Linux**. If you are a MacOS or Linux user, you must use the program from the source code. See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page.
-  
-However, binary version for Linux is being worked. So, stay tuned.
-  
-OR, regardless of your operating system, you can fire up the program from the **source code**.
+  - Direct Links (links leading to a file)
+  - Erome
+  - Gfycat
+  - Gif Delivery Network
+  - Imgur
+  - Reddit Galleries
+  - Reddit Text Posts
+  - Reddit Videos
+  - Redgifs
+  - Youtube
 
-### `python3 -m pip install -r requirements.txt`
+## Options
 
-### `python3 script.py`
+The following options are common between both the `archive` and `download` commands of the BDFR.
 
-See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page for more information.
+- `directory`
+  - This is the directory to which the BDFR will download and place all files
+- `--authenticate`
+  - This flag will make the BDFR attempt to use an authenticated Reddit session
+  - See[Authentication](#authentication) for more details
+- `--config`
+  - If the path to a configuration file is supplied with this option, the BDFR will use the specified config
+  - See[Configuration Files](#configuration-files) for more details
+- `--saved`
+  - This option will make the BDFR use the supplied user's saved posts list as a download source
+  - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
+- `--search`
+  - This will apply the specified search term to specific lists when scraping submissions
+  - A search term can only be applied to subreddits and multireddits, supplied with the `- s` and `-m` flags respectively
+- `--submitted`
+  - This will use a user's submissions as a source
+  - A user must be specified with `--user`
+- `--upvoted`
+  - This will use a user's upvoted posts as a source of posts to scrape
+  - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
+- `-L, --limit`
+  - This is the limit on the number of submissions retrieve
+  - Note that this limit applies to **each source individually** e.g. if a `--limit` of 10 and three subreddits are provided, then 30 total submissions will be scraped
+  - If it is not supplied, then the BDFR will default to the maximum allowed by Reddit, roughly 1000 posts. **We cannot bypass this.**
+- `-S, --sort`
+  - This is the sort type for each applicable submission source supplied to the BDFR
+  - This option does not apply to upvoted or saved posts when scraping from these sources
+  - The following options are available:
+    - `controversial`
+    - `hot`
+    - `new`
+    - `relevance` (only available when using `--search`)
+    - `rising`
+    - `top`
+- `-l, --link`
+  - This is a direct link to a submission to download, either as a URL or an ID
+  - Can be specified multiple times
+- `-m, --multireddit`
+  - This is the name of a multireddit to add as a source
+  - Can be specified multiple times
+  - The specified multireddits must all belong to the user specified with the `--user` option
+- `-s, --subreddit`
+  - This adds a subreddit as a source
+  - Can be used mutliple times
+- `-t, --time`
+  - This is the time filter that will be applied to all applicable sources
+  - This option does not apply to upvoted or saved posts when scraping from these sources
+  - The following options are available:
+    - `all`
+    - `hour`
+    - `day`
+    - `week`
+    - `month`
+    - `year`
+- `-u, --user`
+  - This specifies the user to scrape in concert with other options
+  - When using `--authenticate`, `--user me` can be used to refer to the authenticated user
+- `-v, --verbose`
+  - Increases the verbosity of the program
+  - Can be specified multiple times
 
-## 🔨 Setting up the program
-### 📽 ffmpeg Library
-  
-Program needs **ffmpeg software** to add audio to some video files. However, installing it is **voluntary**. Although the program can still run with no errors without the ffmpeg library, some video files might have no sound.
-  
-Install it through a package manager such as **Chocolatey** in Windows, **apt** in Linux or **Homebrew** in MacOS:
+### Downloader Options
 
-- **in Windows**: After you **[install Chocolatey](https://chocolatey.org/install)**, type **`choco install ffmpeg`** in either Command Promt or Powershell.
-- **in Linux**: Type **`sudo apt install ffmpeg`** in Terminal.
-- **in MacOS**: After you **[install Homebrew](https://brew.sh/)**, type **`brew install ffmpeg`** in Terminal
+The following options apply only to the `download` command. This command downloads the files and resources linked to in the submission, or a text submission itself, to the disk in the specified directory.
 
-OR, [Download ffmpeg](https://www.ffmpeg.org/download.html) manually on your system and [add the bin folder in the downloaded folder's directory to `PATH` of your system.](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) However, package manager option is suggested.
+- `--no-dupes`
+  - This flag will not redownload files if they already exist somewhere in the root folder
+  - This is calculated by MD5 hash
+- `--search-existing`
+  - This will make the BDFR compile the hashes for every file in `directory` and store them to remove duplicates if `--no-dupes` is also supplied
+- `--set-file-scheme`
+  - Sets the scheme for files
+  - See[Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
+- `--set-folder-scheme`
+  - Sets the scheme for folders
+  - See[Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
+- `--skip-domain`
+  - This adds domains to the download filter i.e. submissions coming from these domains will not be downloaded
+  - Can be specified multiple times
+- `--skip`
+  - This adds file types to the download filter i.e. submissions with one of the supplied file extensions will not be downloaded
+  - Can be specified multiple times
 
-## 🐋 Docker
-There is also a complete ready to go Docker integration. Install **Docker** and **docker-compose**. Then run the following command from the repository root:
-### `docker-compose run --service-ports bdfr`
-And you'll find youself right in the app. The files will be downloaded to `downloads/`. Since it is docker, you may want to change the ownership of the files once you're done (belongs to root by default).
+## Authentication
 
-_Credits to [wAuner](https://github.com/wAuner)_
+The BDFR uses OAuth2 authentication to connect to Reddit if authentication is required. This means that it is a secure, token - based system for making requests. This also means that the BDFR only has access to specific parts of the account authenticated, by default only saved posts, upvoted posts, and the identity of the authenticated account. Note that authentication is not required unless accessing private things like upvoted posts, saved posts, and private multireddits.
 
-## ⚙ Options
+To authenticate, the BDFR will first look for a token in the configuration file that signals that there's been a previous authentication. If this is not there, then the BDFR will attempt to register itself with your account. This is normal, and if you run the program, it will pause and show a Reddit URL. Click on this URL and it will take you to Reddit, where the permissions being requested will be shown. Confirm it, and the BDFR will save a token that will allow it to authenticate with Reddit from then on.
 
-Some of the below features are available only through command-line.
-  
-Open the [Command Promt](https://youtu.be/bgSSJQolR0E?t=18), [Powershell](https://youtu.be/bgSSJQolR0E?t=18) or [Terminal](https://youtu.be/Pz4yHAB3G8w?t=31) in the folder that contains bulk-downloader-for-reddit file (click on the links to see how)
-  
-After you type **`bulk-downloader-for-reddit.exe`**, type the preffered options.
+## Changing Permissions
 
-Example: **`bulk-downloader-for-reddit.exe --subreddit pics --sort top --limit 10`**
+Most users will not need to do anything extra to use any of the current features. However, if additional features such as scraping messages, PMs, etc are added in the future, these will require additional scopes. Additionally, advanced users may wish to use the BDFR with their own API key and secret. There is normally no need to do this, but it is allowed by the BDFR.
 
-## **`--subreddit`** 
-Downloads posts from given subreddit(s). Takes number of subreddit names as a paramater.
-  
-Example usage: **`--subreddit IAmA pics --sort hot --limit 10`**
+The configuration file for the BDFR contains the API secret and key, as well as the scopes that the BDFR will request when registering itself to a Reddit account via OAuth2. These can all be changed if the user wishes, however do not do so if you don't know what you are doing. The defaults are specifically chosen to have a very low security risk if your token were to be compromised, however unlikely that actually is . Never grant more permissions than you absolutely need.
 
-## **`--multireddit`**
-Downloads posts from given subreddit. Takes a single multireddit name as a parameter. **`--user`** option is required.
-  
-Example usage: **`--multireddit myMulti --user me --sort top --time week`**
+For more details on the configuration file and the values therein, see[Configuration Files](#configuration-files).
 
-## **`--search`**
-Searches for given query in given subreddit(s) or multireddit. Takes a search query as a parameter. **`--subreddit`** or **`--multireddit`** option is required. **`--sort`** option is required.
-  
-Example usage: **`--search carter --subreddit funny`**
-  
-## **`--submitted`** 
-Downloads given redditor's submitted posts. Does not take any parameter. **`--user`** option is required.
+## Folder and File Name Schemes
 
-Example usage: **`--submitted --user spɛz --sort top --time week`**
-  
-## **`--upvoted`**
-Downloads given redditor's upvoted posts. Does not take any parameter. **`--user`** option is required.
-
-Example usage: **`--upvoted --user spɛz`**
-  
-## **`--saved`** 
-Downloads logged in redditor's saved posts. Does not take any parameter. Example usage: **`--saved`**
-  
-## **`--link`**
-Takes a reddit link as a parameter and downloads the posts in the link. Put the link in " " (double quotes).
-  
-Example usage: **`--link "https://www.reddit.com/r/funny/comments/25blmh/"`**
-
-## **`--log`**
-Program saves the found posts into POSTS.json file and the failed posts to FAILED.json file in LOG_FILES folder. You can use those files to redownload the posts inside them.  
-  
-Uses a .json file to redownload posts from. Takes single directory to a .json file as a parameter.
-
-Example usage: **`--log D:\pics\LOG_FILES\FAILED.json`**
-
----
-
-## **`--user`**
-Takes a reddit username as a parameter. Example usage: **`--user spɛz`**
-  
-## **`--sort`**
-Takes a valid sorting type as a parameter. Valid sort types are `hot`, `top`, `new`, `rising`, `controversial` and `relevance` (if you are using `--search` option)
-
-Example usage: **`--sort top`**
-  
-## **`--time`**
-Takes a valid time as a parameter. Valid times are `hour`, `day`, `week`, `month`, `year` and `all`. Example usage: **`--time all`**
-  
-## **`--limit`**
-Takes a number to specify how many should program get. Upper bound is 1000 posts for **each** subreddit. For example, if you are downloading posts from pics and IAmA, the upper bound is 2000. Do not use the option to set it to highest bound possible.
-
-Example usage: **`--limit 500`**
-
----
-
-## **`--skip`**
-Takes a number of file types as a parameter to skip the posts from those domains. Valid file types are `images`, `videos`, `gifs`, `self`
-  
-Example usage: **`--skip self videos`**
-  
-## **`--skip-domain`**
-Takes a number of domains as a parameter to skip the posts from those domains.
-
-Example usage: **`--skip v.redd.it youtube.com youtu.be`**
-  
-## **`--quit`**
-Automatically quits the application after it finishes. Otherwise, it will wait for an input to quit.
-
-Example usage: **`--quit`**
-  
-## **`--directory`**
-Takes a directory which the posts should be downloaded to. Overrides the given default directory. Use `..\` to imply upper level and `.\` to imply the current level.
-
-Example usage: **`--directory D:\bdfr\`**  
-Example usage: **`--directory ..\images\`**  
-Example usage: **`-d ..\images\`**  
-Example usage: **`-d .\`**  
-  
-## **`--set-filename`**
-Starts the program to set a filename template to use for downloading posts. **Does not take any parameter.**
-  
-When the programs starts, you will be prompted to type a filename template. Use `SUBREDDIT`, `REDDITOR`, `POSTID`, `TITLE`, `UPVOTES`, `FLAIR`, `DATE` in curly brakets `{ }` to refer to the corrosponding property of a post.
-
-❗ Do NOT change the filename structure frequently. If you did, the program could not find duplicates and would download the already downloaded files again. This would not create any duplicates in the directory but the program would not be as snappy as it should be.
-  
-The default filename template is **`{REDDITOR}_{TITLE}_{POSTID}`**
-
-Example usage: **`--set-filename`**
-  
-## **`--set-folderpath`**
-Starts the program to set a folder structure  to use for downloading posts. **Does not take any parameter.**
-  
-When the programs starts, you will be prompted to type a filename template. Use `SUBREDDIT`, `REDDITOR`, `POSTID`, `TITLE`, `UPVOTES`, `FLAIR`, `DATE` in curly brakets `{ }` to refer to the corrosponding property of a post. Do not put slashes `/` or backslashes `\` at either ends. For instance, **`{REDDITOR}/{SUBREDDIT}/{FLAIR}`**
-  
-The default filename template is **`{SUBREDDIT}`**
-
-Example usage: **`--set-folderpath`**
-  
-## **`--set-default-directory`**
-Starts the program to set a default directory to use in case no directory is given. **Does not take any parameter.**
-  
-When the programs starts, you will be prompted to type a default directory. You can use {time} in foler names to use to timestamp it. For instance, **`D:\bdfr\posts_{time}`**
-
-Example usage: **`--set-default-directory`**
-  
-## **`--use-local-config`**
-Sets the program to use config.json file in the current directory. Creates it if it does not exists. Useful for having different configurations. **Does not take any parameter.**
-  
-Example usage: **`--use-local-config`**
-  
-## **`--no-dupes`**
-Skips the same posts in different subreddits. Does not take any parameter.
-
-Example usage: **`--no-dupes`**
-  
-## **`--no-download`**
-Quits the program without downloading the posts. Does not take any parameter
-
-Example usage: **`--no-download`**
-  
-## **`--downloaded-posts`**
-Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to the given file.
-
-Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
-  
-## **`--downloaded-delay`**
-When specified, it delays every download for given seconds.
-
-## ❔ FAQ
-
-### I am running the script on a headless machine or on a remote server. How can I authenticate my reddit account?
-- Download the script on your everday computer and run it for once.
-- Authenticate the program on both reddit and imgur.
-- Go to your Home folder (for Windows users it is `C:\Users\[USERNAME]\`, for Linux users it is `/home/[USERNAME]`)
-- Copy the *config.json* file inside the Bulk Downloader for Reddit folder and paste it **next to** the file that you run the program.
-
-### How can I change my credentials?
-- All of the user data is held in **config.json** file which is in a folder named "Bulk Downloader for Reddit" in your **Home** directory. You can edit them, there.  
-
-  Also if you already have a config.json file, you can paste it **next to** the script and override the one on your Home directory. 
-
-### What do the dots resemble when getting posts?
-- Each dot means that 100 posts are scanned.
-
-### Getting posts takes too long.
-- You can press *Ctrl+C* to interrupt it and start downloading.
-
-### How do I open self post files?
-- Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
-  However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).  
-
-  However, they are basically text files. You can also view them with any text editor such as Notepad on Windows, gedit on Linux or Text Editor on MacOS.
+## Configuration Files
