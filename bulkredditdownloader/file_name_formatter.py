@@ -59,9 +59,10 @@ class FileNameFormatter:
 
     @staticmethod
     def _limit_file_name_length(filename: str, ending: str) -> str:
-        max_length = 255 - len(ending)
-        if len(filename) > max_length:
-            filename = filename[:max_length]
+        max_length_chars = 255 - len(ending)
+        max_length_bytes = 255 - len(ending.encode('utf-8'))
+        while len(filename) > max_length_chars or len(filename.encode('utf-8')) > max_length_bytes:
+            filename = filename[:-1]
         return filename + ending
 
     def format_resource_paths(self, resources: list[Resource],

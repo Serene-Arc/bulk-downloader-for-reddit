@@ -131,10 +131,13 @@ def test_format_multiple_resources():
     ('A' * 300, '.png'),
     ('A' * 300, '_1.png'),
     ('a' * 300, '_1000.jpeg'),
+    ('😍💕✨' * 100, '_1.png'),
 ))
 def test_limit_filename_length(test_filename: str, test_ending: str):
     result = FileNameFormatter._limit_file_name_length(test_filename, test_ending)
     assert len(result) <= 255
+    assert len(result.encode('utf-8')) <= 255
+    assert isinstance(result, str)
 
 
 @pytest.mark.online
