@@ -32,6 +32,9 @@ class Configuration(Namespace):
         self.user: Optional[str] = None
         self.verbose: int = 0
 
+        # Archiver-specific options
+        self.format = 'json'
+
     def process_click_arguments(self, context: click.Context):
         for arg_key in context.params.keys():
             if arg_key in vars(self) and context.params[arg_key] is not None:

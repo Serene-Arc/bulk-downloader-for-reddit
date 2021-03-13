@@ -88,7 +88,7 @@ def test_format_full(
         reddit_submission: praw.models.Submission):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
-    result = test_formatter._format_path(test_resource, Path('test'))
+    result = test_formatter.format_path(test_resource, Path('test'))
     assert str(result) == expected
 
 
@@ -109,7 +109,7 @@ def test_format_full_with_index_suffix(
         reddit_submission: praw.models.Submission):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
-    result = test_formatter._format_path(test_resource, Path('test'), index)
+    result = test_formatter.format_path(test_resource, Path('test'), index)
     assert str(result) == expected
 
 
@@ -150,6 +150,6 @@ def test_shorten_filenames(reddit_instance: praw.Reddit, tmp_path: Path):
     test_submission.id = 'BBBBBB'
     test_resource = Resource(test_submission, 'www.example.com/empty', '.jpeg')
     test_formatter = FileNameFormatter('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}')
-    result = test_formatter._format_path(test_resource, tmp_path)
+    result = test_formatter.format_path(test_resource, tmp_path)
     result.parent.mkdir(parents=True)
     result.touch()

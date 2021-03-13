@@ -12,6 +12,10 @@ class RedditAuthenticationError(RedditUserError):
     pass
 
 
+class ArchiverError(BulkDownloaderException):
+    pass
+
+
 class SiteDownloaderError(BulkDownloaderException):
     pass
 

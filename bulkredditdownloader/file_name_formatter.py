@@ -43,7 +43,7 @@ class FileNameFormatter:
         result = result.replace('/', '')
         return result
 
-    def _format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
+    def format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
         subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
         index = f'_{str(index)}' if index else ''
         if not resource.extension:
@@ -70,7 +70,7 @@ class FileNameFormatter:
         out = []
         for i, res in enumerate(resources, start=1):
             logger.log(9, f'Formatting filename with index {i}')
-            out.append((self._format_path(res, destination_directory, i), res))
+            out.append((self.format_path(res, destination_directory, i), res))
         return out
 
     @ staticmethod
