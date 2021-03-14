@@ -49,7 +49,7 @@ class RedditTypes:
 class RedditDownloader:
     def __init__(self, args: Configuration):
         self.args = args
-        self.config_directories = appdirs.AppDirs('bulk_reddit_downloader', 'BDFR')
+        self.config_directories = appdirs.AppDirs('bulkredditdownloader', 'BDFR')
         self.run_time = datetime.now().isoformat()
         self._setup_internal_objects()
 
