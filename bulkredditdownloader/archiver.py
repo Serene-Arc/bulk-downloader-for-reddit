@@ -42,6 +42,7 @@ class Archiver(RedditDownloader):
     def _write_submission_json(self, entry: ArchiveEntry):
         resource = Resource(entry.submission, '', '.json')
         file_path = self.file_name_formatter.format_path(resource, self.download_directory)
+        file_path.parent.mkdir(exist_ok=True, parents=True)
         with open(file_path, 'w') as file:
             logger.debug(f'Writing submission {entry.submission.id} to file in JSON format at {file_path}')
             json.dump(entry.compile(), file)
@@ -49,6 +50,7 @@ class Archiver(RedditDownloader):
     def _write_submission_xml(self, entry: ArchiveEntry):
         resource = Resource(entry.submission, '', '.xml')
         file_path = self.file_name_formatter.format_path(resource, self.download_directory)
+        file_path.parent.mkdir(exist_ok=True, parents=True)
         with open(file_path, 'w') as file:
             logger.debug(f'Writing submission {entry.submission.id} to file in XML format at {file_path}')
             xml_entry = dict2xml.dict2xml(entry.compile(), wrap='root')
@@ -57,6 +59,7 @@ class Archiver(RedditDownloader):
     def _write_submission_yaml(self, entry: ArchiveEntry):
         resource = Resource(entry.submission, '', '.yaml')
         file_path = self.file_name_formatter.format_path(resource, self.download_directory)
+        file_path.parent.mkdir(exist_ok=True, parents=True)
         with open(file_path, 'w') as file:
             logger.debug(f'Writing submission {entry.submission.id} to file in YAML format at {file_path}')
             yaml.dump(entry.compile(), file)

@@ -5,11 +5,36 @@ import sys
 
 import click
 
+from bulkredditdownloader.archiver import Archiver
 from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.downloader import RedditDownloader
-from bulkredditdownloader.exceptions import BulkDownloaderException
 
 logger = logging.getLogger()
+
+_common_options = [
+    click.argument('directory', type=str),
+    click.option('--config', type=str, default=None),
+    click.option('-v', '--verbose', default=None, count=True),
+    click.option('-l', '--link', multiple=True, default=None, type=str),
+    click.option('-s', '--subreddit', multiple=True, default=None, type=str),
+    click.option('-m', '--multireddit', multiple=True, default=None, type=str),
+    click.option('-L', '--limit', default=None, type=int),
+    click.option('--authenticate', is_flag=True, default=None),
+    click.option('--submitted', is_flag=True, default=None),
+    click.option('--upvoted', is_flag=True, default=None),
+    click.option('--saved', is_flag=True, default=None),
+    click.option('--search', default=None, type=str),
+    click.option('-u', '--user', type=str, default=None),
+    click.option('-t', '--time', type=click.Choice(('all', 'hour', 'day', 'week', 'month', 'year')), default=None),
+    click.option('-S', '--sort', type=click.Choice(('hot', 'top', 'new',
+                                                    'controversial', 'rising', 'relevance')), default=None),
+]
+
+
+def _add_common_options(func):
+    for opt in _common_options:
+        func = opt(func)
+    return func
 
 
 @click.group()
@@ -18,28 +43,13 @@ def cli():
 
 
 @cli.command('download')
-@click.argument('directory', type=str)
-@click.option('-v', '--verbose', default=None, count=True)
-@click.option('-l', '--link', multiple=True, default=None, type=str)
-@click.option('-s', '--subreddit', multiple=True, default=None, type=str)
-@click.option('-m', '--multireddit', multiple=True, default=None, type=str)
-@click.option('-L', '--limit', default=None, type=int)
-@click.option('--authenticate', is_flag=True, default=None)
-@click.option('--submitted', is_flag=True, default=None)
-@click.option('--upvoted', is_flag=True, default=None)
-@click.option('--saved', is_flag=True, default=None)
-@click.option('--search', default=None, type=str)
-@click.option('-u', '--user', type=str, default=None)
-@click.option('-t', '--time', type=click.Choice(('all', 'hour', 'day', 'week', 'month', 'year')), default=None)
-@click.option('-S', '--sort', type=click.Choice(('hot', 'top', 'new',
-                                                 'controversial', 'rising', 'relevance')), default=None)
-@click.option('--skip', default=None, multiple=True)
-@click.option('--skip-domain', default=None, multiple=True)
+@click.option('--no-dupes', is_flag=True, default=None)
+@click.option('--search-existing', is_flag=True, default=None)
 @click.option('--set-file-scheme', default=None, type=str)
 @click.option('--set-folder-scheme', default=None, type=str)
-@click.option('--no-dupes', is_flag=True, default=None)
-@click.option('--config', type=str, default=None)
-@click.option('--search-existing', is_flag=True, default=None)
+@click.option('--skip', default=None, multiple=True)
+@click.option('--skip-domain', default=None, multiple=True)
+@_add_common_options
 @click.pass_context
 def cli_download(context: click.Context, **_):
     config = Configuration()
@@ -47,6 +57,19 @@ def cli_download(context: click.Context, **_):
     _setup_logging(config.verbose)
     reddit_downloader = RedditDownloader(config)
     reddit_downloader.download()
+    logger.info('Program complete')
+
+
+@cli.command('archive')
+@_add_common_options
+@click.option('-f,', '--format', type=click.Choice(('xml', 'json', 'yaml')), default=None)
+@click.pass_context
+def cli_archive(context: click.Context, **_):
+    config = Configuration()
+    config.process_click_arguments(context)
+    _setup_logging(config.verbose)
+    reddit_archiver = Archiver(config)
+    reddit_archiver.download()
     logger.info('Program complete')
 
 

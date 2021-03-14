@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import re
 from pathlib import Path
 
 import pytest
@@ -163,3 +164,38 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
     test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--subreddit', 'Mindustry', '-L', 25],
+    ['--subreddit', 'Mindustry', '-L', 25, '--format', 'xml'],
+    ['--subreddit', 'Mindustry', '-L', 25, '--format', 'yaml'],
+    ['--subreddit', 'Mindustry', '-L', 25, '--sort', 'new'],
+    ['--subreddit', 'Mindustry', '-L', 25, '--time', 'day'],
+    ['--subreddit', 'Mindustry', '-L', 25, '--time', 'day', '--sort', 'new'],
+))
+def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert re.search(r'Writing submission .*? to file in .*? format', result.output)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.slow
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--subreddit', 'all', '-L', 100],
+    ['--subreddit', 'all', '-L', 100, '--sort', 'new'],
+))
+def test_cli_archive_long(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert re.search(r'Writing submission .*? to file in .*? format', result.output)
