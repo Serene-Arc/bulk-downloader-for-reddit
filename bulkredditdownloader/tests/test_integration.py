@@ -230,3 +230,10 @@ def test_cli_download_hard_fail(test_args: list[str], tmp_path: Path):
     test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code != 0
+
+
+def test_cli_download_use_default_config(tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', '-vv', str(tmp_path)]
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0

@@ -3,6 +3,7 @@
 
 import configparser
 import hashlib
+import importlib.resources
 import logging
 import os
 import re
@@ -140,6 +141,7 @@ class RedditDownloader:
                           Path('./default_config.cfg'),
                           Path(self.config_directory, 'config.cfg'),
                           Path(self.config_directory, 'default_config.cfg'),
+                          list(importlib.resources.path('bulkredditdownloader', 'default_config.cfg').gen)[0],
                           ]
         self.config_location = None
         for path in possible_paths:
