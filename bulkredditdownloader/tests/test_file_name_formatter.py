@@ -94,6 +94,22 @@ def test_format_full(
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.parametrize(('format_string_directory', 'format_string_file'), (
+    ('{SUBREDDIT}', '{POSTID}'),
+    ('{SUBREDDIT}', '{UPVOTES}'),
+    ('{SUBREDDIT}', '{UPVOTES}{POSTID}'),
+))
+def test_format_full_conform(
+        format_string_directory: str,
+        format_string_file: str,
+        reddit_submission: praw.models.Submission):
+    test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
+    test_formatter = FileNameFormatter(format_string_file, format_string_directory)
+    test_formatter.format_path(test_resource, Path('test'))
+
+
+@pytest.mark.online
+@pytest.mark.reddit
 @pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'index', 'expected'),
                          (('{SUBREDDIT}', '{POSTID}', None, 'test/Mindustry/lgilgt.png'),
                           ('{SUBREDDIT}', '{POSTID}', 1, 'test/Mindustry/lgilgt_1.png'),
