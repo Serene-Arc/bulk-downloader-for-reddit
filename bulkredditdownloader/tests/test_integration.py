@@ -199,3 +199,34 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert re.search(r'Writing submission .*? to file in .*? format', result.output)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.slow
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--user', 'sdclhgsolgjeroij', '--submitted', '-L', 10],
+    ['--user', 'me', '--upvoted', '-L', 10],
+    ['--user', 'sdclhgsolgjeroij', '--upvoted', '-L', 10],
+))
+def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.slow
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--time', 'random'],
+    ['--sort', 'random'],
+))
+def test_cli_download_hard_fail(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code != 0

@@ -137,8 +137,9 @@ class RedditDownloader:
             else:
                 logger.error(f'Could not find config file at {self.args.config}, attempting to find elsewhere')
         possible_paths = [Path('./config.cfg'),
-                          Path(self.config_directory, 'config.cfg'),
                           Path('./default_config.cfg'),
+                          Path(self.config_directory, 'config.cfg'),
+                          Path(self.config_directory, 'default_config.cfg'),
                           ]
         self.config_location = None
         for path in possible_paths:
@@ -243,17 +244,17 @@ class RedditDownloader:
         if any([self.args.submitted, self.args.upvoted, self.args.saved]):
             if self.args.user:
                 if not self._check_user_existence(self.args.user):
-                    raise errors.RedditUserError(f'User {self.args.user} does not exist')
+                    logger.error(f'User {self.args.user} does not exist')
+                    return []
                 generators = []
                 sort_function = self._determine_sort_function()
                 if self.args.submitted:
                     logger.debug(f'Retrieving submitted posts of user {self.args.user}')
                     generators.append(
                         sort_function(
-                            self.reddit_instance.redditor(self.args.user).submissions,
-                            limit=self.args.limit))
+                            self.reddit_instance.redditor(self.args.user).submissions, limit=self.args.limit))
                 if not self.authenticated and any((self.args.upvoted, self.args.saved)):
-                    raise errors.RedditAuthenticationError('Accessing user lists requires authentication')
+                    logger.error('Accessing user lists requires authentication')
                 else:
                     if self.args.upvoted:
                         logger.debug(f'Retrieving upvoted posts of user {self.args.user}')
@@ -263,7 +264,8 @@ class RedditDownloader:
                         generators.append(self.reddit_instance.redditor(self.args.user).saved(limit=self.args.limit))
                 return generators
             else:
-                raise errors.BulkDownloaderException('A user must be supplied to download user data')
+                logger.error('A user must be supplied to download user data')
+                return []
         else:
             return []
 
