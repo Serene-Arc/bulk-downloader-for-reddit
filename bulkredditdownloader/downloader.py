@@ -167,16 +167,24 @@ class RedditDownloader:
         pattern = re.compile(r'^(?:https://www\.reddit\.com/)?(?:r/)?(.*?)(?:/)?$')
         match = re.match(pattern, subreddit)
         if not match:
-            raise errors.RedditAuthenticationError('')
+            raise errors.BulkDownloaderException(f'Could not find subreddit name in string {subreddit}')
         return match.group(1)
+
+    @staticmethod
+    def _split_args_input(subreddit_entries: list[str]) -> set[str]:
+        all_subreddits = []
+        split_pattern = re.compile(r'[,;]\s?')
+        for entry in subreddit_entries:
+            results = re.split(split_pattern, entry)
+            all_subreddits.extend([RedditDownloader._sanitise_subreddit_name(name) for name in results])
+        return set(all_subreddits)
 
     def _get_subreddits(self) -> list[praw.models.ListingGenerator]:
         if self.args.subreddit:
             out = []
             sort_function = self._determine_sort_function()
-            for reddit in self.args.subreddit:
+            for reddit in self._split_args_input(self.args.subreddit):
                 try:
-                    reddit = self._sanitise_subreddit_name(reddit)
                     reddit = self.reddit_instance.subreddit(reddit)
                     if self.args.search:
                         out.append(
@@ -228,9 +236,8 @@ class RedditDownloader:
         if self.args.multireddit:
             out = []
             sort_function = self._determine_sort_function()
-            for multi in self.args.multireddit:
+            for multi in self._split_args_input(self.args.multireddit):
                 try:
-                    multi = self._sanitise_subreddit_name(multi)
                     multi = self.reddit_instance.multireddit(self.args.user, multi)
                     if not multi.subreddits:
                         raise errors.BulkDownloaderException
