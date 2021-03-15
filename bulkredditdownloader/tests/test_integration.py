@@ -22,6 +22,8 @@ from bulkredditdownloader.__main__ import cli
     ['-s', 'r/TrollXChromosomes/', '-L', 1],
     ['-s', 'TrollXChromosomes/', '-L', 1],
     ['-s', 'trollxchromosomes', '-L', 1],
+    ['-s', 'trollxchromosomes,mindustry,python', '-L', 1],
+    ['-s', 'trollxchromosomes, mindustry, python', '-L', 1],
     ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day'],
     ['-s', 'trollxchromosomes', '-L', 1, '--sort', 'new'],
     ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day', '--sort', 'new'],
@@ -46,13 +48,13 @@ def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
     ['-l', 'https://www.reddit.com/r/TrollXChromosomes/comments/m2601g/its_a_step_in_the_right_direction/'],
     ['-l', 'm3hxzd'],  # Really long title used to overflow filename limit
     ['-l', 'm3kua3'],  # Has a deleted user
+    ['-l', 'm5bqkf'],  # Resource leading to a 404
 ))
 def test_cli_download_links(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert len(list(tmp_path.iterdir())) == 1
 
 
 @pytest.mark.online

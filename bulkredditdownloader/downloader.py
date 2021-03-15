@@ -335,7 +335,12 @@ class RedditDownloader:
             if destination.exists():
                 logger.warning(f'File already exists: {destination}')
             else:
-                res.download()
+                try:
+                    res.download()
+                except errors.BulkDownloaderException:
+                    logger.error(
+                        f'Failed to download resource from {res.url} with downloader {downloader_class.__name__}')
+                    return
                 if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
                     logger.warning(f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
                 else:
