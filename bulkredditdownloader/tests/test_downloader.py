@@ -11,7 +11,7 @@ import praw
 import praw.models
 import pytest
 
-from bulkredditdownloader.__main__ import _setup_logging
+from bulkredditdownloader.__main__ import setup_logging
 from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
@@ -333,7 +333,7 @@ def test_download_submission_file_exists(
         reddit_instance: praw.Reddit,
         tmp_path: Path,
         capsys: pytest.CaptureFixture):
-    _setup_logging(3)
+    setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
     downloader_mock.args.set_folder_scheme = ''
@@ -356,7 +356,7 @@ def test_download_submission_hash_exists(
         reddit_instance: praw.Reddit,
         tmp_path: Path,
         capsys: pytest.CaptureFixture):
-    _setup_logging(3)
+    setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
     downloader_mock.args.set_folder_scheme = ''

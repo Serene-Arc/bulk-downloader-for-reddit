@@ -54,7 +54,7 @@ def cli():
 def cli_download(context: click.Context, **_):
     config = Configuration()
     config.process_click_arguments(context)
-    _setup_logging(config.verbose)
+    setup_logging(config.verbose)
     reddit_downloader = RedditDownloader(config)
     reddit_downloader.download()
     logger.info('Program complete')
@@ -67,13 +67,13 @@ def cli_download(context: click.Context, **_):
 def cli_archive(context: click.Context, **_):
     config = Configuration()
     config.process_click_arguments(context)
-    _setup_logging(config.verbose)
+    setup_logging(config.verbose)
     reddit_archiver = Archiver(config)
     reddit_archiver.download()
     logger.info('Program complete')
 
 
-def _setup_logging(verbosity: int):
+def setup_logging(verbosity: int):
     logger.setLevel(1)
     stream = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
