@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 from typing import Optional
 
 import requests
@@ -17,30 +18,20 @@ class GifDeliveryNetwork(BaseDownloader):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
-        try:
-            media_url = self._get_link(self.post.url)
-        except IndexError:
-            raise NotADownloadableLinkError("Could not read the page source")
-
+        media_url = self._get_link(self.post.url)
         return [Resource(self.post, media_url, '.mp4')]
 
     @staticmethod
     def _get_link(url: str) -> str:
-        """Extract direct link to the video from page's source and return it"""
-        if '.webm' in url.split('/')[-1] or '.mp4' in url.split('/')[-1] or '.gif' in url.split('/')[-1]:
+        if re.match(r'https://.*\.(mp4|webm|gif)(\?.*)?$', url):
             return url
 
-        if url[-1:] == '/':
-            url = url[:-1]
-
-        url = "https://www.gifdeliverynetwork.com/" + url.split('/')[-1]
         page_source = requests.get(url).text
 
-        soup = BeautifulSoup(page_source, "html.parser")
-        attributes = {"id": "mp4Source", "type": "video/mp4"}
-        content = soup.find("source", attrs=attributes)
+        soup = BeautifulSoup(page_source, 'html.parser')
+        content = soup.find('source', attrs={'id': 'mp4Source', 'type': 'video/mp4'})
 
-        if content is None:
-            raise NotADownloadableLinkError("Could not read the page source")
+        if content is None or content.get('src') is None:
+            raise NotADownloadableLinkError('Could not read the page source')
 
-        return content["src"]
+        return content.get('src')
