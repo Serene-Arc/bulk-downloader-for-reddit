@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from unittest.mock import Mock
+from unittest.mock import MagicMock
 
 import pytest
 
-from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_downloaders.erome import Erome
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_urls'), (
-    ('https://www.erome.com/a/hzLCb2c5',
-     ('https://s2.erome.com/353/hzLCb2c5/8FNh4qa8.jpg', 'https://s2.erome.com/353/hzLCb2c5/8FNh4qa8_480p.mp4')
+    ('https://www.erome.com/a/vqtPuLXh', (
+        'https://s6.erome.com/365/vqtPuLXh/KH2qBT99.jpg',
+        'https://s6.erome.com/365/vqtPuLXh/KH2qBT99_480p.mp4',
+    )
      ),
     ('https://www.erome.com/a/ORhX0FZz',
      ('https://s4.erome.com/355/ORhX0FZz/9IYQocM9.jpg',
@@ -39,12 +40,10 @@ def test_get_link(test_url: str, expected_urls: tuple[str]):
 @pytest.mark.online
 @pytest.mark.slow
 @pytest.mark.parametrize(('test_url', 'expected_number_of_resources', 'expected_hashes'), (
-    ('https://www.erome.com/a/hzLCb2c5', 2,
-     ('1b4b1703f81f2ad6a622f7319a4651c2', 'f24388a0f3443c1a27594e4af41c3e83')
-     ),
+    ('https://www.erome.com/a/vqtPuLXh', 2, ('5da2a8d60d87bed279431fdec8e7d72f', '243d17b52a728911b022829badbc524e')),
 ))
 def test_download_resource(test_url: str, expected_number_of_resources: int, expected_hashes: tuple[str]):
-    mock_submission = Mock
+    mock_submission = MagicMock()
     mock_submission.url = test_url
     test_site = Erome(mock_submission)
     resources = test_site.find_resources()
