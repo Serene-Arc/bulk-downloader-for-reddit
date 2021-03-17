@@ -11,8 +11,8 @@ from bulkredditdownloader.site_downloaders.gallery import Gallery
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_id', 'expected_len'), (
-    ('ljyy27', 4),
     ('m6lvrh', 4),
+    ('ljyy27', 4),
 ))
 def test_gallery(test_submission_id: str, expected_len: int, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)
