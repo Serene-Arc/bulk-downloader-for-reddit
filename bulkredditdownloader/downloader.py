@@ -351,7 +351,7 @@ class RedditDownloader:
                     logger.debug(f'Written file to {destination}')
                     self.master_hash_list.append(res.hash.hexdigest())
                     logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
-                    logger.info(f'Downloaded submission {submission.name}')
+                    logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
 
     @staticmethod
     def scan_existing_files(directory: Path) -> list[str]:
