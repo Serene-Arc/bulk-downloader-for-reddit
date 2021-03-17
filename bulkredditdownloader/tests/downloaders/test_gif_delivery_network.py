@@ -11,10 +11,12 @@ from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDelive
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected'), (
-    ('https://www.gifdeliverynetwork.com/handyunsightlydesertpupfish',
-     'https://thumbs2.redgifs.com/HandyUnsightlyDesertpupfish.mp4'),
-    ('https://www.gifdeliverynetwork.com/lamelikelyhamadryad',
-     'https://thumbs2.redgifs.com/LameLikelyHamadryad.mp4')
+    ('https://www.gifdeliverynetwork.com/regalshoddyhorsechestnutleafminer',
+     'https://thumbs2.redgifs.com/RegalShoddyHorsechestnutleafminer.mp4'),
+    ('https://www.gifdeliverynetwork.com/maturenexthippopotamus',
+     'https://thumbs2.redgifs.com/MatureNextHippopotamus.mp4'),
+    ('https://thumbs2.redgifs.com/MatureNextHippopotamus.mp4',
+     'https://thumbs2.redgifs.com/MatureNextHippopotamus.mp4'),
 ))
 def test_get_link(test_url: str, expected: str):
     result = GifDeliveryNetwork._get_link(test_url)
@@ -23,11 +25,11 @@ def test_get_link(test_url: str, expected: str):
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_hash'), (
-    ('https://www.gifdeliverynetwork.com/handyunsightlydesertpupfish', 'd941460dcf4e0d09dd33abaa32e2d270'),
-    ('https://www.gifdeliverynetwork.com/lamelikelyhamadryad', '4806fe15f4991bb73581338793488daf'),
+    ('https://www.gifdeliverynetwork.com/maturenexthippopotamus', '9bec0a9e4163a43781368ed5d70471df'),
+    ('https://www.gifdeliverynetwork.com/regalshoddyhorsechestnutleafminer', '8afb4e2c090a87140230f2352bf8beba'),
 ))
 def test_download_resource(test_url: str, expected_hash: str):
-    mock_submission = Mock
+    mock_submission = Mock()
     mock_submission.url = test_url
     test_site = GifDeliveryNetwork(mock_submission)
     resources = test_site.find_resources()
