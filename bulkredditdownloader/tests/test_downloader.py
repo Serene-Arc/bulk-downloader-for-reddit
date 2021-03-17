@@ -271,17 +271,25 @@ def test_get_user_saved(downloader_mock: MagicMock, authenticated_reddit_instanc
 
 @pytest.mark.online
 @pytest.mark.reddit
-def test_download_submission(downloader_mock: MagicMock, reddit_instance: praw.Reddit, tmp_path: Path):
+@pytest.mark.parametrize(('test_submission_id', 'expected_files_len'), (
+    ('ljyy27', 4),
+))
+def test_download_submission(
+        test_submission_id: str,
+        expected_files_len: int,
+        downloader_mock: MagicMock,
+        reddit_instance: praw.Reddit,
+        tmp_path: Path):
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
     downloader_mock.args.set_folder_scheme = ''
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     downloader_mock.download_directory = tmp_path
     downloader_mock.master_hash_list = []
-    submission = downloader_mock.reddit_instance.submission(id='ljyy27')
+    submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
     RedditDownloader._download_submission(downloader_mock, submission)
     folder_contents = list(tmp_path.iterdir())
-    assert len(folder_contents) == 4
+    assert len(folder_contents) == expected_files_len
 
 
 @pytest.mark.online
