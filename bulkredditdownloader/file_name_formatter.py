@@ -68,9 +68,12 @@ class FileNameFormatter:
     def format_resource_paths(self, resources: list[Resource],
                               destination_directory: Path) -> list[tuple[Path, Resource]]:
         out = []
-        for i, res in enumerate(resources, start=1):
-            logger.log(9, f'Formatting filename with index {i}')
-            out.append((self.format_path(res, destination_directory, i), res))
+        if len(resources) == 1:
+            out.append((self.format_path(resources[0], destination_directory, None), resources[0]))
+        else:
+            for i, res in enumerate(resources, start=1):
+                logger.log(9, f'Formatting filename with index {i}')
+                out.append((self.format_path(res, destination_directory, i), res))
         return out
 
     @ staticmethod
