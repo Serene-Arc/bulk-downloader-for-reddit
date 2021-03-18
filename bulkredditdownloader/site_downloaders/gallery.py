@@ -38,6 +38,4 @@ class Gallery(BaseDownloader):
 
         links = soup.findAll('a', attrs={'target': '_blank', 'href': re.compile(r'https://preview\.redd\.it.*')})
         links = [link.get('href') for link in links]
-        pattern = re.compile(r'(.*?)\?.*$')
-        links = [re.search(pattern, link).group(1) for link in links]
         return links
