@@ -21,20 +21,20 @@ class Erome(BaseDownloader):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
-        images = self._get_links(self.post.url)
-        if not images:
+        links = self._get_links(self.post.url)
+        if not links:
             raise NotADownloadableLinkError('Erome parser could not find any links')
 
-        if len(images) == 1:
-            image = images.pop()
-            image = self._validate_url(image)
-            return [Resource(self.post, image)]
+        if len(links) == 1:
+            link = links.pop()
+            link = self._validate_url(link)
+            return [Resource(self.post, link)]
 
         else:
             out = []
-            for i, image in enumerate(images):
-                image = self._validate_url(image)
-                out.append(Resource(self.post, image))
+            for i, link in enumerate(links):
+                link = self._validate_url(link)
+                out.append(Resource(self.post, link))
             return out
 
     @staticmethod
@@ -47,8 +47,8 @@ class Erome(BaseDownloader):
     def _get_links(url: str) -> set[str]:
         page = requests.get(url)
         soup = bs4.BeautifulSoup(page.text)
-        front_images = soup.find_all('img', attrs={'class': 'img-front'})
-        out = [im.get('src') for im in front_images]
+        front_images = soup.find_all('img', attrs={'class': 'lasyload'})
+        out = [im.get('data-src') for im in front_images]
 
         videos = soup.find_all('source')
         out.extend([vid.get('src') for vid in videos])
