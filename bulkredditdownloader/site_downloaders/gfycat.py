@@ -22,22 +22,15 @@ class Gfycat(GifDeliveryNetwork):
 
     @staticmethod
     def _get_link(url: str) -> str:
-        """Extract direct link to the video from page's source and return it """
         if re.match(r'\.(webm|mp4|gif)$', url):
             return url
 
-        if url.endswith('/'):
-            url = url[:-1]
-
-        url = "https://gfycat.com/" + url.split('/')[-1]
+        gfycat_id = re.match(r'.*/(.*?)/?$', url).group(1)
+        url = 'https://gfycat.com/' + gfycat_id
 
         page_source = requests.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
+        content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
-        soup = BeautifulSoup(page_source, "html.parser")
-        attributes = {"data-react-helmet": "true", "type": "application/ld+json"}
-        content = soup.find("script", attrs=attributes)
-
-        if content is None:
-            return super()._get_link(url)
-
-        return json.loads(content.contents[0])["video"]["contentUrl"]
+        out = json.loads(content.contents[0]).get('video').get('contentUrl')
+        return out
