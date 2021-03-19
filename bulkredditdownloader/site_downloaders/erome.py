@@ -25,23 +25,12 @@ class Erome(BaseDownloader):
         if not links:
             raise NotADownloadableLinkError('Erome parser could not find any links')
 
-        if len(links) == 1:
-            link = links.pop()
-            link = self._validate_url(link)
-            return [Resource(self.post, link)]
-
-        else:
-            out = []
-            for i, link in enumerate(links):
-                link = self._validate_url(link)
-                out.append(Resource(self.post, link))
-            return out
-
-    @staticmethod
-    def _validate_url(image):
-        if not re.match(r'https?://.*', image):
-            image = "https://" + image
-        return image
+        out = []
+        for link in links:
+            if not re.match(r'https?://.*', link):
+                link = 'https://' + link
+            out.append(Resource(self.post, link))
+        return out
 
     @staticmethod
     def _get_links(url: str) -> set[str]:
