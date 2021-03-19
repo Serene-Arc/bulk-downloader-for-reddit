@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import re
 from typing import Optional
 
 import requests
@@ -22,14 +23,11 @@ class Redgifs(GifDeliveryNetwork):
 
     @staticmethod
     def _get_link(url: str) -> str:
-        """Extract direct link to the video from page's source and return it"""
-        if '.webm' in url or '.mp4' in url or '.gif' in url:
+        if re.match(r'https://.*\.(mp4|webm|gif)(\?.*)?$', url):
             return url
 
-        if url[-1:] == '/':
-            url = url[:-1]
-
-        url = "https://redgifs.com/watch/" + url.split('/')[-1]
+        redgif_id = re.match(r'.*/(.*?)/?$', url).group(1)
+        url = 'https://redgifs.com/watch/' + redgif_id
 
         headers = {'User-Agent':
                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
@@ -38,11 +36,11 @@ class Redgifs(GifDeliveryNetwork):
 
         page_source = requests.get(url, headers=headers).text
 
-        soup = BeautifulSoup(page_source, "html.parser")
-        attributes = {"data-react-helmet": "true", "type": "application/ld+json"}
-        content = soup.find("script", attrs=attributes)
+        soup = BeautifulSoup(page_source, 'html.parser')
+        content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
         if content is None:
-            raise NotADownloadableLinkError("Could not read the page source")
+            raise NotADownloadableLinkError('Could not read the page source')
 
-        return json.loads(content.contents[0])["video"]["contentUrl"]
+        out = json.loads(content.contents[0])['video']['contentUrl']
+        return out
