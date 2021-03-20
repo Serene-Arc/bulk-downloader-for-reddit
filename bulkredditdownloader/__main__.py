@@ -43,6 +43,7 @@ def cli():
 
 
 @cli.command('download')
+@click.option('--make-hard-links', is_flag=True, default=None)
 @click.option('--no-dupes', is_flag=True, default=None)
 @click.option('--search-existing', is_flag=True, default=None)
 @click.option('--set-file-scheme', default=None, type=str)

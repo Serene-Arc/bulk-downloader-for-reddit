@@ -31,6 +31,7 @@ class Configuration(Namespace):
         self.upvoted: bool = False
         self.user: Optional[str] = None
         self.verbose: int = 0
+        self.make_hard_links = False
 
         # Archiver-specific options
         self.format = 'json'

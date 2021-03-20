@@ -74,9 +74,10 @@ class RedditDownloader:
         self._create_reddit_instance()
         self._resolve_user_name()
 
-        self.master_hash_list = []
         if self.args.search_existing:
-            self.master_hash_list.extend(self.scan_existing_files(self.download_directory))
+            self.master_hash_list = self.scan_existing_files(self.download_directory)
+        else:
+            self.master_hash_list = {}
         self.authenticator = self._create_authenticator()
         logger.log(9, 'Created site authenticator')
 
@@ -341,27 +342,33 @@ class RedditDownloader:
                     logger.error(
                         f'Failed to download resource from {res.url} with downloader {downloader_class.__name__}')
                     return
-                if res.hash.hexdigest() in self.master_hash_list and self.args.no_dupes:
-                    logger.warning(f'Resource from "{res.url}" and hash "{res.hash.hexdigest()}" downloaded elsewhere')
-                else:
-                    # TODO: consider making a hard link/symlink here
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    with open(destination, 'wb') as file:
-                        file.write(res.content)
-                    logger.debug(f'Written file to {destination}')
-                    self.master_hash_list.append(res.hash.hexdigest())
-                    logger.debug(f'Hash added to master list: {res.hash.hexdigest()}')
-                    logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
+                resource_hash = res.hash.hexdigest()
+                if resource_hash in self.master_hash_list:
+                    if self.args.no_dupes:
+                        logger.warning(f'Resource from "{res.url}" and hash "{resource_hash}" downloaded elsewhere')
+                        return
+                    elif self.args.make_hard_links:
+                        self.master_hash_list[resource_hash].link_to(destination)
+                        logger.debug(
+                            f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}')
+                        return
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                with open(destination, 'wb') as file:
+                    file.write(res.content)
+                logger.debug(f'Written file to {destination}')
+                self.master_hash_list[resource_hash] = destination
+                logger.debug(f'Hash added to master list: {resource_hash}')
+                logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
 
     @staticmethod
-    def scan_existing_files(directory: Path) -> list[str]:
+    def scan_existing_files(directory: Path) -> dict[str, Path]:
         files = []
         for (dirpath, dirnames, filenames) in os.walk(directory):
             files.extend([Path(dirpath, file) for file in filenames])
         logger.info(f'Calculating hashes for {len(files)} files')
-        hash_list = []
+        hash_list = {}
         for existing_file in files:
             with open(existing_file, 'rb') as file:
-                hash_list.append(hashlib.md5(file.read()).hexdigest())
+                hash_list[hashlib.md5(file.read()).hexdigest()] = existing_file
                 logger.log(9, f'Hash calculated for file at {existing_file}')
         return hash_list
