@@ -101,8 +101,8 @@ def test_create_sort_filter(test_sort: str, expected: str, downloader_mock: Magi
     ('{POSTID}', ''),
 ))
 def test_create_file_name_formatter(test_file_scheme: str, test_folder_scheme: str, downloader_mock: MagicMock):
-    downloader_mock.args.set_file_scheme = test_file_scheme
-    downloader_mock.args.set_folder_scheme = test_folder_scheme
+    downloader_mock.args.file_scheme = test_file_scheme
+    downloader_mock.args.folder_scheme = test_folder_scheme
     result = RedditDownloader._create_file_name_formatter(downloader_mock)
 
     assert isinstance(result, FileNameFormatter)
@@ -116,8 +116,8 @@ def test_create_file_name_formatter(test_file_scheme: str, test_folder_scheme: s
     ('test', '{SUBREDDIT}'),
 ))
 def test_create_file_name_formatter_bad(test_file_scheme: str, test_folder_scheme: str, downloader_mock: MagicMock):
-    downloader_mock.args.set_file_scheme = test_file_scheme
-    downloader_mock.args.set_folder_scheme = test_folder_scheme
+    downloader_mock.args.file_scheme = test_file_scheme
+    downloader_mock.args.folder_scheme = test_folder_scheme
     with pytest.raises(BulkDownloaderException):
         RedditDownloader._create_file_name_formatter(downloader_mock)
 
@@ -283,7 +283,7 @@ def test_download_submission(
         tmp_path: Path):
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
-    downloader_mock.args.set_folder_scheme = ''
+    downloader_mock.args.folder_scheme = ''
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     downloader_mock.download_directory = tmp_path
     submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
@@ -302,7 +302,7 @@ def test_download_submission_file_exists(
     setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
-    downloader_mock.args.set_folder_scheme = ''
+    downloader_mock.args.folder_scheme = ''
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     downloader_mock.download_directory = tmp_path
     submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
@@ -324,7 +324,7 @@ def test_download_submission_hash_exists(
     setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
-    downloader_mock.args.set_folder_scheme = ''
+    downloader_mock.args.folder_scheme = ''
     downloader_mock.args.no_dupes = True
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     downloader_mock.download_directory = tmp_path
@@ -376,8 +376,8 @@ def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_insta
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.args.make_hard_links = True
     downloader_mock.download_directory = tmp_path
-    downloader_mock.args.set_folder_scheme = ''
-    downloader_mock.args.set_file_scheme = '{POSTID}'
+    downloader_mock.args.folder_scheme = ''
+    downloader_mock.args.file_scheme = '{POSTID}'
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
     original = Path(tmp_path, 'm1hqw6.png')
@@ -385,7 +385,7 @@ def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_insta
     RedditDownloader._download_submission(downloader_mock, submission)
     assert original.exists()
 
-    downloader_mock.args.set_file_scheme = 'test2_{POSTID}'
+    downloader_mock.args.file_scheme = 'test2_{POSTID}'
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     RedditDownloader._download_submission(downloader_mock, submission)
     test_file_1_stats = original.stat()

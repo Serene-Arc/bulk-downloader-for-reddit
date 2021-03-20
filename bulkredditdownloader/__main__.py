@@ -46,8 +46,8 @@ def cli():
 @click.option('--make-hard-links', is_flag=True, default=None)
 @click.option('--no-dupes', is_flag=True, default=None)
 @click.option('--search-existing', is_flag=True, default=None)
-@click.option('--set-file-scheme', default=None, type=str)
-@click.option('--set-folder-scheme', default=None, type=str)
+@click.option('--file-scheme', default=None, type=str)
+@click.option('--folder-scheme', default=None, type=str)
 @click.option('--skip', default=None, multiple=True)
 @click.option('--skip-domain', default=None, multiple=True)
 @_add_common_options

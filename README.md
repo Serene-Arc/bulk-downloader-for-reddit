@@ -99,11 +99,11 @@ The following options apply only to the `download` command. This command downloa
   - This is calculated by MD5 hash
 - `--search-existing`
   - This will make the BDFR compile the hashes for every file in `directory` and store them to remove duplicates if `--no-dupes` is also supplied
-- `--set-file-scheme`
+- `--file-scheme`
   - Sets the scheme for files
   - Default is `{REDDITOR}_{TITLE}_{POSTID}`
   - See[Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
-- `--set-folder-scheme`
+- `--folder-scheme`
   - Sets the scheme for folders
   - Default is `{SUBREDDIT}`
   - See[Folder and File Name Schemes](#folder-and-file-name-schemes) for more details

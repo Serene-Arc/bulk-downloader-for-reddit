@@ -20,8 +20,8 @@ class Configuration(Namespace):
         self.saved: bool = False
         self.search: Optional[str] = None
         self.search_existing: bool = False
-        self.set_file_scheme: str = '{REDDITOR}_{TITLE}_{POSTID}'
-        self.set_folder_scheme: str = '{SUBREDDIT}'
+        self.file_scheme: str = '{REDDITOR}_{TITLE}_{POSTID}'
+        self.folder_scheme: str = '{SUBREDDIT}'
         self.skip: list[str] = []
         self.skip_domain: list[str] = []
         self.sort: str = 'hot'

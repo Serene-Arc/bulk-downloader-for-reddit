@@ -289,7 +289,7 @@ class RedditDownloader:
         return True
 
     def _create_file_name_formatter(self) -> FileNameFormatter:
-        return FileNameFormatter(self.args.set_file_scheme, self.args.set_folder_scheme)
+        return FileNameFormatter(self.args.file_scheme, self.args.folder_scheme)
 
     def _create_time_filter(self) -> RedditTypes.TimeType:
         try:
