@@ -343,6 +343,7 @@ class RedditDownloader:
                         f'Failed to download resource from {res.url} with downloader {downloader_class.__name__}')
                     return
                 resource_hash = res.hash.hexdigest()
+                destination.parent.mkdir(parents=True, exist_ok=True)
                 if resource_hash in self.master_hash_list:
                     if self.args.no_dupes:
                         logger.warning(f'Resource from "{res.url}" and hash "{resource_hash}" downloaded elsewhere')
@@ -352,7 +353,6 @@ class RedditDownloader:
                         logger.debug(
                             f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}')
                         return
-                destination.parent.mkdir(parents=True, exist_ok=True)
                 with open(destination, 'wb') as file:
                     file.write(res.content)
                 logger.debug(f'Written file to {destination}')
