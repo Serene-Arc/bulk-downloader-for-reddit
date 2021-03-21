@@ -56,9 +56,14 @@ def cli_download(context: click.Context, **_):
     config = Configuration()
     config.process_click_arguments(context)
     setup_logging(config.verbose)
-    reddit_downloader = RedditDownloader(config)
-    reddit_downloader.download()
-    logger.info('Program complete')
+    try:
+        reddit_downloader = RedditDownloader(config)
+        reddit_downloader.download()
+    except Exception:
+        logger.exception('Downloader exited unexpectedly')
+        raise
+    else:
+        logger.info('Program complete')
 
 
 @cli.command('archive')
@@ -69,9 +74,14 @@ def cli_archive(context: click.Context, **_):
     config = Configuration()
     config.process_click_arguments(context)
     setup_logging(config.verbose)
-    reddit_archiver = Archiver(config)
-    reddit_archiver.download()
-    logger.info('Program complete')
+    try:
+        reddit_archiver = Archiver(config)
+        reddit_archiver.download()
+    except Exception:
+        logger.exception('Downloader exited unexpectedly')
+        raise
+    else:
+        logger.info('Program complete')
 
 
 def setup_logging(verbosity: int):
