@@ -43,7 +43,7 @@ class Imgur(BaseDownloader):
         if res.status_code != 200:
             raise ResourceNotFound(f'Server responded with {res.status_code} to {link}')
 
-        soup = bs4.BeautifulSoup(res.text)
+        soup = bs4.BeautifulSoup(res.text, 'html.parser')
         scripts = soup.find_all('script', attrs={'type': 'text/javascript'})
         scripts = [script.string.replace('\n', '') for script in scripts if script.string]
 

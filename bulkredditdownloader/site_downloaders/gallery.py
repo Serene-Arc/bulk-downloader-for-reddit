@@ -34,7 +34,7 @@ class Gallery(BaseDownloader):
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         }
         )
-        soup = bs4.BeautifulSoup(page.text)
+        soup = bs4.BeautifulSoup(page.text, 'html.parser')
 
         links = soup.findAll('a', attrs={'target': '_blank', 'href': re.compile(r'https://preview\.redd\.it.*')})
         links = [link.get('href') for link in links]
