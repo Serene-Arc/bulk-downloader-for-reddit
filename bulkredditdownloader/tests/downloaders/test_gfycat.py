@@ -13,6 +13,7 @@ from bulkredditdownloader.site_downloaders.gfycat import Gfycat
 @pytest.mark.parametrize(('test_url', 'expected_url'), (
     ('https://gfycat.com/definitivecaninecrayfish', 'https://giant.gfycat.com/DefinitiveCanineCrayfish.mp4'),
     ('https://gfycat.com/dazzlingsilkyiguana', 'https://giant.gfycat.com/DazzlingSilkyIguana.mp4'),
+    ('https://gfycat.com/webbedimpurebutterfly', 'https://thumbs2.redgifs.com/WebbedImpureButterfly.mp4'),
 ))
 def test_get_link(test_url: str, expected_url: str):
     result = Gfycat._get_link(test_url)

@@ -28,7 +28,12 @@ class Gfycat(GifDeliveryNetwork):
         gfycat_id = re.match(r'.*/(.*?)/?$', url).group(1)
         url = 'https://gfycat.com/' + gfycat_id
 
-        page_source = requests.get(url).text
+        response = requests.get(url)
+        page_source = response.text
+
+        if 'gifdeliverynetwork' in response.url:
+            return GifDeliveryNetwork._get_link(url)
+
         soup = BeautifulSoup(page_source, 'html.parser')
         content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
