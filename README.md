@@ -1,8 +1,5 @@
-
-## 📢 Looking for collaborators
-I am aware that the issues stacking rapidly. However, I am really struggling to find the time to work on the project. So, I am looking for collaborators for the project. If you are willing to be a part of this project, email me at parlakciali[at]gmail[dot]com.
-  
-Also, feel free to send me your merge request! I am planning on setting up continuous delivery flow with GitHub Actions so that each contribution to the project will create a new release. 
+# [Bulk Downloader for Reddit v2-beta](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/v2) is out!
+[Serene-Arc](https://github.com/Serene-Arc) has reimplemented the Bulk Downloader for Reddit so that it is more flexible, roboust and is easier to contribute. If you are having issues with master, v2 is worth checking out. After cloning the repository, switch to the branch *v2* with `git checkout v2`
 
 # 📥 Bulk Downloader for Reddit
 
