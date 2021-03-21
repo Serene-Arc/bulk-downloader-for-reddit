@@ -2,6 +2,13 @@
 
 This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface.
 
+Some quick reference commands are:
+
+  - `python3 -m bulkredditdownloader download --subreddit Python -L 10`
+  - `python3 -m bulkredditdownloader download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'`
+  - `python3 -m bulkredditdownloader download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links`
+  - `python3 -m bulkredditdownloader archive --subreddit all --format yaml -L 500 --folder-scheme ''`
+
 ## Usage
 
 The BDFR works by taking submissions from a variety of "sources" from Reddit and then parsing them to download. These sources might be a subreddit, multireddit, a user list, or individual links. These sources are combined and downloaded to disk, according to a naming and organisational scheme defined by the user.
@@ -66,10 +73,14 @@ The following options are common between both the `archive` and `download` comma
 - `-m, --multireddit`
   - This is the name of a multireddit to add as a source
   - Can be specified multiple times
+      - This can be done by using `-m` multiple times
+      - Multireddits can also be used to provide CSV multireddits e.g. `-m 'chess, favourites`
   - The specified multireddits must all belong to the user specified with the `--user` option
 - `-s, --subreddit`
   - This adds a subreddit as a source
   - Can be used mutliple times
+    - This can be done by using `-s` multiple times
+    - Subreddits can also be used to provide CSV subreddits e.g. `-m 'all, python, mindustry`
 - `-t, --time`
   - This is the time filter that will be applied to all applicable sources
   - This option does not apply to upvoted or saved posts when scraping from these sources
