@@ -22,7 +22,6 @@ from src.downloaders.selfPost import SelfPost
 from src.downloaders.vreddit import VReddit
 from src.downloaders.youtube import Youtube
 from src.downloaders.gifDeliveryNetwork import GifDeliveryNetwork
-from src.downloaders.gallery import gallery
 from src.errors import ImgurLimitError, FileAlreadyExistsError, ImgurLoginError, NotADownloadableLinkError, NoSuitablePost, InvalidJSONFile, FailedToDownload, TypeInSkip, DomainInSkip, AlbumNotDownloadedCompletely, full_exc_info
 from src.searcher import getPosts
 from src.utils import (GLOBAL, createLogFile, nameCorrector,
