@@ -1,4 +1,4 @@
-# Bulk Downloader for Reddit
+# Bulk Downloader for Reddit v2-beta
 
 This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface.
 
