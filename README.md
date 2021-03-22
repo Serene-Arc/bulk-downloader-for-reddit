@@ -13,11 +13,11 @@ Some quick reference commands are:
 
 The BDFR works by taking submissions from a variety of "sources" from Reddit and then parsing them to download. These sources might be a subreddit, multireddit, a user list, or individual links. These sources are combined and downloaded to disk, according to a naming and organisational scheme defined by the user.
 
-There are two modes to the BDFR: download, and archive. Each one has a command that performs similar but distinct functions. The `download` command will download the resource linked in the Reddit submission, such as the images, video, etc linked. The `archive` command will download the submission data itself and store it, such as the submission details, upvotes, text, statistics, as well as all the comments on that submission. These can then be saved in a data markup language form, such as JSON, XML, or YAML.
+There are two modes to the BDFR: download, and archive. Each one has a command that performs similar but distinct functions. The `download` command will download the resource linked in the Reddit submission, such as the images, video, etc. The `archive` command will download the submission data itself and store it, such as the submission details, upvotes, text, statistics, as and all the comments on that submission. These can then be saved in a data markup language form, such as JSON, XML, or YAML.
 
 Many websites and links are supported for the downloader:
 
-  - Direct Links (links leading to a file)
+  - Direct links (links leading to a file)
   - Erome
   - Gfycat
   - Gif Delivery Network
@@ -36,10 +36,10 @@ The following options are common between both the `archive` and `download` comma
   - This is the directory to which the BDFR will download and place all files
 - `--authenticate`
   - This flag will make the BDFR attempt to use an authenticated Reddit session
-  - See[Authentication](#authentication) for more details
+  - See [Authentication](#authentication) for more details
 - `--config`
   - If the path to a configuration file is supplied with this option, the BDFR will use the specified config
-  - See[Configuration Files](#configuration) for more details
+  - See [Configuration Files](#configuration) for more details
 - `--saved`
   - This option will make the BDFR use the supplied user's saved posts list as a download source
   - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
@@ -74,13 +74,13 @@ The following options are common between both the `archive` and `download` comma
   - This is the name of a multireddit to add as a source
   - Can be specified multiple times
       - This can be done by using `-m` multiple times
-      - Multireddits can also be used to provide CSV multireddits e.g. `-m 'chess, favourites`
+      - Multireddits can also be used to provide CSV multireddits e.g. `-m 'chess, favourites'`
   - The specified multireddits must all belong to the user specified with the `--user` option
 - `-s, --subreddit`
   - This adds a subreddit as a source
   - Can be used mutliple times
     - This can be done by using `-s` multiple times
-    - Subreddits can also be used to provide CSV subreddits e.g. `-m 'all, python, mindustry`
+    - Subreddits can also be used to provide CSV subreddits e.g. `-m 'all, python, mindustry'`
 - `-t, --time`
   - This is the time filter that will be applied to all applicable sources
   - This option does not apply to upvoted or saved posts when scraping from these sources
@@ -113,11 +113,11 @@ The following options apply only to the `download` command. This command downloa
 - `--file-scheme`
   - Sets the scheme for files
   - Default is `{REDDITOR}_{TITLE}_{POSTID}`
-  - See[Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
+  - See [Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
 - `--folder-scheme`
   - Sets the scheme for folders
   - Default is `{SUBREDDIT}`
-  - See[Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
+  - See [Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
 - `--skip-domain`
   - This adds domains to the download filter i.e. submissions coming from these domains will not be downloaded
   - Can be specified multiple times
@@ -136,19 +136,21 @@ The following options are for the `archive` command specifically.
     - `xml`
     - `yaml`
 
-## Authentication
+## Authentication and Secuirity
 
-The BDFR uses OAuth2 authentication to connect to Reddit if authentication is required. This means that it is a secure, token - based system for making requests. This also means that the BDFR only has access to specific parts of the account authenticated, by default only saved posts, upvoted posts, and the identity of the authenticated account. Note that authentication is not required unless accessing private things like upvoted posts, saved posts, and private multireddits.
+The BDFR uses OAuth2 authentication to connect to Reddit if authentication is required. This means that it is a secure, token-based system for making requests. This also means that the BDFR only has access to specific parts of the account authenticated, by default only saved posts, upvoted posts, and the identity of the authenticated account. Note that authentication is not required unless accessing private things like upvoted posts, saved posts, and private multireddits.
 
-To authenticate, the BDFR will first look for a token in the configuration file that signals that there's been a previous authentication. If this is not there, then the BDFR will attempt to register itself with your account. This is normal, and if you run the program, it will pause and show a Reddit URL. Click on this URL and it will take you to Reddit, where the permissions being requested will be shown. Confirm it, and the BDFR will save a token that will allow it to authenticate with Reddit from then on.
+To authenticate, the BDFR will first look for a token in the configuration file that signals that there's been a previous authentication. If this is not there, then the BDFR will attempt to register itself with your account. This is normal, and if you run the program, it will pause and show a Reddit URL. Click on this URL and it will take you to Reddit, where the permissions being requested will be shown. Read this and **confirm that there are no more permissions than needed to run the program**. You should not grant unneeded permissions; by default, the BDFR only requests permission to read your saved or upvoted submissions and identify as you.
+
+If the permissions look safe, confirm it, and the BDFR will save a token that will allow it to authenticate with Reddit from then on.
 
 ## Changing Permissions
 
-Most users will not need to do anything extra to use any of the current features. However, if additional features such as scraping messages, PMs, etc are added in the future, these will require additional scopes. Additionally, advanced users may wish to use the BDFR with their own API key and secret. There is normally no need to do this, but it is allowed by the BDFR.
+Most users will not need to do anything extra to use any of the current features. However, if additional features such as scraping messages, PMs, etc are added in the future, these will require additional scopes. Additionally, advanced users may wish to use the BDFR with their own API key and secret. There is normally no need to do this, but it *is* allowed by the BDFR.
 
-The configuration file for the BDFR contains the API secret and key, as well as the scopes that the BDFR will request when registering itself to a Reddit account via OAuth2. These can all be changed if the user wishes, however do not do so if you don't know what you are doing. The defaults are specifically chosen to have a very low security risk if your token were to be compromised, however unlikely that actually is . Never grant more permissions than you absolutely need.
+The configuration file for the BDFR contains the API secret and key, as well as the scopes that the BDFR will request when registering itself to a Reddit account via OAuth2. These can all be changed if the user wishes, however do not do so if you don't know what you are doing. The defaults are specifically chosen to have a very low security risk if your token were to be compromised, however unlikely that actually is. Never grant more permissions than you absolutely need.
 
-For more details on the configuration file and the values therein, see[Configuration Files](#configuration).
+For more details on the configuration file and the values therein, see [Configuration Files](#configuration).
 
 ## Folder and File Name Schemes
 
@@ -162,19 +164,30 @@ The naming and folder schemes for the BDFR are both completely customisable. A n
   - `TITLE`
   - `UPVOTES`
 
-Each of these can be enclosed in curly bracket, `{}`, and included in the name. For example, to just title every downloaded post with the unique submission ID, you can use `{POSTID}`. Statis strings can also be included, such as `download_{POSTID}` which will not change from submission to submission.
+Each of these can be enclosed in curly bracket, `{}`, and included in the name. For example, to just title every downloaded post with the unique submission ID, you can use `{POSTID}`. Static strings can also be included, such as `download_{POSTID}` which will not change from submission to submission. For example, the previous string will result in the following submission file names:
 
-At least one key *must* be included in the file scheme, otherwise an error will be thrown. The folder scheme however, can be null or a simple static string. In the former case, all files will be placed in the folder specified with the `directory` argument. If the folder scheme is a static string, then all submissions will be placed in a folder of that name.
+  - `download_aaaaaa.png`
+  - `download_bbbbbb.png`
+
+At least one key *must* be included in the file scheme, otherwise an error will be thrown. The folder scheme however, can be null or a simple static string. In the former case, all files will be placed in the folder specified with the `directory` argument. If the folder scheme is a static string, then all submissions will be placed in a folder of that name. In both cases, there will be no separation between all submissions.
 
 ## Configuration
 
-The configuration files are, by default, stored in the configuration directory for the user. This differs depending on the OS that the BDFR is being run on. For Windows, this will be `C:\Documents and Settings\<User>\Application Data\Local Settings\BDFR\bulkredditdownloader` or `C:\Documents and Settings\<User>\Application Data\BDFR\bulkredditdownloader`. On Mac OSX, this will be `~/Library/Application Support/bulkredditdownloader`. Lastly, on a Linux system, this will be `~/.local/share/bulkredditdownloader`.
+The configuration files are, by default, stored in the configuration directory for the user. This differs depending on the OS that the BDFR is being run on. For Windows, this will be:
+  - `C:\Documents and Settings\<User>\Application Data\Local Settings\BDFR\bulkredditdownloader` or
+  - `C:\Documents and Settings\<User>\Application Data\BDFR\bulkredditdownloader`
+
+On Mac OSX, this will be:
+  - `~/Library/Application Support/bulkredditdownloader`. 
+    
+Lastly, on a Linux system, this will be:
+  - `~/.local/share/bulkredditdownloader`
 
 The logging output for each run of the BDFR will be saved to this directory in the file `log_output.txt`. If you need to submit a bug, it is this file that you will need to submit with the report.
 
 ### Configuration File
 
-The `config.cfg` is the file that supplies the BDFR with the configuration to use. At the moment, the following keys ** must ** be included in the configuration file supplied.
+The `config.cfg` is the file that supplies the BDFR with the configuration to use. At the moment, the following keys **must** be included in the configuration file supplied.
 
   - `client_id`
   - `client_secret`
