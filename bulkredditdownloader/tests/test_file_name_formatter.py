@@ -169,3 +169,16 @@ def test_shorten_filenames(reddit_instance: praw.Reddit, tmp_path: Path):
     result = test_formatter.format_path(test_resource, tmp_path)
     result.parent.mkdir(parents=True)
     result.touch()
+
+
+@pytest.mark.parametrize(('test_string', 'expected'), (
+    ('test', 'test'),
+    ('test.png', 'test.png'),
+    ('test*', 'test'),
+    ('test**', 'test'),
+    ('test?*', 'test'),
+    ('test_???.png', 'test_.png'),
+))
+def test_format_file_name_for_windows(test_string: str, expected: str):
+    result = FileNameFormatter._format_for_windows(test_string)
+    assert result == expected

@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import logging
+import platform
 import re
 from pathlib import Path
 from typing import Optional
@@ -41,6 +42,10 @@ class FileNameFormatter:
                 logger.log(9, f'Found key string {key} in name')
 
         result = result.replace('/', '')
+
+        if platform.system() == 'Windows':
+            result = FileNameFormatter._format_for_windows(result)
+
         return result
 
     def format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
@@ -51,6 +56,7 @@ class FileNameFormatter:
         ending = index + resource.extension
         file_name = str(self._format_name(resource.source_submission, self.file_format_string))
         file_name = self._limit_file_name_length(file_name, ending)
+
         try:
             file_path = Path(subfolder, file_name)
         except TypeError:
@@ -76,8 +82,15 @@ class FileNameFormatter:
                 out.append((self.format_path(res, destination_directory, i), res))
         return out
 
-    @ staticmethod
+    @staticmethod
     def validate_string(test_string: str) -> bool:
         if not test_string:
             return False
         return any([f'{{{key}}}' in test_string.lower() for key in FileNameFormatter.key_terms])
+
+    @staticmethod
+    def _format_for_windows(input_string: str) -> str:
+        invalid_characters = r'<>:"\/|?*'
+        for char in invalid_characters:
+            input_string = input_string.replace(char, '')
+        return input_string
