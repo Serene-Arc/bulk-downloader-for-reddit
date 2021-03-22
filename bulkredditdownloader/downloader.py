@@ -7,6 +7,7 @@ import importlib.resources
 import logging
 import os
 import re
+import shutil
 import socket
 from datetime import datetime
 from enum import Enum, auto
@@ -142,7 +143,6 @@ class RedditDownloader:
                           Path('./default_config.cfg'),
                           Path(self.config_directory, 'config.cfg'),
                           Path(self.config_directory, 'default_config.cfg'),
-                          list(importlib.resources.path('bulkredditdownloader', 'default_config.cfg').gen)[0],
                           ]
         self.config_location = None
         for path in possible_paths:
@@ -150,6 +150,10 @@ class RedditDownloader:
                 self.config_location = path
                 logger.debug(f'Loading configuration from {path}')
                 break
+        if not self.config_location:
+            self.config_location = list(importlib.resources.path('bulkredditdownloader', 'default_config.cfg').gen)[0]
+            shutil.copy(self.config_location, Path(self.config_directory, 'default_config.cfg'))
+            logger.debug('Copied default config file from module to config folder')
         if not self.config_location:
             raise errors.BulkDownloaderException('Could not find a configuration file to load')
         self.cfg_parser.read(self.config_location)
