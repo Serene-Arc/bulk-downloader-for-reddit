@@ -301,7 +301,6 @@ def main():
 
     if arguments.use_local_config:
         JsonFile("config.json").add(GLOBAL.config)
-        sys.exit()
 
     if arguments.directory:
         GLOBAL.directory = Path(arguments.directory.strip())
