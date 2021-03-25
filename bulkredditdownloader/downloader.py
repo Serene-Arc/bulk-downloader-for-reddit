@@ -316,6 +316,9 @@ class RedditDownloader:
                 self._download_submission(submission)
 
     def _download_submission(self, submission: praw.models.Submission):
+        if not isinstance(submission, praw.models.Submission):
+            logger.warning(f'{submission.id} is not a submission')
+            return
         if not self.download_filter.check_url(submission.url):
             logger.debug(f'Download filter removed submission {submission.id} with URL {submission.url}')
             return
