@@ -15,7 +15,7 @@ from bulkredditdownloader.site_downloaders.direct import Direct
     ('https://giant.gfycat.com/DazzlingSilkyIguana.mp4', '808941b48fc1e28713d36dd7ed9dc648'),
 ))
 def test_download_resource(test_url: str, expected_hash: str):
-    mock_submission = Mock
+    mock_submission = Mock()
     mock_submission.url = test_url
     test_site = Direct(mock_submission)
     resources = test_site.find_resources()
