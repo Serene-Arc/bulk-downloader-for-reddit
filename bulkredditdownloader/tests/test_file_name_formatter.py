@@ -156,6 +156,23 @@ def test_limit_filename_length(test_filename: str, test_ending: str):
     assert isinstance(result, str)
 
 
+@pytest.mark.parametrize(('test_filename', 'test_ending', 'expected_end'), (
+    ('test_aaaaaa', '_1.png', 'test_aaaaaa_1.png'),
+    ('test_aaaaaa', '.png', 'test_aaaaaa.png'),
+    ('test', '_1.png', 'test_1.png'),
+    ('test_m1hqw6', '_1.png', 'test_m1hqw6_1.png'),
+    ('A' * 300 + '_bbbccc', '.png', '_bbbccc.png'),
+    ('A' * 300 + '_bbbccc', '_1000.jpeg', '_bbbccc_1000.jpeg'),
+    ('😍💕✨' * 100 + '_aaa1aa', '_1.png', '_aaa1aa_1.png'),
+))
+def test_preserve_id_append_when_shortening(test_filename: str, test_ending: str, expected_end: str):
+    result = FileNameFormatter._limit_file_name_length(test_filename, test_ending)
+    assert len(result) <= 255
+    assert len(result.encode('utf-8')) <= 255
+    assert isinstance(result, str)
+    assert result.endswith(expected_end)
+
+
 def test_shorten_filenames(tmp_path: Path):
     test_submission = MagicMock()
     test_submission.title = 'A' * 300
