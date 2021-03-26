@@ -184,6 +184,9 @@ Takes a file directory as a parameter and skips the posts if it matches with the
 
 Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
   
+## **`--downloaded-delay`**
+When specified, it delays every download for given seconds.
+  
 ## ❔ FAQ
 
 ### I am running the script on a headless machine or on a remote server. How can I authenticate my reddit account?
