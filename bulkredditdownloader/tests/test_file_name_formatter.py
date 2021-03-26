@@ -156,9 +156,7 @@ def test_limit_filename_length(test_filename: str, test_ending: str):
     assert isinstance(result, str)
 
 
-@pytest.mark.online
-@pytest.mark.reddit
-def test_shorten_filenames(reddit_instance: praw.Reddit, tmp_path: Path):
+def test_shorten_filenames(tmp_path: Path):
     test_submission = MagicMock()
     test_submission.title = 'A' * 300
     test_submission.author.name = 'test'
