@@ -11,6 +11,7 @@ import shutil
 import socket
 from datetime import datetime
 from enum import Enum, auto
+from multiprocessing import Pool
 from pathlib import Path
 from typing import Iterator
 
@@ -29,6 +30,12 @@ from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.download_factory import DownloadFactory
 
 logger = logging.getLogger(__name__)
+
+
+def _calc_hash(existing_file: Path):
+    with open(existing_file, 'rb') as file:
+        file_hash = hashlib.md5(file.read()).hexdigest()
+        return existing_file, file_hash
 
 
 class RedditTypes:
@@ -373,9 +380,10 @@ class RedditDownloader:
         for (dirpath, dirnames, filenames) in os.walk(directory):
             files.extend([Path(dirpath, file) for file in filenames])
         logger.info(f'Calculating hashes for {len(files)} files')
-        hash_list = {}
-        for existing_file in files:
-            with open(existing_file, 'rb') as file:
-                hash_list[hashlib.md5(file.read()).hexdigest()] = existing_file
-                logger.log(9, f'Hash calculated for file at {existing_file}')
+
+        pool = Pool(15)
+        results = pool.map(_calc_hash, files)
+        pool.close()
+
+        hash_list = {res[1]: res[0] for res in results}
         return hash_list
