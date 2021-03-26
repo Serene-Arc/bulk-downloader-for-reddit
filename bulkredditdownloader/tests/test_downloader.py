@@ -46,6 +46,7 @@ def assert_all_results_are_submissions(result_limit: int, results: list[Iterator
 
 def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
     downloader_mock.args.directory = tmp_path / 'test'
+    downloader_mock.config_directories.user_config_dir = tmp_path
     RedditDownloader._determine_directories(downloader_mock)
     assert Path(tmp_path / 'test').exists()
 
