@@ -2,6 +2,18 @@
 
 When the project was rewritten for v2, the goal was to make the codebase easily extensible and much easier to read and modify. However, this document provides a step-by-step look through the process that the BDFR goes through, so that any prospective developers can more easily grasp the way the code works.
 
+## Design Ethos
+
+The BDFR is designed to be a stateless downloader. This means that the state of the program is forgotten between each run of the program. There are no central lists, databases, or indices, that the BDFR uses, only the actual files on disk. There are several advantages to this approach:
+
+  1. There is no chance of the database being corrupted or changed by something other than the BDFR, rendering the BDFR's "idea" of the archive wrong or incomplete.
+  2. Any information about the archive is contained by the archive itself i.e. for a list of all submission IDs in the archive, this can be extracted from the names of the files in said archive, assuming an appropriate naming scheme was used.
+  3. Archives can be merged, split, or editing without worrying about having to update a central database
+  4. There are no versioning issues between updates of the BDFR, where old version are stuck with a worse form of the database
+  5. An archive can be put on a USB, moved to another computer with possibly a very different BDFR version, and work completely fine
+
+Another major part of the ethos of the design is DOTADIW, Do One Thing And Do It Well. It's a major part of Unix philosophy and states that each tool should have a well-defined, limited purpose. To this end, the BDFR is, as the name implies, a *downloader*. That is the scope of the tool. Managing the files downloaded can be for better-suited programs, since the BDFR is not a file manager. Nor the BDFR concern itself with how any of the data downloaded is displayed, changed, parsed, or analysed. This makes the BDFR suitable for data science-related tasks, archiving, personal downloads, or analysis of various Reddit sources as the BDFR is completely agnostic on how the data is used.
+
 ## The Download Process
 
 The BDFR is organised around a central object, the RedditDownloader class. The Archiver object extends and inherits from this class.
@@ -34,4 +46,4 @@ Once the downloader class has been written **and tests added** for it as well, t
 
 ## Adding Other Features
 
-
+For a fundamentally different form of execution path for the program, such as the difference between the `archive` and `download` commands, it is best to inherit from the RedditDownloader class and override or add functionality as needed.
