@@ -38,6 +38,8 @@ class Imgur(BaseDownloader):
 
     @staticmethod
     def _get_data(link: str) -> dict:
+        if re.match(r".*i\.imgur\.com.*\.gifv$", link):
+            link = link.replace("i.imgur", "imgur")[:-5]
         res = requests.get(link, cookies={'over18': '1', 'postpagebeta': '0'})
 
         if res.status_code != 200:
