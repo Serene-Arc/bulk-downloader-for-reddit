@@ -394,3 +394,29 @@ def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_insta
 
     assert test_file_1_stats.st_nlink == 2
     assert test_file_1_stats.st_ino == test_file_2_inode
+
+
+@pytest.mark.parametrize(('test_ids', 'test_excluded', 'expected_len'), (
+    (('aaaaaa',), (), 1),
+    (('aaaaaa',), ('aaaaaa',), 0),
+    ((), ('aaaaaa',), 0),
+    (('aaaaaa', 'bbbbbb'), ('aaaaaa',), 1),
+))
+def test_excluded_ids(test_ids: tuple[str], test_excluded: tuple[str], expected_len: int, downloader_mock: MagicMock):
+    downloader_mock.excluded_submission_ids = test_excluded
+    test_submissions = []
+    for test_id in test_ids:
+        m = MagicMock()
+        m.id = test_id
+        test_submissions.append(m)
+    downloader_mock.reddit_lists = [test_submissions]
+    RedditDownloader.download(downloader_mock)
+    assert downloader_mock._download_submission.call_count == expected_len
+
+
+def test_read_excluded_submission_ids_from_file(downloader_mock: MagicMock, tmp_path: Path):
+    test_file = tmp_path / 'test.txt'
+    test_file.write_text('aaaaaa\nbbbbbb')
+    downloader_mock.args.exclude_id_file = [test_file]
+    results = RedditDownloader._read_excluded_ids(downloader_mock)
+    assert results == {'aaaaaa', 'bbbbbb'}

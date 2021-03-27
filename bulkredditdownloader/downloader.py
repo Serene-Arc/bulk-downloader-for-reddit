@@ -82,6 +82,8 @@ class RedditDownloader:
         self._create_reddit_instance()
         self._resolve_user_name()
 
+        self.excluded_submission_ids = self._read_excluded_ids()
+
         if self.args.search_existing:
             self.master_hash_list = self.scan_existing_files(self.download_directory)
         else:
@@ -323,8 +325,12 @@ class RedditDownloader:
     def download(self):
         for generator in self.reddit_lists:
             for submission in generator:
-                logger.debug(f'Attempting to download submission {submission.id}')
-                self._download_submission(submission)
+                if submission.id in self.excluded_submission_ids:
+                    logger.debug(f'Submission {submission.id} in exclusion list, skipping')
+                    continue
+                else:
+                    logger.debug(f'Attempting to download submission {submission.id}')
+                    self._download_submission(submission)
 
     def _download_submission(self, submission: praw.models.Submission):
         if not isinstance(submission, praw.models.Submission):
@@ -354,13 +360,15 @@ class RedditDownloader:
                     res.download()
                 except errors.BulkDownloaderException:
                     logger.error(
-                        f'Failed to download resource from {res.url} with downloader {downloader_class.__name__}')
+                        f'Failed to download resource {res.url} with downloader {downloader_class.__name__}')
                     return
                 resource_hash = res.hash.hexdigest()
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 if resource_hash in self.master_hash_list:
                     if self.args.no_dupes:
-                        logger.warning(f'Resource from "{res.url}" and hash "{resource_hash}" downloaded elsewhere')
+                        logger.warning(
+                            f'Resource from "{res.url}" and hash "{resource_hash}" from submission {submission.id}'
+                            ' downloaded elsewhere')
                         return
                     elif self.args.make_hard_links:
                         self.master_hash_list[resource_hash].link_to(destination)
@@ -387,3 +395,16 @@ class RedditDownloader:
 
         hash_list = {res[1]: res[0] for res in results}
         return hash_list
+
+    def _read_excluded_ids(self) -> set[str]:
+        out = []
+        out.extend(self.args.exclude_id)
+        for id_file in self.args.exclude_id_file:
+            id_file = Path(id_file).resolve().expanduser()
+            if not id_file.exists():
+                logger.error(f'ID exclusion file at {id_file} does not exist')
+                continue
+            with open(id_file, 'r') as file:
+                for line in file:
+                    out.append(line.strip())
+        return set(out)

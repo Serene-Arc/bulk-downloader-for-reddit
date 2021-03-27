@@ -239,3 +239,18 @@ def test_cli_download_use_default_config(tmp_path: Path):
     test_args = ['download', '-vv', str(tmp_path)]
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['-l', 'm2601g', '--exclude-id', 'm2601g'],
+))
+def test_cli_download_links(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'in exclusion list' in result.output
+    assert 'Downloaded submission ' not in result.output
