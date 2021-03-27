@@ -36,8 +36,8 @@ class SelfPost(BaseDownloader):
                    + "](https://www.reddit.com/r/"
                    + self.post.subreddit.title
                    + ") by [u/"
-                   + self.post.author.name
+                   + self.post.author.name if self.post.author else "DELETED"
                    + "](https://www.reddit.com/user/"
-                   + self.post.author.name
+                   + self.post.author.name if self.post.author else "DELETED"
                    + ")")
         return content
