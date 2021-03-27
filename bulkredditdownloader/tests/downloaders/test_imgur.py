@@ -28,13 +28,22 @@ from bulkredditdownloader.site_downloaders.imgur import Imgur
          {'hash': 'TSAkikk', 'ext': '.jpg', 'title': ''},
      ]),
 ))
-def test_get_data(test_url: str, expected_gen_dict: dict, expected_image_dict: list[dict]):
+def test_get_data_album(test_url: str, expected_gen_dict: dict, expected_image_dict: list[dict]):
     result = Imgur._get_data(test_url)
     assert all([result.get(key) == expected_gen_dict[key] for key in expected_gen_dict.keys()])
 
     # Check if all the keys from the test dict are correct in at least one of the album entries
     assert any([all([image.get(key) == image_dict[key] for key in image_dict.keys()])
                 for image_dict in expected_image_dict for image in result['album_images']['images']])
+
+@pytest.mark.online
+@pytest.mark.parametrize(('test_url', 'expected_image_dict'), (
+    ('https://i.imgur.com/dLk3FGY.gifv',
+     {'hash': 'dLk3FGY', 'title': '', 'ext': '.mp4', 'animated': True}),
+))
+def test_get_data_image(test_url: str, expected_image_dict: dict):
+    result = Imgur._get_data(test_url)
+    assert all([result.get(key) == expected_image_dict[key] for key in expected_image_dict.keys()])
 
 
 @pytest.mark.parametrize('test_extension',

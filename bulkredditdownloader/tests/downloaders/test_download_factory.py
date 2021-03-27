@@ -26,7 +26,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
     ('lu29zn', SelfPost),
     ('lu2ykk', Direct),  # Imgur direct link
     ('luh2pd', Direct),  # Reddit direct link
-    ('luo9eo', Direct),  # Imgur direct link gif
+    ('luo9eo', Imgur),  # Imgur .gifv link
     ('lumulo', Direct),  # Imgur direct link gif
     ('lui5t3', Imgur),
     ('lu93m7', Gallery),
