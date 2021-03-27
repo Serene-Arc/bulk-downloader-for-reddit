@@ -354,7 +354,7 @@ class RedditDownloader:
             return
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
-                logger.warning(f'File already exists: {destination}')
+                logger.debug(f'File {destination} already exists, continuing')
             else:
                 try:
                     res.download()
@@ -366,13 +366,12 @@ class RedditDownloader:
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 if resource_hash in self.master_hash_list:
                     if self.args.no_dupes:
-                        logger.warning(
-                            f'Resource from "{res.url}" and hash "{resource_hash}" from submission {submission.id}'
-                            ' downloaded elsewhere')
+                        logger.info(
+                            f'Resource hash {resource_hash} from submission {submission.id} downloaded elsewhere')
                         return
                     elif self.args.make_hard_links:
                         self.master_hash_list[resource_hash].link_to(destination)
-                        logger.debug(
+                        logger.info(
                             f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}')
                         return
                 with open(destination, 'wb') as file:
