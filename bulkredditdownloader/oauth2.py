@@ -62,6 +62,7 @@ class OAuth2Authenticator:
             self.send_message(client)
             raise RedditAuthenticationError(f'Error in OAuth2: {params["error"]}')
 
+        self.send_message(client, "<script>alert('You can go back to terminal window now.')</script>")
         refresh_token = reddit.auth.authorize(params["code"])
         return refresh_token
 
@@ -80,8 +81,8 @@ class OAuth2Authenticator:
         return client
 
     @staticmethod
-    def send_message(client: socket.socket):
-        client.send('HTTP/1.1 200 OK'.encode('utf-8'))
+    def send_message(client: socket.socket, message: str):
+        client.send(f'HTTP/1.1 200 OK\r\n\r\n{message}'.encode('utf-8'))
         client.close()
 
 
