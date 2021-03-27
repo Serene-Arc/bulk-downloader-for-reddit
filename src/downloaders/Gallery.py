@@ -12,25 +12,19 @@ from src.errors import FileNotFoundError, FileAlreadyExistsError, AlbumNotDownlo
 class Gallery:
     def __init__(self, directory, post):
 
-        link = post['CONTENTURL']
-        self.rawData = self.getData(link)
-
-        self.directory = directory
-        self.post = post
-
+        links = post['CONTENTURL']
+		
         images = {}
         count = 0
-        for model in self.rawData['posts']['models']:
-            try:
-                for item in self.rawData['posts']['models'][model]['media']['gallery']['items']:
-                    try:
-                        images[count] = {'id': item['mediaId'], 'url': self.rawData['posts'][
-                            'models'][model]['media']['mediaMetadata'][item['mediaId']]['s']['u']}
-                        count = count + 1
-                    except BaseException:
-                        continue
-            except BaseException:
-                continue
+        for link in links:
+            path = urllib.parse.urlparse(link).path
+            base = os.path.basename(path)
+            name = os.path.splitext(base)[0]
+            images[count] = {'id': name, 'url': link}
+            count = count + 1
+		
+        self.directory = directory
+        self.post = post
 
         self.downloadAlbum(images, count)
 
