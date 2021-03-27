@@ -268,15 +268,27 @@ def printLogo():
         f"https://github.com/aliparlakci/bulk-downloader-for-reddit/\n"
     )
 
-
 def main():
+    
+    sys.argv = sys.argv + GLOBAL.config["options"].split()
+    arguments = Arguments.parse()
+    GLOBAL.arguments = arguments
 
-    if Path("config.json").exists():
-        GLOBAL.configDirectory = Path("config.json")
+    if arguments.config:
+        if arguments.use_local_config:
+            sys.exit()
+        if Path(arguments.config).exists():
+            GLOBAL.configDirectory = Path(arguments.config)
+        else:
+            VanillaPrint("custom config",arguments.config,"not found. Exiting.")
+            sys.exit()
     else:
-        if not Path(GLOBAL.defaultConfigDirectory).is_dir():
-            os.makedirs(GLOBAL.defaultConfigDirectory)
-        GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory / "config.json"
+        if Path("config.json").exists():
+            GLOBAL.configDirectory = Path("config.json")
+        else:
+            if not Path(GLOBAL.defaultConfigDirectory).is_dir():
+                os.makedirs(GLOBAL.defaultConfigDirectory)
+            GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory / "config.json"
     try:
         GLOBAL.config = Config(GLOBAL.configDirectory).generate()
     except InvalidJSONFile as exception:
@@ -284,11 +296,6 @@ def main():
         VanillaPrint("Resolve it or remove it to proceed")
         input("\nPress enter to quit")
         sys.exit()
-
-    sys.argv = sys.argv + GLOBAL.config["options"].split()
-
-    arguments = Arguments.parse()
-    GLOBAL.arguments = arguments
 
     if arguments.set_filename:
         Config(GLOBAL.configDirectory).setCustomFileName()
