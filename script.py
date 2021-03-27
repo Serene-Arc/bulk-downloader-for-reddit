@@ -294,7 +294,8 @@ def main():
     except InvalidJSONFile as exception:
         VanillaPrint(str(exception.__class__.__name__), ">>", str(exception))
         VanillaPrint("Resolve it or remove it to proceed")
-        input("\nPress enter to quit")
+        if not GLOBAL.arguments.quit:
+            input("\nPress enter to quit\n")
         sys.exit()
 
     if arguments.set_filename:
