@@ -188,12 +188,24 @@ def test_shorten_filenames(tmp_path: Path):
 
 @pytest.mark.parametrize(('test_string', 'expected'), (
     ('test', 'test'),
+    ('test😍', 'test'),
     ('test.png', 'test.png'),
     ('test*', 'test'),
     ('test**', 'test'),
     ('test?*', 'test'),
     ('test_???.png', 'test_.png'),
+    ('test_???😍.png', 'test_.png'),
 ))
 def test_format_file_name_for_windows(test_string: str, expected: str):
     result = FileNameFormatter._format_for_windows(test_string)
+    assert result == expected
+
+
+@pytest.mark.parametrize(('test_string', 'expected'), (
+    ('test', 'test'),
+    ('test😍', 'test'),
+    ('😍', ''),
+))
+def test_strip_emojies(test_string: str, expected: str):
+    result = FileNameFormatter._strip_emojis(test_string)
     assert result == expected

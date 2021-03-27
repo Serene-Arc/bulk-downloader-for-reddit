@@ -96,4 +96,10 @@ class FileNameFormatter:
         invalid_characters = r'<>:"\/|?*'
         for char in invalid_characters:
             input_string = input_string.replace(char, '')
+        input_string = FileNameFormatter._strip_emojis(input_string)
         return input_string
+
+    @staticmethod
+    def _strip_emojis(input_string: str) -> str:
+        result = input_string.encode('ascii', errors='ignore').decode('utf-8')
+        return result
