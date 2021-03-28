@@ -36,7 +36,8 @@ def reddit_submission(reddit_instance) -> praw.models.Submission:
                                                          ('{UPVOTES}', '1000'),
                                                          ('{FLAIR}', 'test_flair'),
                                                          ('{DATE}', '123456789'),
-                                                         ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345')
+                                                         ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345'),
+                                                         ('{RANDOM}', '{RANDOM}'),
                                                          ))
 def test_format_name_mock(format_string: str, expected: str, submission: MagicMock):
     result = FileNameFormatter._format_name(submission, format_string)
