@@ -38,6 +38,7 @@ class ArchiveEntry:
             'link_flair_text': self.submission.link_flair_text,
             'num_comments': self.submission.num_comments,
             'over_18': self.submission.over_18,
+            'created_utc': self.submission.created_utc,
         }
 
     def _get_comments(self):
