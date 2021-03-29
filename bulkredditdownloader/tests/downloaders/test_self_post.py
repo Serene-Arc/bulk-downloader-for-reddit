@@ -13,7 +13,7 @@ from bulkredditdownloader.site_downloaders.self_post import SelfPost
 @pytest.mark.parametrize(('test_submission_id', 'expected_hash'), (
     ('ltmivt', '7d2c9e4e989e5cf2dca2e55a06b1c4f6'),
     ('ltoaan', '221606386b614d6780c2585a59bd333f'),
-    ('d3sc8o', 'b675974cd6964246c6e97a10a385c080'),
+    ('d3sc8o', 'c1ff2b6bd3f6b91381dcd18dfc4ca35f'),
 ))
 def test_find_resource(test_submission_id: str, expected_hash: str, reddit_instance: praw.Reddit):
     submission = reddit_instance.submission(id=test_submission_id)
