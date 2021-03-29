@@ -312,7 +312,7 @@ def test_download_submission_file_exists(
     folder_contents = list(tmp_path.iterdir())
     output = capsys.readouterr()
     assert len(folder_contents) == 1
-    assert 'File already exists: ' in output.out
+    assert 'Arneeman_Metagaming isn\'t always a bad thing_m1hqw6.png already exists' in output.out
 
 
 @pytest.mark.online
@@ -335,7 +335,7 @@ def test_download_submission_hash_exists(
     folder_contents = list(tmp_path.iterdir())
     output = capsys.readouterr()
     assert len(folder_contents) == 0
-    assert re.search(r'Resource from .*? downloaded elsewhere', output.out)
+    assert re.search(r'Resource hash .*? downloaded elsewhere', output.out)
 
 
 @pytest.mark.parametrize(('test_name', 'expected'), (
