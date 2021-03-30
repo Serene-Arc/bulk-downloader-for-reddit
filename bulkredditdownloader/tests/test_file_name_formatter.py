@@ -159,6 +159,7 @@ def test_limit_filename_length(test_filename: str, test_ending: str):
 
 @pytest.mark.parametrize(('test_filename', 'test_ending', 'expected_end'), (
     ('test_aaaaaa', '_1.png', 'test_aaaaaa_1.png'),
+    ('test_aataaa', '_1.png', 'test_aataaa_1.png'),
     ('test_aaaaaa', '.png', 'test_aaaaaa.png'),
     ('test', '_1.png', 'test_1.png'),
     ('test_m1hqw6', '_1.png', 'test_m1hqw6_1.png'),
