@@ -21,25 +21,24 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(('test_submission_id', 'expected_class'), (
-    ('lu8l8g', VReddit),
-    ('lu29zn', SelfPost),
-    ('lu2ykk', Direct),  # Imgur direct link
-    ('luh2pd', Direct),  # Reddit direct link
-    ('luo9eo', Imgur),  # Imgur .gifv link
-    ('lumulo', Direct),  # Imgur direct link gif
-    ('lui5t3', Imgur),
-    ('lu93m7', Gallery),
-    ('luf1nu', Gfycat),
-    ('luxmgx', Erome),
-    ('lupb4r', Youtube),
-    ('lul6l7', Redgifs),
-    ('luu376', GifDeliveryNetwork),
-    ('m2l5oo', Youtube),
+@pytest.mark.parametrize(('test_submission_url', 'expected_class'), (
+    ('https://v.redd.it/9z1dnk3xr5k61', VReddit),
+    ('https://www.reddit.com/r/TwoXChromosomes/comments/lu29zn/i_refuse_to_live_my_life_in_anything_but_comfort/', SelfPost),
+    ('https://i.imgur.com/bZx1SJQ.jpg', Direct),
+    ('https://i.redd.it/affyv0axd5k61.png', Direct),
+    ('https://i.imgur.com/BuzvZwb.gifv', Imgur),
+    ('https://i.imgur.com/6fNdLst.gif', Direct),
+    ('https://imgur.com/a/MkxAzeg', Imgur),
+    ('https://www.reddit.com/gallery/lu93m7', Gallery),
+    ('https://gfycat.com/concretecheerfulfinwhale', Gfycat),
+    ('https://www.erome.com/a/NWGw0F09', Erome),
+    ('https://youtube.com/watch?v=Gv8Wz74FjVA', Youtube),
+    ('https://redgifs.com/watch/courageousimpeccablecanvasback', Redgifs),
+    ('https://www.gifdeliverynetwork.com/repulsivefinishedandalusianhorse', GifDeliveryNetwork),
+    ('https://youtu.be/DevfjHOhuFc', Youtube),
 ))
-def test_factory_lever_good(test_submission_id: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
-    submission = reddit_instance.submission(id=test_submission_id)
-    result = DownloadFactory.pull_lever(submission.url)
+def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
+    result = DownloadFactory.pull_lever(test_submission_url)
     assert result is expected_class
 
 
