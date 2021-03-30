@@ -44,7 +44,7 @@ class DownloadFactory:
             return Youtube
         elif re.match(url_beginning + r'i\.redd\.it.*', url):
             return Direct
-        elif re.match(url_beginning + r'.*\..{3,4}$', url):
+        elif re.match(url_beginning + r'.*/.*\.\w{3,4}$', url):
             return Direct
         else:
             raise NotADownloadableLinkError('No downloader module exists for url {}'.format(url))

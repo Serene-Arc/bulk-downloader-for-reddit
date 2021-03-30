@@ -46,6 +46,10 @@ def test_factory_lever_good(test_submission_id: str, expected_class: BaseDownloa
 @pytest.mark.parametrize('test_url', (
     'random.com',
     'bad',
+    'https://www.google.com/',
+    'https://www.google.com',
+    'https://www.google.com/test',
+    'https://www.google.com/test/',
 ))
 def test_factory_lever_bad(test_url: str):
     with pytest.raises(NotADownloadableLinkError):
