@@ -27,15 +27,20 @@ class FileNameFormatter:
     @staticmethod
     def _format_name(submission: praw.models.Submission, format_string: str) -> str:
         submission_attributes = {
-            'TITLE': submission.title,
-            'SUBREDDIT': submission.subreddit.display_name,
-            'REDDITOR': submission.author.name if submission.author else 'DELETED',
-            'POSTID': submission.id,
-            'UPVOTES': submission.score,
-            'FLAIR': submission.link_flair_text,
-            'DATE': submission.created_utc
+            'title': submission.title,
+            'subreddit': submission.subreddit.display_name,
+            'redditor': submission.author.name if submission.author else 'DELETED',
+            'postid': submission.id,
+            'upvotes': submission.score,
+            'flair': submission.link_flair_text,
+            'date': submission.created_utc
         }
-        result = format_string.format(**submission_attributes)
+        result = format_string
+        for key in submission_attributes.keys():
+            if re.search(r'(?i).*{{{}}}.*'.format(key), result):
+                result = re.sub(r'(?i){{{}}}'.format(key), str(submission_attributes.get(key, 'unknown')), result)
+                logger.log(9, f'Found key string {key} in name')
+
         result = result.replace('/', '')
 
         if platform.system() == 'Windows':
