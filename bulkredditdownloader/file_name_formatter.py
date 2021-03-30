@@ -65,9 +65,10 @@ class FileNameFormatter:
 
     @staticmethod
     def _limit_file_name_length(filename: str, ending: str) -> str:
-        possible_id = re.search(r'((?:_\w{6})?$)', filename).group(1)
-        ending = possible_id + ending
-        filename = re.sub(rf"^{possible_id}|{possible_id}$", "", filename)
+        possible_id = re.search(r'((?:_\w{6})?$)', filename)
+        if possible_id:
+            ending = possible_id.group(1) + ending
+            filename = filename[:possible_id.start()]
         max_length_chars = 255 - len(ending)
         max_length_bytes = 255 - len(ending.encode('utf-8'))
         while len(filename) > max_length_chars or len(filename.encode('utf-8')) > max_length_bytes:
