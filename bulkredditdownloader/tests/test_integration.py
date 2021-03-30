@@ -254,3 +254,18 @@ def test_cli_download_links(test_args: list[str], tmp_path: Path):
     assert result.exit_code == 0
     assert 'in exclusion list' in result.output
     assert 'Downloaded submission ' not in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--file-scheme', '{TITLE}'],
+    ['--file-scheme', '{TITLE}_test_{SUBREDDIT}'],
+))
+def test_cli_file_scheme_warning(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'Post ID not included in this file scheme' in result.output

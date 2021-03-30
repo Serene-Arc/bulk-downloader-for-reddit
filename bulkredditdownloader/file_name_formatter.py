@@ -89,7 +89,14 @@ class FileNameFormatter:
     def validate_string(test_string: str) -> bool:
         if not test_string:
             return False
-        return any([f'{{{key}}}' in test_string.lower() for key in FileNameFormatter.key_terms])
+        result = any([f'{{{key}}}' in test_string.lower() for key in FileNameFormatter.key_terms])
+        if result:
+            if 'POSTID' not in test_string:
+                logger.warning(
+                    f'Post ID not included in this file scheme, so file names are not guaranteed to be unique')
+            return True
+        else:
+            return False
 
     @staticmethod
     def _format_for_windows(input_string: str) -> str:
