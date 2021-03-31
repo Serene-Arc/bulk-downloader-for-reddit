@@ -19,8 +19,6 @@ from bulkredditdownloader.site_downloaders.vreddit import VReddit
 from bulkredditdownloader.site_downloaders.youtube import Youtube
 
 
-@pytest.mark.online
-@pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_url', 'expected_class'), (
     ('https://v.redd.it/9z1dnk3xr5k61', VReddit),
     ('https://www.reddit.com/r/TwoXChromosomes/comments/lu29zn/i_refuse_to_live_my_life_in_anything_but_comfort/', SelfPost),
