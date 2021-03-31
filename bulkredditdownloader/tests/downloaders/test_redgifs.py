@@ -27,7 +27,7 @@ def test_get_link(test_url: str, expected: str):
     ('https://redgifs.com/watch/springgreendecisivetaruca', '8dac487ac49a1f18cc1b4dabe23f0869'),
 ))
 def test_download_resource(test_url: str, expected_hash: str):
-    mock_submission = Mock
+    mock_submission = Mock()
     mock_submission.url = test_url
     test_site = Redgifs(mock_submission)
     resources = test_site.find_resources()
