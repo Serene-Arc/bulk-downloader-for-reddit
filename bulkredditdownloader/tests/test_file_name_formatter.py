@@ -22,11 +22,12 @@ def submission() -> MagicMock:
     test.score = 1000
     test.link_flair_text = 'test_flair'
     test.created_utc = 123456789
+    test.__class__ = praw.models.Submission
     return test
 
 
 @pytest.fixture()
-def reddit_submission(reddit_instance) -> praw.models.Submission:
+def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     return reddit_instance.submission(id='lgilgt')
 
 
@@ -137,6 +138,7 @@ def test_format_multiple_resources():
         new_mock.url = 'https://example.com/test.png'
         new_mock.extension = '.png'
         new_mock.source_submission.title = 'test'
+        new_mock.source_submission.__class__ = praw.models.Submission
         mocks.append(new_mock)
     test_formatter = FileNameFormatter('{TITLE}', '')
     results = test_formatter.format_resource_paths(mocks, Path('.'))
@@ -176,13 +178,12 @@ def test_preserve_id_append_when_shortening(test_filename: str, test_ending: str
     assert result.endswith(expected_end)
 
 
-def test_shorten_filenames(tmp_path: Path):
-    test_submission = MagicMock()
-    test_submission.title = 'A' * 300
-    test_submission.author.name = 'test'
-    test_submission.subreddit.display_name = 'test'
-    test_submission.id = 'BBBBBB'
-    test_resource = Resource(test_submission, 'www.example.com/empty', '.jpeg')
+def test_shorten_filenames(submission: MagicMock, tmp_path: Path):
+    submission.title = 'A' * 300
+    submission.author.name = 'test'
+    submission.subreddit.display_name = 'test'
+    submission.id = 'BBBBBB'
+    test_resource = Resource(submission, 'www.example.com/empty', '.jpeg')
     test_formatter = FileNameFormatter('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}')
     result = test_formatter.format_path(test_resource, tmp_path)
     result.parent.mkdir(parents=True)
@@ -212,3 +213,50 @@ def test_format_file_name_for_windows(test_string: str, expected: str):
 def test_strip_emojies(test_string: str, expected: str):
     result = FileNameFormatter._strip_emojis(test_string)
     assert result == expected
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_submission_id', 'expected'), (
+    ('mfuteh', {'title': 'Why Do Interviewers Ask Linked List Questions?', 'redditor': 'mjgardner'}),
+))
+def test_generate_dict_for_submission(test_submission_id: str, expected: dict, reddit_instance: praw.Reddit):
+    test_submission = reddit_instance.submission(id=test_submission_id)
+    result = FileNameFormatter._generate_name_dict_from_submission(test_submission)
+    assert all([result.get(key) == expected[key] for key in expected.keys()])
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_comment_id', 'expected'), (
+    ('gsq0yuw', {
+        'title': 'Why Do Interviewers Ask Linked List Questions?',
+        'redditor': 'Doctor-Dapper',
+        'postid': 'gsq0yuw',
+        'flair': '',
+    }),
+))
+def test_generate_dict_for_comment(test_comment_id: str, expected: dict, reddit_instance: praw.Reddit):
+    test_comment = reddit_instance.comment(id=test_comment_id)
+    result = FileNameFormatter._generate_name_dict_from_comment(test_comment)
+    assert all([result.get(key) == expected[key] for key in expected.keys()])
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_file_scheme', 'test_folder_scheme', 'test_comment_id', 'expected_name'), (
+    ('{POSTID}', '', 'gsoubde', 'gsoubde.json'),
+    ('{REDDITOR}_{POSTID}', '', 'gsoubde', 'DELETED_gsoubde.json'),
+))
+def test_format_archive_entry_comment(
+        test_file_scheme: str,
+        test_folder_scheme: str,
+        test_comment_id: str,
+        expected_name: str,
+        tmp_path: Path,
+        reddit_instance: praw.Reddit):
+    test_comment = reddit_instance.comment(id=test_comment_id)
+    test_formatter = FileNameFormatter(test_file_scheme, test_folder_scheme)
+    test_entry = Resource(test_comment, '', '.json')
+    result = test_formatter.format_path(test_entry, tmp_path)
+    assert result.name == expected_name

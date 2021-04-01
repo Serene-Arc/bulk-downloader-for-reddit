@@ -172,6 +172,21 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
 @pytest.mark.reddit
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
+    ['-l', 'gstd4hk'],
+    ['-l', 'm2601g'],
+))
+def test_cli_archive_single(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
     ['--subreddit', 'Mindustry', '-L', 25],
     ['--subreddit', 'Mindustry', '-L', 25, '--format', 'xml'],
     ['--subreddit', 'Mindustry', '-L', 25, '--format', 'yaml'],
@@ -184,7 +199,7 @@ def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
     test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert re.search(r'Writing submission .*? to file in .*? format', result.output)
+    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
 
 
 @pytest.mark.online
@@ -200,7 +215,7 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert re.search(r'Writing submission .*? to file in .*? format', result.output)
+    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
 
 
 @pytest.mark.online

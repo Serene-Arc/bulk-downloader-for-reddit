@@ -10,7 +10,7 @@ from bulkredditdownloader.site_downloaders.erome import Erome
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_urls'), (
-    ('https://www.erome.com/a/vqtPuLXh', ('https://s6.erome.com/365/vqtPuLXh/KH2qBT99_480p.mp4',)),
+    ('https://www.erome.com/a/vqtPuLXh', ('https://s11.erome.com/365/vqtPuLXh/KH2qBT99_480p.mp4',)),
     ('https://www.erome.com/a/ORhX0FZz',
      ('https://s4.erome.com/355/ORhX0FZz/9IYQocM9_480p.mp4',
       'https://s4.erome.com/355/ORhX0FZz/9eEDc8xm_480p.mp4',

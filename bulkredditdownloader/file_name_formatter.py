@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Optional
 
-import praw.models
+from praw.models import Comment, Submission
 
 from bulkredditdownloader.exceptions import BulkDownloaderException
 from bulkredditdownloader.resource import Resource
@@ -25,20 +25,17 @@ class FileNameFormatter:
         self.directory_format_string = directory_format_string
 
     @staticmethod
-    def _format_name(submission: praw.models.Submission, format_string: str) -> str:
-        submission_attributes = {
-            'title': submission.title,
-            'subreddit': submission.subreddit.display_name,
-            'redditor': submission.author.name if submission.author else 'DELETED',
-            'postid': submission.id,
-            'upvotes': submission.score,
-            'flair': submission.link_flair_text,
-            'date': submission.created_utc
-        }
+    def _format_name(submission: (Comment, Submission), format_string: str) -> str:
+        if isinstance(submission, Submission):
+            attributes = FileNameFormatter._generate_name_dict_from_submission(submission)
+        elif isinstance(submission, Comment):
+            attributes = FileNameFormatter._generate_name_dict_from_comment(submission)
+        else:
+            raise BulkDownloaderException(f'Cannot name object {type(submission).__name__}')
         result = format_string
-        for key in submission_attributes.keys():
+        for key in attributes.keys():
             if re.search(r'(?i).*{{{}}}.*'.format(key), result):
-                result = re.sub(r'(?i){{{}}}'.format(key), str(submission_attributes.get(key, 'unknown')), result)
+                result = re.sub(r'(?i){{{}}}'.format(key), str(attributes.get(key, 'unknown')), result)
                 logger.log(9, f'Found key string {key} in name')
 
         result = result.replace('/', '')
@@ -48,7 +45,37 @@ class FileNameFormatter:
 
         return result
 
-    def format_path(self, resource: Resource, destination_directory: Path, index: Optional[int] = None) -> Path:
+    @staticmethod
+    def _generate_name_dict_from_submission(submission: Submission) -> dict:
+        submission_attributes = {
+            'title': submission.title,
+            'subreddit': submission.subreddit.display_name,
+            'redditor': submission.author.name if submission.author else 'DELETED',
+            'postid': submission.id,
+            'upvotes': submission.score,
+            'flair': submission.link_flair_text,
+            'date': submission.created_utc
+        }
+        return submission_attributes
+
+    @staticmethod
+    def _generate_name_dict_from_comment(comment: Comment) -> dict:
+        comment_attributes = {
+            'title': comment.submission.title,
+            'subreddit': comment.subreddit.display_name,
+            'redditor': comment.author.name if comment.author else 'DELETED',
+            'postid': comment.id,
+            'upvotes': comment.score,
+            'flair': '',
+            'date': comment.created_utc
+        }
+        return comment_attributes
+
+    def format_path(
+            self,
+            resource: Resource,
+            destination_directory: Path,
+            index: Optional[int] = None) -> Path:
         subfolder = destination_directory / self._format_name(resource.source_submission, self.directory_format_string)
         index = f'_{str(index)}' if index else ''
         if not resource.extension:
