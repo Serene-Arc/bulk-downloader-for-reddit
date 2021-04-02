@@ -34,6 +34,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
     ('https://redgifs.com/watch/courageousimpeccablecanvasback', Redgifs),
     ('https://www.gifdeliverynetwork.com/repulsivefinishedandalusianhorse', GifDeliveryNetwork),
     ('https://youtu.be/DevfjHOhuFc', Youtube),
+    ('https://m.youtube.com/watch?v=kr-FeojxzUM', Youtube),
 ))
 def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     result = DownloadFactory.pull_lever(test_submission_url)

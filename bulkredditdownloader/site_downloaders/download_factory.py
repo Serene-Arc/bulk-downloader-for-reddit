@@ -40,9 +40,7 @@ class DownloadFactory:
             return SelfPost
         elif re.match(url_beginning + r'v\.redd\.it', url):
             return VReddit
-        elif re.match(url_beginning + r'youtu\.?be', url):
-            return Youtube
-        elif re.match(url_beginning + r'm.youtu\.?be', url):
+        elif re.match(url_beginning + r'(m\.)?youtu\.?be', url):
             return Youtube
         elif re.match(url_beginning + r'i\.redd\.it.*', url):
             return Direct
