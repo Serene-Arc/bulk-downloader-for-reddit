@@ -42,6 +42,8 @@ class DownloadFactory:
             return VReddit
         elif re.match(url_beginning + r'youtu\.?be', url):
             return Youtube
+        elif re.match(url_beginning + r'm.youtu\.?be', url):
+            return Youtube
         elif re.match(url_beginning + r'i\.redd\.it.*', url):
             return Direct
         elif re.match(url_beginning + r'.*/.*\.\w{3,4}$', url):
