@@ -169,7 +169,10 @@ class RedditDownloader:
 
     def _create_file_logger(self):
         main_logger = logging.getLogger()
-        file_handler = logging.FileHandler(Path(self.config_directory, 'log_output.txt'), mode='w')
+        file_handler = logging.FileHandler(
+            Path(self.config_directory, f'log_output_{datetime.now().isoformat()}.txt'),
+            mode='w',
+        )
         formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
         file_handler.setFormatter(formatter)
         file_handler.setLevel(0)
