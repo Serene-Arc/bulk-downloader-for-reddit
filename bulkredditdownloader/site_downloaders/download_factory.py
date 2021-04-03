@@ -22,7 +22,11 @@ class DownloadFactory:
     @staticmethod
     def pull_lever(url: str) -> Type[BaseDownloader]:
         url_beginning = r'\s*(https?://(www\.)?)'
-        if re.match(url_beginning + r'erome\.com.*', url):
+        if re.match(url_beginning + r'i\.imgur.*\.gifv$', url):
+            return Imgur
+        elif re.match(url_beginning + r'.*/.*\.\w{3,4}$', url):
+            return Direct
+        elif re.match(url_beginning + r'erome\.com.*', url):
             return Erome
         elif re.match(url_beginning + r'reddit\.com/gallery/.*', url):
             return Gallery
@@ -31,8 +35,6 @@ class DownloadFactory:
         elif re.match(url_beginning + r'gifdeliverynetwork', url):
             return GifDeliveryNetwork
         elif re.match(url_beginning + r'imgur.*', url):
-            return Imgur
-        elif re.match(url_beginning + r'i\.imgur.*\.gifv$', url):
             return Imgur
         elif re.match(url_beginning + r'redgifs.com', url):
             return Redgifs
@@ -43,8 +45,6 @@ class DownloadFactory:
         elif re.match(url_beginning + r'(m\.)?youtu\.?be', url):
             return Youtube
         elif re.match(url_beginning + r'i\.redd\.it.*', url):
-            return Direct
-        elif re.match(url_beginning + r'.*/.*\.\w{3,4}$', url):
             return Direct
         else:
             raise NotADownloadableLinkError(f'No downloader module exists for url {url}')
