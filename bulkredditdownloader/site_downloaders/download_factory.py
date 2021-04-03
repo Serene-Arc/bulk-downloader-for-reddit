@@ -47,4 +47,4 @@ class DownloadFactory:
         elif re.match(url_beginning + r'.*/.*\.\w{3,4}$', url):
             return Direct
         else:
-            raise NotADownloadableLinkError('No downloader module exists for url {}'.format(url))
+            raise NotADownloadableLinkError(f'No downloader module exists for url {url}')
