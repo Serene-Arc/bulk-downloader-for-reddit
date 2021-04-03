@@ -147,7 +147,7 @@ class RedditDownloader:
                 self.config_location = cfg_path
                 return
             else:
-                logger.error(f'Could not find config file at {self.args.config}, attempting to find elsewhere')
+                logger.warning(f'Could not find config file at {self.args.config}, attempting to find elsewhere')
         possible_paths = [Path('./config.cfg'),
                           Path('./default_config.cfg'),
                           Path(self.config_directory, 'config.cfg'),
@@ -224,7 +224,7 @@ class RedditDownloader:
                 logger.log(9, f'Resolved user to {self.args.user}')
             else:
                 self.args.user = None
-                logger.error('To use "me" as a user, an authenticated Reddit instance must be used')
+                logger.warning('To use "me" as a user, an authenticated Reddit instance must be used')
 
     def _get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
@@ -277,7 +277,7 @@ class RedditDownloader:
                         sort_function(
                             self.reddit_instance.redditor(self.args.user).submissions, limit=self.args.limit))
                 if not self.authenticated and any((self.args.upvoted, self.args.saved)):
-                    logger.error('Accessing user lists requires authentication')
+                    logger.warning('Accessing user lists requires authentication')
                 else:
                     if self.args.upvoted:
                         logger.debug(f'Retrieving upvoted posts of user {self.args.user}')
@@ -287,7 +287,7 @@ class RedditDownloader:
                         generators.append(self.reddit_instance.redditor(self.args.user).saved(limit=self.args.limit))
                 return generators
             else:
-                logger.error('A user must be supplied to download user data')
+                logger.warning('A user must be supplied to download user data')
                 return []
         else:
             return []
@@ -349,8 +349,8 @@ class RedditDownloader:
 
         try:
             content = downloader.find_resources(self.authenticator)
-        except errors.SiteDownloaderError:
-            logger.error(f'Site {downloader_class.__name__} failed to download submission {submission.id}')
+        except errors.SiteDownloaderError as e:
+            logger.error(f'Site {downloader_class.__name__} failed to download submission {submission.id}: {e}')
             return
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
@@ -358,9 +358,9 @@ class RedditDownloader:
             else:
                 try:
                     res.download()
-                except errors.BulkDownloaderException:
+                except errors.BulkDownloaderException as e:
                     logger.error(
-                        f'Failed to download resource {res.url} with downloader {downloader_class.__name__}')
+                        f'Failed to download resource {res.url} with downloader {downloader_class.__name__}: {e}')
                     return
                 resource_hash = res.hash.hexdigest()
                 destination.parent.mkdir(parents=True, exist_ok=True)
@@ -401,7 +401,7 @@ class RedditDownloader:
         for id_file in self.args.exclude_id_file:
             id_file = Path(id_file).resolve().expanduser()
             if not id_file.exists():
-                logger.error(f'ID exclusion file at {id_file} does not exist')
+                logger.warning(f'ID exclusion file at {id_file} does not exist')
                 continue
             with open(id_file, 'r') as file:
                 for line in file:
