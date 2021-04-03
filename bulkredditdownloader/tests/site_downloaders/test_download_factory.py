@@ -25,6 +25,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
      '_in_anything_but_comfort/', SelfPost),
     ('https://i.imgur.com/bZx1SJQ.jpg', Direct),
     ('https://i.redd.it/affyv0axd5k61.png', Direct),
+    ('https://imgur.com/3ls94yv.jpeg', Direct),
     ('https://i.imgur.com/BuzvZwb.gifv', Imgur),
     ('https://i.imgur.com/6fNdLst.gif', Direct),
     ('https://imgur.com/a/MkxAzeg', Imgur),
