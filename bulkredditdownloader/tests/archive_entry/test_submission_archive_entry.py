@@ -22,7 +22,11 @@ def test_get_comments(test_submission_id: str, min_comments: int, reddit_instanc
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_id', 'expected_dict'), (
-    ('m3reby', {'author': 'sinjen-tos', 'id': 'm3reby', 'link_flair_text': 'image'}),
+    ('m3reby', {
+        'author': 'sinjen-tos',
+        'id': 'm3reby',
+        'link_flair_text': 'image',
+    }),
     ('m3kua3', {'author': 'DELETED'}),
 ))
 def test_get_post_details(test_submission_id: str, expected_dict: dict, reddit_instance: praw.Reddit):

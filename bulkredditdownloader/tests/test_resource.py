@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import pytest
+from unittest.mock import MagicMock
 
 from bulkredditdownloader.resource import Resource
 
@@ -16,7 +17,7 @@ from bulkredditdownloader.resource import Resource
     ('https://preview.redd.it/7zkmr1wqqih61.png?width=237&format=png&auto=webp&s=19de214e634cbcad99', '.png'),
 ))
 def test_resource_get_extension(test_url: str, expected: str):
-    test_resource = Resource(None, test_url)
+    test_resource = Resource(MagicMock(), test_url)
     result = test_resource._determine_extension()
     assert result == expected
 
@@ -26,6 +27,6 @@ def test_resource_get_extension(test_url: str, expected: str):
     ('https://www.iana.org/_img/2013.1/iana-logo-header.svg', '426b3ac01d3584c820f3b7f5985d6623'),
 ))
 def test_download_online_resource(test_url: str, expected_hash: str):
-    test_resource = Resource(None, test_url)
+    test_resource = Resource(MagicMock(), test_url)
     test_resource.download()
     assert test_resource.hash.hexdigest() == expected_hash

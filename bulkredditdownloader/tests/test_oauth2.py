@@ -21,12 +21,12 @@ def example_config() -> configparser.ConfigParser:
 
 @pytest.mark.online
 @pytest.mark.parametrize('test_scopes', (
-    ('history',),
-    ('history', 'creddits'),
-    ('account', 'flair'),
-    ('*',),
+    {'history', },
+    {'history', 'creddits'},
+    {'account', 'flair'},
+    {'*', },
 ))
-def test_check_scopes(test_scopes: list[str]):
+def test_check_scopes(test_scopes: set[str]):
     OAuth2Authenticator._check_scopes(test_scopes)
 
 
@@ -54,7 +54,7 @@ def test_check_scopes_bad(test_scopes: set[str]):
 def test_token_manager_read(example_config: configparser.ConfigParser):
     mock_authoriser = MagicMock()
     mock_authoriser.refresh_token = None
-    test_manager = OAuth2TokenManager(example_config, None)
+    test_manager = OAuth2TokenManager(example_config, MagicMock())
     test_manager.pre_refresh_callback(mock_authoriser)
     assert mock_authoriser.refresh_token == example_config.get('DEFAULT', 'user_token')
 

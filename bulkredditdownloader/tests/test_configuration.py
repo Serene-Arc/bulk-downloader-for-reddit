@@ -10,7 +10,10 @@ from bulkredditdownloader.configuration import Configuration
 
 @pytest.mark.parametrize('arg_dict', (
     {'directory': 'test_dir'},
-    {'directory': 'test_dir', 'no_dupes': True},
+    {
+        'directory': 'test_dir',
+        'no_dupes': True,
+    },
 ))
 def test_process_click_context(arg_dict: dict):
     test_config = Configuration()

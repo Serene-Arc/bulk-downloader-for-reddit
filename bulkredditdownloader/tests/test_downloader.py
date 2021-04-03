@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import argparse
 import re
 from pathlib import Path
 from typing import Iterator
@@ -15,7 +14,7 @@ from bulkredditdownloader.__main__ import setup_logging
 from bulkredditdownloader.configuration import Configuration
 from bulkredditdownloader.download_filter import DownloadFilter
 from bulkredditdownloader.downloader import RedditDownloader, RedditTypes
-from bulkredditdownloader.exceptions import BulkDownloaderException, RedditAuthenticationError, RedditUserError
+from bulkredditdownloader.exceptions import BulkDownloaderException
 from bulkredditdownloader.file_name_formatter import FileNameFormatter
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 
@@ -53,7 +52,7 @@ def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
 
 @pytest.mark.parametrize(('skip_extensions', 'skip_domains'), (
     ([], []),
-    (['.test'], ['test.com']),
+    (['.test'], ['test.com'],),
 ))
 def test_create_download_filter(skip_extensions: list[str], skip_domains: list[str], downloader_mock: MagicMock):
     downloader_mock.args.skip = skip_extensions
@@ -244,25 +243,18 @@ def test_get_user_submissions(test_user: str, limit: int, downloader_mock: Magic
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.authenticated
-def test_get_user_upvoted(downloader_mock: MagicMock, authenticated_reddit_instance: praw.Reddit):
+@pytest.mark.parametrize('test_flag', (
+    'upvoted',
+    'saved',
+))
+def test_get_user_authenticated_lists(
+    test_flag: str,
+    downloader_mock: MagicMock,
+    authenticated_reddit_instance: praw.Reddit,
+):
+    downloader_mock.args.__dict__[test_flag] = True
     downloader_mock.reddit_instance = authenticated_reddit_instance
     downloader_mock.args.user = 'me'
-    downloader_mock.args.upvoted = True
-    downloader_mock.args.limit = 10
-    downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
-    downloader_mock.sort_filter = RedditTypes.SortType.HOT
-    RedditDownloader._resolve_user_name(downloader_mock)
-    results = RedditDownloader._get_user_data(downloader_mock)
-    assert_all_results_are_submissions(10, results)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.authenticated
-def test_get_user_saved(downloader_mock: MagicMock, authenticated_reddit_instance: praw.Reddit):
-    downloader_mock.reddit_instance = authenticated_reddit_instance
-    downloader_mock.args.user = 'me'
-    downloader_mock.args.saved = True
     downloader_mock.args.limit = 10
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
@@ -299,7 +291,8 @@ def test_download_submission_file_exists(
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit,
         tmp_path: Path,
-        capsys: pytest.CaptureFixture):
+        capsys: pytest.CaptureFixture
+):
     setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
@@ -317,11 +310,17 @@ def test_download_submission_file_exists(
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.parametrize(('test_submission_id', 'test_hash'), (
+    ('m1hqw6', 'a912af8905ae468e0121e9940f797ad7'),
+))
 def test_download_submission_hash_exists(
+        test_submission_id: str,
+        test_hash: str,
         downloader_mock: MagicMock,
         reddit_instance: praw.Reddit,
         tmp_path: Path,
-        capsys: pytest.CaptureFixture):
+        capsys: pytest.CaptureFixture
+):
     setup_logging(3)
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.download_filter.check_url.return_value = True
@@ -329,8 +328,8 @@ def test_download_submission_hash_exists(
     downloader_mock.args.no_dupes = True
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     downloader_mock.download_directory = tmp_path
-    downloader_mock.master_hash_list = {'a912af8905ae468e0121e9940f797ad7': None}
-    submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
+    downloader_mock.master_hash_list = {test_hash: None}
+    submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
     RedditDownloader._download_submission(downloader_mock, submission)
     folder_contents = list(tmp_path.iterdir())
     output = capsys.readouterr()
@@ -373,15 +372,23 @@ def test_split_subreddit_entries(test_subreddit_entries: list[str], expected: se
 
 @pytest.mark.online
 @pytest.mark.reddit
-def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_instance: praw.Reddit):
+@pytest.mark.parametrize('test_submission_id', (
+    'm1hqw6',
+))
+def test_mark_hard_link(
+        test_submission_id: str,
+        downloader_mock: MagicMock,
+        tmp_path: Path,
+        reddit_instance: praw.Reddit
+):
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.args.make_hard_links = True
     downloader_mock.download_directory = tmp_path
     downloader_mock.args.folder_scheme = ''
     downloader_mock.args.file_scheme = '{POSTID}'
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
-    submission = downloader_mock.reddit_instance.submission(id='m1hqw6')
-    original = Path(tmp_path, 'm1hqw6.png')
+    submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
+    original = Path(tmp_path, f'{test_submission_id}.png')
 
     RedditDownloader._download_submission(downloader_mock, submission)
     assert original.exists()
@@ -390,7 +397,7 @@ def test_mark_hard_link(downloader_mock: MagicMock, tmp_path: Path, reddit_insta
     downloader_mock.file_name_formatter = RedditDownloader._create_file_name_formatter(downloader_mock)
     RedditDownloader._download_submission(downloader_mock, submission)
     test_file_1_stats = original.stat()
-    test_file_2_inode = Path(tmp_path, 'test2_m1hqw6.png').stat().st_ino
+    test_file_2_inode = Path(tmp_path, f'test2_{test_submission_id}.png').stat().st_ino
 
     assert test_file_1_stats.st_nlink == 2
     assert test_file_1_stats.st_ino == test_file_2_inode

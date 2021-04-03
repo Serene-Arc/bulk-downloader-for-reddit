@@ -38,14 +38,18 @@ def test_gallery_get_links(test_url: str, expected: set[str]):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_id', 'expected_hashes'), (
-    ('m6lvrh', {'6c8a892ae8066cbe119218bcaac731e1',
-                '93ce177f8cb7994906795f4615114d13',
-                '9a293adf19354f14582608cf22124574',
-                'b73e2c3daee02f99404644ea02f1ae65'}),
-    ('ljyy27', {'1bc38bed88f9c4770e22a37122d5c941',
-                '2539a92b78f3968a069df2dffe2279f9',
-                '37dea50281c219b905e46edeefc1a18d',
-                'ec4924cf40549728dcf53dd40bc7a73c'}),
+    ('m6lvrh', {
+        '6c8a892ae8066cbe119218bcaac731e1',
+        '93ce177f8cb7994906795f4615114d13',
+        '9a293adf19354f14582608cf22124574',
+        'b73e2c3daee02f99404644ea02f1ae65'
+    }),
+    ('ljyy27', {
+        '1bc38bed88f9c4770e22a37122d5c941',
+        '2539a92b78f3968a069df2dffe2279f9',
+        '37dea50281c219b905e46edeefc1a18d',
+        'ec4924cf40549728dcf53dd40bc7a73c'
+    }),
 ))
 def test_gallery_download(test_submission_id: str, expected_hashes: set[str], reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)

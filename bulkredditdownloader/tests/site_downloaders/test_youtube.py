@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import praw
+from unittest.mock import MagicMock
+
 import pytest
 
 from bulkredditdownloader.resource import Resource
@@ -9,14 +10,14 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
 
 
 @pytest.mark.online
-@pytest.mark.reddit
 @pytest.mark.slow
-@pytest.mark.parametrize(('test_submission_id', 'expected_hash'), (
-    ('ltnoqp', '468136300a106c67f1463a7011a6db4a'),
-    ('m2l5oo', 'a70512f7782f13922258297bb12055d9'),
+@pytest.mark.parametrize(('test_url', 'expected_hash'), (
+    ('https://www.youtube.com/watch?v=uSm2VDgRIUs', '3c79a62898028987f94161e0abccbddf'),
+    ('https://www.youtube.com/watch?v=m-tKnjFwleU', '61651cc6f53782af50030c0a7dd0b6f6'),
 ))
-def test_find_resources(test_submission_id: str, expected_hash: str, reddit_instance: praw.Reddit):
-    test_submission = reddit_instance.submission(id=test_submission_id)
+def test_find_resources(test_url: str, expected_hash: str):
+    test_submission = MagicMock()
+    test_submission.url = test_url
     downloader = Youtube(test_submission)
     resources = downloader.find_resources()
     assert len(resources) == 1

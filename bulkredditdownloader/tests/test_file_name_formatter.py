@@ -31,15 +31,16 @@ def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     return reddit_instance.submission(id='lgilgt')
 
 
-@pytest.mark.parametrize(('format_string', 'expected'), (('{SUBREDDIT}', 'randomreddit'),
-                                                         ('{REDDITOR}', 'person'),
-                                                         ('{POSTID}', '12345'),
-                                                         ('{UPVOTES}', '1000'),
-                                                         ('{FLAIR}', 'test_flair'),
-                                                         ('{DATE}', '123456789'),
-                                                         ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345'),
-                                                         ('{RANDOM}', '{RANDOM}'),
-                                                         ))
+@pytest.mark.parametrize(('format_string', 'expected'), (
+    ('{SUBREDDIT}', 'randomreddit'),
+    ('{REDDITOR}', 'person'),
+    ('{POSTID}', '12345'),
+    ('{UPVOTES}', '1000'),
+    ('{FLAIR}', 'test_flair'),
+    ('{DATE}', '123456789'),
+    ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345'),
+    ('{RANDOM}', '{RANDOM}'),
+))
 def test_format_name_mock(format_string: str, expected: str, submission: MagicMock):
     result = FileNameFormatter._format_name(submission, format_string)
     assert result == expected
@@ -61,14 +62,14 @@ def test_check_format_string_validity(test_string: str, expected: bool):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(('format_string', 'expected'),
-                         (('{SUBREDDIT}', 'Mindustry'),
-                          ('{REDDITOR}', 'Gamer_player_boi'),
-                          ('{POSTID}', 'lgilgt'),
-                          ('{FLAIR}', 'Art'),
-                          ('{SUBREDDIT}_{TITLE}', 'Mindustry_Toxopid that is NOT humane >:('),
-                          ('{REDDITOR}_{TITLE}_{POSTID}', 'Gamer_player_boi_Toxopid that is NOT humane >:(_lgilgt')
-                          ))
+@pytest.mark.parametrize(('format_string', 'expected'), (
+    ('{SUBREDDIT}', 'Mindustry'),
+    ('{REDDITOR}', 'Gamer_player_boi'),
+    ('{POSTID}', 'lgilgt'),
+    ('{FLAIR}', 'Art'),
+    ('{SUBREDDIT}_{TITLE}', 'Mindustry_Toxopid that is NOT humane >:('),
+    ('{REDDITOR}_{TITLE}_{POSTID}', 'Gamer_player_boi_Toxopid that is NOT humane >:(_lgilgt')
+))
 def test_format_name_real(format_string: str, expected: str, reddit_submission: praw.models.Submission):
     result = FileNameFormatter._format_name(reddit_submission, format_string)
     assert result == expected
@@ -76,13 +77,23 @@ def test_format_name_real(format_string: str, expected: str, reddit_submission: 
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'expected'),
-                         (('{SUBREDDIT}', '{POSTID}', 'test/Mindustry/lgilgt.png'),
-                          ('{SUBREDDIT}', '{TITLE}_{POSTID}',
-                           'test/Mindustry/Toxopid that is NOT humane >:(_lgilgt.png'),
-                          ('{SUBREDDIT}', '{REDDITOR}_{TITLE}_{POSTID}',
-                           'test/Mindustry/Gamer_player_boi_Toxopid that is NOT humane >:(_lgilgt.png')
-                          ))
+@pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'expected'), (
+    (
+        '{SUBREDDIT}',
+        '{POSTID}',
+        'test/Mindustry/lgilgt.png',
+    ),
+    (
+        '{SUBREDDIT}',
+        '{TITLE}_{POSTID}',
+        'test/Mindustry/Toxopid that is NOT humane >:(_lgilgt.png',
+    ),
+    (
+        '{SUBREDDIT}',
+        '{REDDITOR}_{TITLE}_{POSTID}',
+        'test/Mindustry/Gamer_player_boi_Toxopid that is NOT humane >:(_lgilgt.png',
+    ),
+))
 def test_format_full(
         format_string_directory: str,
         format_string_file: str,
@@ -112,13 +123,12 @@ def test_format_full_conform(
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'index', 'expected'),
-                         (('{SUBREDDIT}', '{POSTID}', None, 'test/Mindustry/lgilgt.png'),
-                          ('{SUBREDDIT}', '{POSTID}', 1, 'test/Mindustry/lgilgt_1.png'),
-                          ('{SUBREDDIT}', '{POSTID}', 2, 'test/Mindustry/lgilgt_2.png'),
-                          ('{SUBREDDIT}', '{TITLE}_{POSTID}', 2,
-                           'test/Mindustry/Toxopid that is NOT humane >:(_lgilgt_2.png'),
-                          ))
+@pytest.mark.parametrize(('format_string_directory', 'format_string_file', 'index', 'expected'), (
+    ('{SUBREDDIT}', '{POSTID}', None, 'test/Mindustry/lgilgt.png'),
+    ('{SUBREDDIT}', '{POSTID}', 1, 'test/Mindustry/lgilgt_1.png'),
+    ('{SUBREDDIT}', '{POSTID}', 2, 'test/Mindustry/lgilgt_2.png'),
+    ('{SUBREDDIT}', '{TITLE}_{POSTID}', 2, 'test/Mindustry/Toxopid that is NOT humane >:(_lgilgt_2.png'),
+))
 def test_format_full_with_index_suffix(
         format_string_directory: str,
         format_string_file: str,
@@ -218,7 +228,10 @@ def test_strip_emojies(test_string: str, expected: str):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_id', 'expected'), (
-    ('mfuteh', {'title': 'Why Do Interviewers Ask Linked List Questions?', 'redditor': 'mjgardner'}),
+    ('mfuteh', {
+        'title': 'Why Do Interviewers Ask Linked List Questions?',
+        'redditor': 'mjgardner',
+    }),
 ))
 def test_generate_dict_for_submission(test_submission_id: str, expected: dict, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)

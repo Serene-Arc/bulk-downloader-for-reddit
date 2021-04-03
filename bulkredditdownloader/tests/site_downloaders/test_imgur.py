@@ -51,17 +51,24 @@ def test_get_data_gif(test_url: str, expected_image_dict: dict):
     assert all([result.get(key) == expected_image_dict[key] for key in expected_image_dict.keys()])
 
 
-@pytest.mark.parametrize('test_extension',
-                         ('.gif', '.png', '.jpg', '.mp4')
-                         )
+@pytest.mark.parametrize('test_extension', (
+    '.gif',
+    '.png',
+    '.jpg',
+    '.mp4'
+))
 def test_imgur_extension_validation_good(test_extension: str):
     result = Imgur._validate_extension(test_extension)
     assert result == test_extension
 
 
-@pytest.mark.parametrize('test_extension',
-                         ('.jpeg', '.avi', 'bad', '.test', '.flac')
-                         )
+@pytest.mark.parametrize('test_extension', (
+    '.jpeg',
+    'bad',
+    '.avi',
+    '.test',
+    '.flac'
+))
 def test_imgur_extension_validation_bad(test_extension: str):
     with pytest.raises(SiteDownloaderError):
         Imgur._validate_extension(test_extension)
@@ -69,13 +76,18 @@ def test_imgur_extension_validation_bad(test_extension: str):
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_hashes'), (
-    ('https://imgur.com/a/xWZsDDP', ('f551d6e6b0fef2ce909767338612e31b',)),
-    ('https://imgur.com/gallery/IjJJdlC', ('7227d4312a9779b74302724a0cfa9081',)),
-    ('https://imgur.com/a/dcc84Gt',
-     ('cf1158e1de5c3c8993461383b96610cf',
-      '28d6b791a2daef8aa363bf5a3198535d',
-      '248ef8f2a6d03eeb2a80d0123dbaf9b6',
-      '029c475ce01b58fdf1269d8771d33913')),
+    ('https://imgur.com/a/xWZsDDP', (
+        'f551d6e6b0fef2ce909767338612e31b',
+    )),
+    ('https://imgur.com/gallery/IjJJdlC', (
+        '7227d4312a9779b74302724a0cfa9081',
+    )),
+    ('https://imgur.com/a/dcc84Gt', (
+        'cf1158e1de5c3c8993461383b96610cf',
+        '28d6b791a2daef8aa363bf5a3198535d',
+        '248ef8f2a6d03eeb2a80d0123dbaf9b6',
+        '029c475ce01b58fdf1269d8771d33913'
+    )),
 ))
 def test_find_resources(test_url: str, expected_hashes: list[str]):
     mock_download = Mock()
