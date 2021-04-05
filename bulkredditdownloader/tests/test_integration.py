@@ -262,7 +262,7 @@ def test_cli_download_use_default_config(tmp_path: Path):
 @pytest.mark.parametrize('test_args', (
     ['-l', 'm2601g', '--exclude-id', 'm2601g'],
 ))
-def test_cli_download_links(test_args: list[str], tmp_path: Path):
+def test_cli_download_links_exclusion(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
