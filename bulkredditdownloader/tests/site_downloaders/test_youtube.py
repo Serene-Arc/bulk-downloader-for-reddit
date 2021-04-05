@@ -13,7 +13,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
 @pytest.mark.slow
 @pytest.mark.parametrize(('test_url', 'expected_hash'), (
     ('https://www.youtube.com/watch?v=uSm2VDgRIUs', '3c79a62898028987f94161e0abccbddf'),
-    ('https://www.youtube.com/watch?v=m-tKnjFwleU', '61651cc6f53782af50030c0a7dd0b6f6'),
+    ('https://www.youtube.com/watch?v=m-tKnjFwleU', '30314930d853afff8ebc7d8c36a5b833'),
 ))
 def test_find_resources(test_url: str, expected_hash: str):
     test_submission = MagicMock()
