@@ -5,10 +5,12 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Optional
 
+import requests
 from praw.models import Submission
 
-from bulkredditdownloader.site_authenticator import SiteAuthenticator
+from bulkredditdownloader.exceptions import ResourceNotFound
 from bulkredditdownloader.resource import Resource
+from bulkredditdownloader.site_authenticator import SiteAuthenticator
 
 logger = logging.getLogger(__name__)
 
@@ -22,3 +24,10 @@ class BaseDownloader(ABC):
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         """Return list of all un-downloaded Resources from submission"""
         raise NotImplementedError
+
+    @staticmethod
+    def get_link(url: str, cookies: dict = None, headers: dict = None) -> requests.Response:
+        res = requests.get(url, cookies=cookies, headers=headers)
+        if res.status_code != 200:
+            raise ResourceNotFound(f'Server responded with {res.status_code} to {url}')
+        return res

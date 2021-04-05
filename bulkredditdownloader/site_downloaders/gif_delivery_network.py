@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-import re
 from typing import Optional
 
-import requests
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
@@ -23,12 +21,9 @@ class GifDeliveryNetwork(BaseDownloader):
 
     @staticmethod
     def _get_link(url: str) -> str:
-        if re.match(r'https://.*\.(mp4|webm|gif)(\?.*)?$', url):
-            return url
+        page = GifDeliveryNetwork.get_link(url)
 
-        page_source = requests.get(url).text
-
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page.text, 'html.parser')
         content = soup.find('source', attrs={'id': 'mp4Source', 'type': 'video/mp4'})
 
         if content is None or content.get('src') is None:

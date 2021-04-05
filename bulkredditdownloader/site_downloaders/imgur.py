@@ -5,10 +5,9 @@ import re
 from typing import Optional
 
 import bs4
-import requests
 from praw.models import Submission
 
-from bulkredditdownloader.exceptions import NotADownloadableLinkError, ResourceNotFound, SiteDownloaderError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError, SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -42,10 +41,7 @@ class Imgur(BaseDownloader):
             link = link.replace('i.imgur', 'imgur')
             link = link.rstrip('.gifv')
 
-        res = requests.get(link, cookies={'over18': '1', 'postpagebeta': '0'})
-
-        if res.status_code != 200:
-            raise ResourceNotFound(f'Server responded with {res.status_code} to {link}')
+        res = Imgur.get_link(link, cookies={'over18': '1', 'postpagebeta': '0'})
 
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
         scripts = soup.find_all('script', attrs={'type': 'text/javascript'})

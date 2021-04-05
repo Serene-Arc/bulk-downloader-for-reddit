@@ -5,7 +5,6 @@ import re
 from typing import Optional
 
 import bs4
-import requests
 from praw.models import Submission
 
 from bulkredditdownloader.exceptions import NotADownloadableLinkError
@@ -34,7 +33,7 @@ class Erome(BaseDownloader):
 
     @staticmethod
     def _get_links(url: str) -> set[str]:
-        page = requests.get(url)
+        page = Erome.get_link(url)
         soup = bs4.BeautifulSoup(page.text, 'html.parser')
         front_images = soup.find_all('img', attrs={'class': 'lasyload'})
         out = [im.get('data-src') for im in front_images]

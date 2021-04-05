@@ -5,7 +5,6 @@ import re
 from typing import Optional
 
 import bs4
-import requests
 from praw.models import Submission
 
 from bulkredditdownloader.exceptions import ResourceNotFound
@@ -28,12 +27,12 @@ class Gallery(BaseDownloader):
 
     @staticmethod
     def _get_links(url: str) -> list[str]:
-        page = requests.get(url, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
-            " Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        resource_headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                          ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         }
-        )
+        page = Gallery.get_link(url, headers=resource_headers)
         soup = bs4.BeautifulSoup(page.text, 'html.parser')
 
         links = soup.findAll('a', attrs={'target': '_blank', 'href': re.compile(r'https://preview\.redd\.it.*')})

@@ -4,7 +4,6 @@ import json
 import re
 from typing import Optional
 
-import requests
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
@@ -23,20 +22,17 @@ class Redgifs(GifDeliveryNetwork):
 
     @staticmethod
     def _get_link(url: str) -> str:
-        if re.match(r'https://.*\.(mp4|webm|gif)(\?.*)?$', url):
-            return url
-
         redgif_id = re.match(r'.*/(.*?)/?$', url).group(1)
         url = 'https://redgifs.com/watch/' + redgif_id
 
-        headers = {'User-Agent':
-                   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                   ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64'
-                   }
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                          ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64',
+        }
 
-        page_source = requests.get(url, headers=headers).text
+        page = Redgifs.get_link(url, headers=headers)
 
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page.text, 'html.parser')
         content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
         if content is None:
