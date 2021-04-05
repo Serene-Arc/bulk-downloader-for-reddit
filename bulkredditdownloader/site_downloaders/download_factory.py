@@ -24,7 +24,7 @@ class DownloadFactory:
         url_beginning = r'\s*(https?://(www\.)?)'
         if re.match(url_beginning + r'i\.imgur.*\.gifv$', url):
             return Imgur
-        elif re.match(url_beginning + r'.*/.*\.\w{3,4}$', url):
+        elif re.match(url_beginning + r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', url):
             return Direct
         elif re.match(url_beginning + r'erome\.com.*', url):
             return Erome
