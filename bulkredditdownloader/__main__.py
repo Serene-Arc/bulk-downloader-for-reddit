@@ -87,10 +87,18 @@ def cli_archive(context: click.Context, **_):
 
 
 def setup_logging(verbosity: int):
+    class StreamExceptionFilter(logging.Filter):
+        def filter(self, record: logging.LogRecord) -> bool:
+            result = not (record.levelno == logging.ERROR and record.exc_info)
+            return result
+
     logger.setLevel(1)
     stream = logging.StreamHandler(sys.stdout)
+    stream.addFilter(StreamExceptionFilter())
+
     formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
     stream.setFormatter(formatter)
+
     logger.addHandler(stream)
     if verbosity <= 0:
         stream.setLevel(logging.INFO)
