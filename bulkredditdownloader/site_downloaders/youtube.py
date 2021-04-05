@@ -22,9 +22,9 @@ class Youtube(BaseDownloader):
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         ytdl_options = {
-            "format": "best",
-            "playlistend": 1,
-            "nooverwrites": True,
+            'format': 'best',
+            'playlistend': 1,
+            'nooverwrites': True,
         }
         out = self._download_video(ytdl_options)
         return [out]
