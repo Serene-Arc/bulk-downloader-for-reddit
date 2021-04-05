@@ -5,6 +5,7 @@ import configparser
 import hashlib
 import importlib.resources
 import logging
+import logging.handlers
 import os
 import re
 import shutil
@@ -169,10 +170,14 @@ class RedditDownloader:
 
     def _create_file_logger(self):
         main_logger = logging.getLogger()
-        file_handler = logging.FileHandler(
-            Path(self.config_directory, f'log_output_{datetime.now().isoformat()}.txt'),
-            mode='w',
+        log_path = Path(self.config_directory, 'log_output.txt')
+        file_handler = logging.handlers.RotatingFileHandler(
+            log_path,
+            mode='a',
+            backupCount=10,
         )
+        if log_path.exists():
+            file_handler.doRollover()
         formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
         file_handler.setFormatter(formatter)
         file_handler.setLevel(0)
