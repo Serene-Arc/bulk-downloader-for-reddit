@@ -352,7 +352,7 @@ class RedditDownloader:
             downloader = downloader_class(submission)
             logger.debug(f'Using {downloader_class.__name__} with url {submission.url}')
         except errors.NotADownloadableLinkError as e:
-            logger.error(f'Could not download submission {submission.name}: {e}')
+            logger.error(f'Could not download submission {submission.id}: {e}')
             return
 
         try:
