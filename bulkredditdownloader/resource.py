@@ -33,27 +33,30 @@ class Resource:
             if response.status_code == 200:
                 return response.content
             elif response.status_code in (301, 401, 403, 404):
-                logger.error(f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
-                return None
+                raise BulkDownloaderException(f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
             else:
-                raise requests.exceptions.ConnectionError
-        except requests.exceptions.ConnectionError:
-            logger.log(9, f'Error occured downloading resource, waiting {wait_time} seconds')
+                raise requests.exceptions.ConnectionError(f'Response code {response.status_code}')
+        except requests.exceptions.ConnectionError as e:
+            logger.log(9, f'Error occured downloading resource, waiting {wait_time} seconds: {e}')
             time.sleep(wait_time)
             if wait_time < 300:
                 return Resource.retry_download(url, wait_time + 60)
             else:
                 logger.error(f'Max wait time exceeded for resource at url {url}')
-                return None
+                raise
 
     def download(self):
         if not self.content:
-            content = self.retry_download(self.url, 0)
+            try:
+                content = self.retry_download(self.url, 0)
+            except requests.exceptions.ConnectionError as e:
+                raise BulkDownloaderException(f'Could not download resource: {e}')
+            except BulkDownloaderException:
+                raise
             if content:
                 self.content = content
-                self.create_hash()
-            else:
-                raise BulkDownloaderException('Could not download resource')
+        if not self.hash and self.content:
+            self.create_hash()
 
     def create_hash(self):
         self.hash = hashlib.md5(self.content)
