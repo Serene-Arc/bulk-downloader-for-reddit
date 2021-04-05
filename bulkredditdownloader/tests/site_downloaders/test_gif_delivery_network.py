@@ -15,8 +15,6 @@ from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDelive
      'https://thumbs2.redgifs.com/RegalShoddyHorsechestnutleafminer.mp4'),
     ('https://www.gifdeliverynetwork.com/maturenexthippopotamus',
      'https://thumbs2.redgifs.com/MatureNextHippopotamus.mp4'),
-    ('https://thumbs2.redgifs.com/MatureNextHippopotamus.mp4',
-     'https://thumbs2.redgifs.com/MatureNextHippopotamus.mp4'),
 ))
 def test_get_link(test_url: str, expected: str):
     result = GifDeliveryNetwork._get_link(test_url)
