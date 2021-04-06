@@ -283,4 +283,4 @@ def test_cli_file_scheme_warning(test_args: list[str], tmp_path: Path):
     test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert 'Post ID not included in this file scheme' in result.output
+    assert 'Some files might not be downloaded due to name conflicts' in result.output
