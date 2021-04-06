@@ -67,6 +67,7 @@ class RedditDownloader:
 
     def _setup_internal_objects(self):
         self._determine_directories()
+        self._load_config()
         self._create_file_logger()
 
         self.download_filter = self._create_download_filter()
@@ -78,8 +79,6 @@ class RedditDownloader:
         self.file_name_formatter = self._create_file_name_formatter()
         logger.log(9, 'Create file name formatter')
 
-        self._load_config()
-        logger.debug(f'Configuration loaded from {self.config_location}')
         self._create_reddit_instance()
         self._resolve_user_name()
 
@@ -147,8 +146,6 @@ class RedditDownloader:
                 self.cfg_parser.read(cfg_path)
                 self.config_location = cfg_path
                 return
-            else:
-                logger.warning(f'Could not find config file at {self.args.config}, attempting to find elsewhere')
         possible_paths = [Path('./config.cfg'),
                           Path('./default_config.cfg'),
                           Path(self.config_directory, 'config.cfg'),
@@ -163,7 +160,6 @@ class RedditDownloader:
         if not self.config_location:
             self.config_location = list(importlib.resources.path('bulkredditdownloader', 'default_config.cfg').gen)[0]
             shutil.copy(self.config_location, Path(self.config_directory, 'default_config.cfg'))
-            logger.debug('Copied default config file from module to config folder')
         if not self.config_location:
             raise errors.BulkDownloaderException('Could not find a configuration file to load')
         self.cfg_parser.read(self.config_location)
@@ -171,10 +167,11 @@ class RedditDownloader:
     def _create_file_logger(self):
         main_logger = logging.getLogger()
         log_path = Path(self.config_directory, 'log_output.txt')
+        backup_count = self.cfg_parser.getint('DEFAULT', 'backup_log_count', fallback=3)
         file_handler = logging.handlers.RotatingFileHandler(
             log_path,
             mode='a',
-            backupCount=10,
+            backupCount=backup_count,
         )
         if log_path.exists():
             file_handler.doRollover()
