@@ -99,6 +99,7 @@ def test_create_sort_filter(test_sort: str, expected: str, downloader_mock: Magi
     ('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}'),
     ('{POSTID}', 'test'),
     ('{POSTID}', ''),
+    ('{POSTID}', '{SUBREDDIT}/{REDDITOR}'),
 ))
 def test_create_file_name_formatter(test_file_scheme: str, test_folder_scheme: str, downloader_mock: MagicMock):
     downloader_mock.args.file_scheme = test_file_scheme
@@ -107,7 +108,7 @@ def test_create_file_name_formatter(test_file_scheme: str, test_folder_scheme: s
 
     assert isinstance(result, FileNameFormatter)
     assert result.file_format_string == test_file_scheme
-    assert result.directory_format_string == test_folder_scheme
+    assert result.directory_format_string == test_folder_scheme.split('/')
 
 
 @pytest.mark.parametrize(('test_file_scheme', 'test_folder_scheme'), (
