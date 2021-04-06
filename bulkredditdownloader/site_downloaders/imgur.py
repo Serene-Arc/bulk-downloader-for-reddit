@@ -37,7 +37,7 @@ class Imgur(BaseDownloader):
 
     @staticmethod
     def _get_data(link: str) -> dict:
-        if re.match(r'.*i\.imgur\.com.*\.gifv$', link):
+        if re.match(r'.*\.gifv$', link):
             link = link.replace('i.imgur', 'imgur')
             link = link.rstrip('.gifv')
 

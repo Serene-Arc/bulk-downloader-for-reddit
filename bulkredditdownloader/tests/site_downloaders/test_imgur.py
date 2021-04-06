@@ -42,6 +42,9 @@ def test_get_data_album(test_url: str, expected_gen_dict: dict, expected_image_d
     ('https://i.imgur.com/dLk3FGY.gifv',
      {'hash': 'dLk3FGY', 'title': '', 'ext': '.mp4', 'animated': True}
      ),
+    ('https://imgur.com/BuzvZwb.gifv',
+     {'hash': 'BuzvZwb', 'title': '', 'description': 'Akron Glass Works', 'animated': True, 'mimetype': 'video/mp4'},
+     )
 ))
 def test_get_data_gif(test_url: str, expected_image_dict: dict):
     result = Imgur._get_data(test_url)
