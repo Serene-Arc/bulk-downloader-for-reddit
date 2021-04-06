@@ -27,6 +27,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
     ('https://i.redd.it/affyv0axd5k61.png', Direct),
     ('https://imgur.com/3ls94yv.jpeg', Direct),
     ('https://i.imgur.com/BuzvZwb.gifv', Imgur),
+    ('https://imgur.com/BuzvZwb.gifv', Imgur),
     ('https://i.imgur.com/6fNdLst.gif', Direct),
     ('https://imgur.com/a/MkxAzeg', Imgur),
     ('https://www.reddit.com/gallery/lu93m7', Gallery),

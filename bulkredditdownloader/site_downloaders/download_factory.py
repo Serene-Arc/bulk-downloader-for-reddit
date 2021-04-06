@@ -22,7 +22,7 @@ class DownloadFactory:
     @staticmethod
     def pull_lever(url: str) -> Type[BaseDownloader]:
         url_beginning = r'\s*(https?://(www\.)?)'
-        if re.match(url_beginning + r'i\.imgur.*\.gifv$', url):
+        if re.match(url_beginning + r'(i\.)?imgur.*\.gifv$', url):
             return Imgur
         elif re.match(url_beginning + r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', url):
             return Direct
