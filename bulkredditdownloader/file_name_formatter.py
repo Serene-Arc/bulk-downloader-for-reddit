@@ -43,7 +43,9 @@ class FileNameFormatter:
         result = format_string
         for key in attributes.keys():
             if re.search(fr'(?i).*{{{key}}}.*', result):
-                result = re.sub(fr'(?i){{{key}}}', str(attributes.get(key, 'unknown')), result)
+                key_value = attributes.get(key, 'unknown')
+                key_value = bytes(key_value, 'utf-8').decode('unicode-escape')
+                result = re.sub(fr'(?i){{{key}}}', key_value, result,)
                 logger.log(9, f'Found key string {key} in name')
 
         result = result.replace('/', '')

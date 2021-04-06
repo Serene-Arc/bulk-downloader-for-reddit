@@ -294,3 +294,14 @@ def test_multilevel_folder_scheme(
     result = result.relative_to(tmp_path)
     assert str(result.parent) == expected
     assert len(result.parents) == (len(expected.split('/')) + 1)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_submission_id', 'test_file_scheme', 'expected'), (
+    ('mecwk7', '{TITLE}', 'My cat’s paws are so cute'),  # Unicode escape in title
+))
+def test_edge_case_names(test_submission_id: str, test_file_scheme: str, expected: str, reddit_instance: praw.Reddit):
+    test_submission = reddit_instance.submission(id=test_submission_id)
+    result = FileNameFormatter._format_name(test_submission, test_file_scheme)
+    assert result == expected
