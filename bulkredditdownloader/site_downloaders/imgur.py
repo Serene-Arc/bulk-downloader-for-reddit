@@ -41,7 +41,7 @@ class Imgur(BaseDownloader):
             link = link.replace('i.imgur', 'imgur')
             link = link.rstrip('.gifv')
 
-        res = Imgur.get_link(link, cookies={'over18': '1', 'postpagebeta': '0'})
+        res = Imgur.retrieve_url(link, cookies={'over18': '1', 'postpagebeta': '0'})
 
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
         scripts = soup.find_all('script', attrs={'type': 'text/javascript'})

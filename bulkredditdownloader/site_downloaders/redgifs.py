@@ -30,7 +30,7 @@ class Redgifs(GifDeliveryNetwork):
                           ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64',
         }
 
-        page = Redgifs.get_link(url, headers=headers)
+        page = Redgifs.retrieve_url(url, headers=headers)
 
         soup = BeautifulSoup(page.text, 'html.parser')
         content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})

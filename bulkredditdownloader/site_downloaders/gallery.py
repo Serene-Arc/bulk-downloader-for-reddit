@@ -32,7 +32,7 @@ class Gallery(BaseDownloader):
                           ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         }
-        page = Gallery.get_link(url, headers=resource_headers)
+        page = Gallery.retrieve_url(url, headers=resource_headers)
         soup = bs4.BeautifulSoup(page.text, 'html.parser')
 
         links = soup.findAll('a', attrs={'target': '_blank', 'href': re.compile(r'https://preview\.redd\.it.*')})

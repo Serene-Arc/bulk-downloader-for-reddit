@@ -26,7 +26,7 @@ class BaseDownloader(ABC):
         raise NotImplementedError
 
     @staticmethod
-    def get_link(url: str, cookies: dict = None, headers: dict = None) -> requests.Response:
+    def retrieve_url(url: str, cookies: dict = None, headers: dict = None) -> requests.Response:
         res = requests.get(url, cookies=cookies, headers=headers)
         if res.status_code != 200:
             raise ResourceNotFound(f'Server responded with {res.status_code} to {url}')

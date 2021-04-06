@@ -21,7 +21,7 @@ class GifDeliveryNetwork(BaseDownloader):
 
     @staticmethod
     def _get_link(url: str) -> str:
-        page = GifDeliveryNetwork.get_link(url)
+        page = GifDeliveryNetwork.retrieve_url(url)
 
         soup = BeautifulSoup(page.text, 'html.parser')
         content = soup.find('source', attrs={'id': 'mp4Source', 'type': 'video/mp4'})

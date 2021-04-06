@@ -33,7 +33,7 @@ class Erome(BaseDownloader):
 
     @staticmethod
     def _get_links(url: str) -> set[str]:
-        page = Erome.get_link(url)
+        page = Erome.retrieve_url(url)
         soup = bs4.BeautifulSoup(page.text, 'html.parser')
         front_images = soup.find_all('img', attrs={'class': 'lasyload'})
         out = [im.get('data-src') for im in front_images]

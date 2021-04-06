@@ -24,7 +24,7 @@ class Gfycat(GifDeliveryNetwork):
         gfycat_id = re.match(r'.*/(.*?)/?$', url).group(1)
         url = 'https://gfycat.com/' + gfycat_id
 
-        response = Gfycat.get_link(url)
+        response = Gfycat.retrieve_url(url)
         if 'gifdeliverynetwork' in response.url:
             return GifDeliveryNetwork._get_link(url)
 
