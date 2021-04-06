@@ -5,7 +5,7 @@ from typing import Optional
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.exceptions import NotADownloadableLinkError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError, SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -26,7 +26,11 @@ class GifDeliveryNetwork(BaseDownloader):
         soup = BeautifulSoup(page.text, 'html.parser')
         content = soup.find('source', attrs={'id': 'mp4Source', 'type': 'video/mp4'})
 
-        if content is None or content.get('src') is None:
-            raise NotADownloadableLinkError('Could not read the page source')
+        try:
+            out = content['src']
+            if not out:
+                raise KeyError
+        except KeyError:
+            raise SiteDownloaderError('Could not find source link')
 
-        return content.get('src')
+        return out

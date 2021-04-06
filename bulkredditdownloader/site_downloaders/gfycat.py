@@ -7,6 +7,7 @@ from typing import Optional
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
+from bulkredditdownloader.exceptions import SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
@@ -31,5 +32,10 @@ class Gfycat(GifDeliveryNetwork):
         soup = BeautifulSoup(response.text, 'html.parser')
         content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
-        out = json.loads(content.contents[0]).get('video').get('contentUrl')
+        try:
+            out = json.loads(content.contents[0])['video']['contentUrl']
+        except (IndexError, KeyError) as e:
+            raise SiteDownloaderError(f'Failed to download Gfycat link {url}: {e}')
+        except json.JSONDecodeError as e:
+            raise SiteDownloaderError(f'Did not receive valid JSON data: {e}')
         return out

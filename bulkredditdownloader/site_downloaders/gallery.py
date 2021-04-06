@@ -7,7 +7,7 @@ from typing import Optional
 import bs4
 from praw.models import Submission
 
-from bulkredditdownloader.exceptions import ResourceNotFound
+from bulkredditdownloader.exceptions import SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.base_downloader import BaseDownloader
@@ -22,7 +22,7 @@ class Gallery(BaseDownloader):
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
         image_urls = self._get_links(self.post.url)
         if not image_urls:
-            raise ResourceNotFound('No images found in Reddit gallery')
+            raise SiteDownloaderError('No images found in Reddit gallery')
         return [Resource(self.post, url) for url in image_urls]
 
     @staticmethod

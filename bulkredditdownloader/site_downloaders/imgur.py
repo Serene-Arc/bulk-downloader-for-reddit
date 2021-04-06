@@ -50,17 +50,23 @@ class Imgur(BaseDownloader):
         script_regex = re.compile(r'\s*\(function\(widgetFactory\)\s*{\s*widgetFactory\.mergeConfig\(\'gallery\'')
         chosen_script = list(filter(lambda s: re.search(script_regex, s), scripts))
         if len(chosen_script) != 1:
-            raise NotADownloadableLinkError(f'Could not read page source from {link}')
-        else:
-            chosen_script = chosen_script[0]
+            raise SiteDownloaderError(f'Could not read page source from {link}')
+
+        chosen_script = chosen_script[0]
 
         outer_regex = re.compile(r'widgetFactory\.mergeConfig\(\'gallery\', ({.*})\);')
-        image_dict = re.search(outer_regex, chosen_script).group(1)
-
         inner_regex = re.compile(r'image\s*:(.*),\s*group')
-        image_dict = re.search(inner_regex, image_dict).group(1)
+        try:
+            image_dict = re.search(outer_regex, chosen_script).group(1)
+            image_dict = re.search(inner_regex, image_dict).group(1)
+        except AttributeError:
+            raise SiteDownloaderError(f'Could not find image dictionary in page source')
 
-        image_dict = json.loads(image_dict)
+        try:
+            image_dict = json.loads(image_dict)
+        except json.JSONDecodeError as e:
+            raise SiteDownloaderError(f'Could not parse received dict as JSON: {e}')
+
         return image_dict
 
     @staticmethod

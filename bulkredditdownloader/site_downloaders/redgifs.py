@@ -7,7 +7,7 @@ from typing import Optional
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bulkredditdownloader.exceptions import NotADownloadableLinkError
+from bulkredditdownloader.exceptions import NotADownloadableLinkError, SiteDownloaderError
 from bulkredditdownloader.resource import Resource
 from bulkredditdownloader.site_authenticator import SiteAuthenticator
 from bulkredditdownloader.site_downloaders.gif_delivery_network import GifDeliveryNetwork
@@ -22,7 +22,11 @@ class Redgifs(GifDeliveryNetwork):
 
     @staticmethod
     def _get_link(url: str) -> str:
-        redgif_id = re.match(r'.*/(.*?)/?$', url).group(1)
+        try:
+            redgif_id = re.match(r'.*/(.*?)/?$', url).group(1)
+        except AttributeError:
+            raise SiteDownloaderError(f'Could not extract Redgifs ID from {url}')
+
         url = 'https://redgifs.com/watch/' + redgif_id
 
         headers = {
@@ -36,7 +40,13 @@ class Redgifs(GifDeliveryNetwork):
         content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
         if content is None:
-            raise NotADownloadableLinkError('Could not read the page source')
+            raise SiteDownloaderError('Could not read the page source')
 
-        out = json.loads(content.contents[0])['video']['contentUrl']
+        try:
+            out = json.loads(content.contents[0])['video']['contentUrl']
+        except (IndexError, KeyError):
+            raise SiteDownloaderError('Failed to find JSON data in page')
+        except json.JSONDecodeError as e:
+            raise SiteDownloaderError(f'Received data was not valid JSON: {e}')
+
         return out
