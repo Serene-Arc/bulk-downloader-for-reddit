@@ -60,12 +60,20 @@ def test_get_data_album(test_url: str, expected_gen_dict: dict, expected_image_d
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_image_dict'), (
-    ('https://i.imgur.com/dLk3FGY.gifv',
-     {'hash': 'dLk3FGY', 'title': '', 'ext': '.mp4', 'animated': True}
-     ),
-    ('https://imgur.com/BuzvZwb.gifv',
-     {'hash': 'BuzvZwb', 'title': '', 'description': 'Akron Glass Works', 'animated': True, 'mimetype': 'video/mp4'},
-     )
+    (
+        'https://i.imgur.com/dLk3FGY.gifv',
+        {'hash': 'dLk3FGY', 'title': '', 'ext': '.mp4', 'animated': True}
+    ),
+    (
+        'https://imgur.com/BuzvZwb.gifv',
+        {
+            'hash': 'BuzvZwb',
+            'title': '',
+            'description': 'Akron Glass Works',
+            'animated': True,
+            'mimetype': 'video/mp4'
+        },
+    ),
 ))
 def test_get_data_gif(test_url: str, expected_image_dict: dict):
     result = Imgur._get_data(test_url)
@@ -88,7 +96,7 @@ def test_imgur_extension_validation_good(test_extension: str):
     'bad',
     '.avi',
     '.test',
-    '.flac'
+    '.flac',
 ))
 def test_imgur_extension_validation_bad(test_extension: str):
     with pytest.raises(SiteDownloaderError):
@@ -97,18 +105,23 @@ def test_imgur_extension_validation_bad(test_extension: str):
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_hashes'), (
-    ('https://imgur.com/a/xWZsDDP', (
-        'f551d6e6b0fef2ce909767338612e31b',
-    )),
-    ('https://imgur.com/gallery/IjJJdlC', (
-        '7227d4312a9779b74302724a0cfa9081',
-    )),
-    ('https://imgur.com/a/dcc84Gt', (
-        'cf1158e1de5c3c8993461383b96610cf',
-        '28d6b791a2daef8aa363bf5a3198535d',
-        '248ef8f2a6d03eeb2a80d0123dbaf9b6',
-        '029c475ce01b58fdf1269d8771d33913'
-    )),
+    (
+        'https://imgur.com/a/xWZsDDP',
+        ('f551d6e6b0fef2ce909767338612e31b',)
+    ),
+    (
+        'https://imgur.com/gallery/IjJJdlC',
+        ('7227d4312a9779b74302724a0cfa9081',),
+    ),
+    (
+        'https://imgur.com/a/dcc84Gt',
+        (
+            'cf1158e1de5c3c8993461383b96610cf',
+            '28d6b791a2daef8aa363bf5a3198535d',
+            '248ef8f2a6d03eeb2a80d0123dbaf9b6',
+            '029c475ce01b58fdf1269d8771d33913',
+        ),
+    ),
 ))
 def test_find_resources(test_url: str, expected_hashes: list[str]):
     mock_download = Mock()
