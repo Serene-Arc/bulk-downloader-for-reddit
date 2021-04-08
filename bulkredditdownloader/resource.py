@@ -38,7 +38,7 @@ class Resource:
             else:
                 raise requests.exceptions.ConnectionError(f'Response code {response.status_code}')
         except requests.exceptions.ConnectionError as e:
-            logger.log(9, f'Error occured downloading resource, waiting {wait_time} seconds: {e}')
+            logger.warning(f'Error occured downloading from {url}, waiting {wait_time} seconds: {e}')
             time.sleep(wait_time)
             if wait_time < 300:
                 return Resource.retry_download(url, wait_time + 60)
