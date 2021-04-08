@@ -33,7 +33,8 @@ class Resource:
             if response.status_code == 200:
                 return response.content
             elif response.status_code in (301, 401, 403, 404):
-                raise BulkDownloaderException(f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
+                raise BulkDownloaderException(
+                    f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
             else:
                 raise requests.exceptions.ConnectionError(f'Response code {response.status_code}')
         except requests.exceptions.ConnectionError as e:
