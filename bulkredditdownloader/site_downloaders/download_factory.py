@@ -34,7 +34,7 @@ class DownloadFactory:
             return Gfycat
         elif re.match(url_beginning + r'gifdeliverynetwork', url):
             return GifDeliveryNetwork
-        elif re.match(url_beginning + r'imgur.*', url):
+        elif re.match(url_beginning + r'(m\.)?imgur.*', url):
             return Imgur
         elif re.match(url_beginning + r'redgifs.com', url):
             return Redgifs

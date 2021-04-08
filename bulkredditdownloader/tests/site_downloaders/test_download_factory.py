@@ -40,6 +40,7 @@ from bulkredditdownloader.site_downloaders.youtube import Youtube
     ('https://m.youtube.com/watch?v=kr-FeojxzUM', Youtube),
     ('https://i.imgur.com/3SKrQfK.jpg?1', Direct),
     ('https://dynasty-scans.com/system/images_images/000/017/819/original/80215103_p0.png?1612232781', Direct),
+    ('https://m.imgur.com/a/py3RW0j', Imgur),
 ))
 def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     result = DownloadFactory.pull_lever(test_submission_url)

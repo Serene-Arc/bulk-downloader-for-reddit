@@ -12,21 +12,42 @@ from bulkredditdownloader.site_downloaders.imgur import Imgur
 
 @pytest.mark.online
 @pytest.mark.parametrize(('test_url', 'expected_gen_dict', 'expected_image_dict'), (
-    ('https://imgur.com/a/xWZsDDP',
-     {'num_images': '1', 'id': 'xWZsDDP', 'hash': 'xWZsDDP'},
-     [{'hash': 'ypa8YfS', 'title': '', 'ext': '.png', 'animated': False}]),
-    ('https://imgur.com/gallery/IjJJdlC',
-     {'num_images': 1, 'id': 384898055, 'hash': 'IjJJdlC'},
-     [{'hash': 'CbbScDt', 'description': 'watch when he gets it', 'ext': '.gif', 'animated': True, 'has_sound': False}],
-     ),
-    ('https://imgur.com/a/dcc84Gt',
-     {'num_images': '4', 'id': 'dcc84Gt', 'hash': 'dcc84Gt'},
-     [
-         {'hash': 'ylx0Kle', 'ext': '.jpg', 'title': ''},
-         {'hash': 'TdYfKbK', 'ext': '.jpg', 'title': ''},
-         {'hash': 'pCxGbe8', 'ext': '.jpg', 'title': ''},
-         {'hash': 'TSAkikk', 'ext': '.jpg', 'title': ''},
-     ]),
+    (
+        'https://imgur.com/a/xWZsDDP',
+        {'num_images': '1', 'id': 'xWZsDDP', 'hash': 'xWZsDDP'},
+        [
+            {'hash': 'ypa8YfS', 'title': '', 'ext': '.png', 'animated': False}
+        ]
+    ),
+    (
+        'https://imgur.com/gallery/IjJJdlC',
+        {'num_images': 1, 'id': 384898055, 'hash': 'IjJJdlC'},
+        [
+            {'hash': 'CbbScDt',
+             'description': 'watch when he gets it',
+             'ext': '.gif',
+             'animated': True,
+             'has_sound': False
+             }
+        ],
+    ),
+    (
+        'https://imgur.com/a/dcc84Gt',
+        {'num_images': '4', 'id': 'dcc84Gt', 'hash': 'dcc84Gt'},
+        [
+            {'hash': 'ylx0Kle', 'ext': '.jpg', 'title': ''},
+            {'hash': 'TdYfKbK', 'ext': '.jpg', 'title': ''},
+            {'hash': 'pCxGbe8', 'ext': '.jpg', 'title': ''},
+            {'hash': 'TSAkikk', 'ext': '.jpg', 'title': ''},
+        ]
+    ),
+    (
+        'https://m.imgur.com/a/py3RW0j',
+        {'num_images': '1', 'id': 'py3RW0j', 'hash': 'py3RW0j', },
+        [
+            {'hash': 'K24eQmK', 'has_sound': False, 'ext': '.jpg'}
+        ],
+    ),
 ))
 def test_get_data_album(test_url: str, expected_gen_dict: dict, expected_image_dict: list[dict]):
     result = Imgur._get_data(test_url)
