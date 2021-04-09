@@ -4,6 +4,7 @@
 import json
 import logging
 import re
+from typing import Iterator
 
 import dict2xml
 import praw.models
@@ -40,6 +41,14 @@ class Archiver(RedditDownloader):
             else:
                 supplied_submissions.append(self.reddit_instance.submission(url=sub_id))
         return [supplied_submissions]
+
+    def _get_user_data(self) -> list[Iterator]:
+        results = super(Archiver, self)._get_user_data()
+        if self.args.user and self.args.all_comments:
+            sort = self._determine_sort_function()
+            logger.debug(f'Retrieving comments of user {self.args.user}')
+            results.append(sort(self.reddit_instance.redditor(self.args.user).comments, limit=self.args.limit))
+        return results
 
     @staticmethod
     def _pull_lever_entry_factory(praw_item: (praw.models.Submission, praw.models.Comment)) -> BaseArchiveEntry:

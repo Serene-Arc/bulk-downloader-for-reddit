@@ -136,6 +136,8 @@ The following options apply only to the `download` command. This command downloa
 
 The following options are for the `archive` command specifically.
 
+- `--all-comments`
+  - When combined with the `--user` option, this will download all the user's comments
 - `-f, --format`
   - This specifies the format of the data file saved to disk
   - The following formats are available:

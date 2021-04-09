@@ -37,6 +37,7 @@ class Configuration(Namespace):
 
         # Archiver-specific options
         self.format = 'json'
+        self.all_comments = False
 
     def process_click_arguments(self, context: click.Context):
         for arg_key in context.params.keys():

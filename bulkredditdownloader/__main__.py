@@ -70,6 +70,7 @@ def cli_download(context: click.Context, **_):
 
 @cli.command('archive')
 @_add_common_options
+@click.option('--all-comments', is_flag=True, default=None)
 @click.option('-f,', '--format', type=click.Choice(('xml', 'json', 'yaml')), default=None)
 @click.pass_context
 def cli_archive(context: click.Context, **_):

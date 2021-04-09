@@ -204,6 +204,19 @@ def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--user', 'me', '--authenticate', '--all-comments', '-L', '10'],
+))
+def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+
+
+@pytest.mark.online
+@pytest.mark.reddit
 @pytest.mark.slow
 @pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
