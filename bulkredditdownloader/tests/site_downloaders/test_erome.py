@@ -52,6 +52,6 @@ def test_download_resource(test_url: str, expected_hashes: tuple[str]):
     mock_submission.url = test_url
     test_site = Erome(mock_submission)
     resources = test_site.find_resources()
-    [res.download() for res in resources]
+    [res.download(120) for res in resources]
     resource_hashes = [res.hash.hexdigest() for res in resources]
     assert len(resource_hashes) == len(expected_hashes)

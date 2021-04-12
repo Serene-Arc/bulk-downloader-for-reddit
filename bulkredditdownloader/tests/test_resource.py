@@ -28,5 +28,5 @@ def test_resource_get_extension(test_url: str, expected: str):
 ))
 def test_download_online_resource(test_url: str, expected_hash: str):
     test_resource = Resource(MagicMock(), test_url)
-    test_resource.download()
+    test_resource.download(120)
     assert test_resource.hash.hexdigest() == expected_hash

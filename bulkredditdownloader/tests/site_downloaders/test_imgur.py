@@ -129,7 +129,7 @@ def test_find_resources(test_url: str, expected_hashes: list[str]):
     downloader = Imgur(mock_download)
     results = downloader.find_resources()
     assert all([isinstance(res, Resource) for res in results])
-    [res.download() for res in results]
+    [res.download(120) for res in results]
     hashes = set([res.hash.hexdigest() for res in results])
     assert len(results) == len(expected_hashes)
     assert hashes == set(expected_hashes)

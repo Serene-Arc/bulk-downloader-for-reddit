@@ -27,7 +27,8 @@ class Resource:
             self.extension = self._determine_extension()
 
     @staticmethod
-    def retry_download(url: str, wait_time: int) -> Optional[bytes]:
+    def retry_download(url: str, max_wait_time: int) -> Optional[bytes]:
+        wait_time = 60
         try:
             response = requests.get(url)
             if response.status_code == 200:
@@ -40,16 +41,16 @@ class Resource:
         except requests.exceptions.ConnectionError as e:
             logger.warning(f'Error occured downloading from {url}, waiting {wait_time} seconds: {e}')
             time.sleep(wait_time)
-            if wait_time < 300:
-                return Resource.retry_download(url, wait_time + 60)
+            if wait_time < max_wait_time:
+                return Resource.retry_download(url, max_wait_time)
             else:
                 logger.error(f'Max wait time exceeded for resource at url {url}')
                 raise
 
-    def download(self):
+    def download(self, max_wait_time: int):
         if not self.content:
             try:
-                content = self.retry_download(self.url, 0)
+                content = self.retry_download(self.url, max_wait_time)
             except requests.exceptions.ConnectionError as e:
                 raise BulkDownloaderException(f'Could not download resource: {e}')
             except BulkDownloaderException:

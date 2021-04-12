@@ -33,5 +33,5 @@ def test_download_resource(test_url: str, expected_hash: str):
     resources = test_site.find_resources()
     assert len(resources) == 1
     assert isinstance(resources[0], Resource)
-    resources[0].download()
+    resources[0].download(120)
     assert resources[0].hash.hexdigest() == expected_hash

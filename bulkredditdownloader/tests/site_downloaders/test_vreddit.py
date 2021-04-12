@@ -19,5 +19,5 @@ def test_find_resources(test_submission_id: str, expected_hash: str, reddit_inst
     resources = downloader.find_resources()
     assert len(resources) == 1
     assert isinstance(resources[0], Resource)
-    resources[0].download()
+    resources[0].download(120)
     assert resources[0].hash.hexdigest() == expected_hash

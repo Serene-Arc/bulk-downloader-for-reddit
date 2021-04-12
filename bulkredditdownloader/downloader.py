@@ -362,7 +362,7 @@ class RedditDownloader:
                 logger.debug(f'File {destination} already exists, continuing')
             else:
                 try:
-                    res.download()
+                    res.download(self.cfg_parser.getint('DEFAULT', 'max_wait_time', fallback=120))
                 except errors.BulkDownloaderException as e:
                     logger.error(
                         f'Failed to download resource {res.url} with downloader {downloader_class.__name__}: {e}')

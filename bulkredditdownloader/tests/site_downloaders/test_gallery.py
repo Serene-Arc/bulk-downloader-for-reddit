@@ -55,6 +55,6 @@ def test_gallery_download(test_submission_id: str, expected_hashes: set[str], re
     test_submission = reddit_instance.submission(id=test_submission_id)
     gallery = Gallery(test_submission)
     results = gallery.find_resources()
-    [res.download() for res in results]
+    [res.download(120) for res in results]
     hashes = [res.hash.hexdigest() for res in results]
     assert set(hashes) == expected_hashes
