@@ -101,7 +101,8 @@ class RedditDownloader:
                 oauth2_authenticator = OAuth2Authenticator(
                     scopes,
                     self.cfg_parser.get('DEFAULT', 'client_id'),
-                    self.cfg_parser.get('DEFAULT', 'client_secret'))
+                    self.cfg_parser.get('DEFAULT', 'client_secret'),
+                )
                 token = oauth2_authenticator.retrieve_new_token()
                 self.cfg_parser['DEFAULT']['user_token'] = token
                 with open(self.config_location, 'w') as file:
@@ -109,16 +110,20 @@ class RedditDownloader:
             token_manager = OAuth2TokenManager(self.cfg_parser, self.config_location)
 
             self.authenticated = True
-            self.reddit_instance = praw.Reddit(client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
-                                               client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
-                                               user_agent=socket.gethostname(),
-                                               token_manager=token_manager)
+            self.reddit_instance = praw.Reddit(
+                client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
+                client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
+                user_agent=socket.gethostname(),
+                token_manager=token_manager,
+            )
         else:
             logger.debug('Using unauthenticated Reddit instance')
             self.authenticated = False
-            self.reddit_instance = praw.Reddit(client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
-                                               client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
-                                               user_agent=socket.gethostname())
+            self.reddit_instance = praw.Reddit(
+                client_id=self.cfg_parser.get('DEFAULT', 'client_id'),
+                client_secret=self.cfg_parser.get('DEFAULT', 'client_secret'),
+                user_agent=socket.gethostname(),
+            )
 
     def _retrieve_reddit_lists(self) -> list[praw.models.ListingGenerator]:
         master_list = []
@@ -146,11 +151,12 @@ class RedditDownloader:
                 self.cfg_parser.read(cfg_path)
                 self.config_location = cfg_path
                 return
-        possible_paths = [Path('./config.cfg'),
-                          Path('./default_config.cfg'),
-                          Path(self.config_directory, 'config.cfg'),
-                          Path(self.config_directory, 'default_config.cfg'),
-                          ]
+        possible_paths = [
+            Path('./config.cfg'),
+            Path('./default_config.cfg'),
+            Path(self.config_directory, 'config.cfg'),
+            Path(self.config_directory, 'default_config.cfg'),
+        ]
         self.config_location = None
         for path in possible_paths:
             if path.resolve().expanduser().exists():
@@ -210,7 +216,8 @@ class RedditDownloader:
                             reddit.search(
                                 self.args.search,
                                 sort=self.sort_filter.name.lower(),
-                                limit=self.args.limit))
+                                limit=self.args.limit,
+                            ))
                         logger.debug(
                             f'Added submissions from subreddit {reddit} with the search term "{self.args.search}"')
                     else:
@@ -280,7 +287,9 @@ class RedditDownloader:
                     logger.debug(f'Retrieving submitted posts of user {self.args.user}')
                     generators.append(
                         sort_function(
-                            self.reddit_instance.redditor(self.args.user).submissions, limit=self.args.limit))
+                            self.reddit_instance.redditor(self.args.user).submissions,
+                            limit=self.args.limit,
+                        ))
                 if not self.authenticated and any((self.args.upvoted, self.args.saved)):
                     logger.warning('Accessing user lists requires authentication')
                 else:
