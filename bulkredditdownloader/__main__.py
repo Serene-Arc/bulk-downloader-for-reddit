@@ -48,6 +48,7 @@ def cli():
 @click.option('--file-scheme', default=None, type=str)
 @click.option('--folder-scheme', default=None, type=str)
 @click.option('--make-hard-links', is_flag=True, default=None)
+@click.option('--max-wait-time', type=int, default=None)
 @click.option('--no-dupes', is_flag=True, default=None)
 @click.option('--search-existing', is_flag=True, default=None)
 @click.option('--skip', default=None, multiple=True)

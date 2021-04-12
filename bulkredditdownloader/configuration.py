@@ -17,6 +17,7 @@ class Configuration(Namespace):
         self.exclude_id_file = []
         self.limit: Optional[int] = None
         self.link: list[str] = []
+        self.max_wait_time = None
         self.multireddit: list[str] = []
         self.no_dupes: bool = False
         self.saved: bool = False

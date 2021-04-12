@@ -70,6 +70,8 @@ class RedditDownloader:
         self._load_config()
         self._create_file_logger()
 
+        self._read_config()
+
         self.download_filter = self._create_download_filter()
         logger.log(9, 'Created download filter')
         self.time_filter = self._create_time_filter()
@@ -90,6 +92,18 @@ class RedditDownloader:
             self.master_hash_list = {}
         self.authenticator = self._create_authenticator()
         logger.log(9, 'Created site authenticator')
+
+    def _read_config(self):
+        """Read any cfg values that need to be processed"""
+        if self.args.max_wait_time is None:
+            if not self.cfg_parser.has_option('DEFAULT', 'max_wait_time'):
+                self.cfg_parser.set('DEFAULT', 'max_wait_time', '120')
+                logger.log(9, 'Wrote default download wait time download to config file')
+            self.args.max_wait_time = self.cfg_parser.getint('DEFAULT', 'max_wait_time')
+            logger.debug(f'Setting maximum download wait time to {self.args.max_wait_time} seconds')
+        # Update config on disk
+        with open(self.config_location, 'w') as file:
+            self.cfg_parser.write(file)
 
     def _create_reddit_instance(self):
         if self.args.authenticate:
@@ -371,7 +385,7 @@ class RedditDownloader:
                 logger.debug(f'File {destination} already exists, continuing')
             else:
                 try:
-                    res.download(self.cfg_parser.getint('DEFAULT', 'max_wait_time', fallback=120))
+                    res.download(self.args.max_wait_time)
                 except errors.BulkDownloaderException as e:
                     logger.error(
                         f'Failed to download resource {res.url} with downloader {downloader_class.__name__}: {e}')
