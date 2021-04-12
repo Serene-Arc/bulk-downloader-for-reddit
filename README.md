@@ -4,10 +4,10 @@ This is a tool to download submissions or submission data from Reddit. It can be
 
 Some quick reference commands are:
 
-  - `python3 -m bulkredditdownloader download --subreddit Python -L 10`
-  - `python3 -m bulkredditdownloader download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'`
-  - `python3 -m bulkredditdownloader download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links`
-  - `python3 -m bulkredditdownloader archive --subreddit all --format yaml -L 500 --folder-scheme ''`
+  - `python3 -m bdfr download --subreddit Python -L 10`
+  - `python3 -m bdfr download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'`
+  - `python3 -m bdfr download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links`
+  - `python3 -m bdfr archive --subreddit all --format yaml -L 500 --folder-scheme ''`
 
 ## Usage
 
@@ -189,14 +189,14 @@ It is highly recommended that the file name scheme contain the parameter `{POSTI
 ## Configuration
 
 The configuration files are, by default, stored in the configuration directory for the user. This differs depending on the OS that the BDFR is being run on. For Windows, this will be:
-  - `C:\Documents and Settings\<User>\Application Data\Local Settings\BDFR\bulkredditdownloader` or
-  - `C:\Documents and Settings\<User>\Application Data\BDFR\bulkredditdownloader`
+  - `C:\Documents and Settings\<User>\Application Data\Local Settings\BDFR\bdfr` or
+  - `C:\Documents and Settings\<User>\Application Data\BDFR\bdfr`
 
 On Mac OSX, this will be:
-  - `~/Library/Application Support/bulkredditdownloader`. 
+  - `~/Library/Application Support/bdfr`. 
     
 Lastly, on a Linux system, this will be:
-  - `~/.local/share/bulkredditdownloader`
+  - `~/.local/share/bdfr`
 
 The logging output for each run of the BDFR will be saved to this directory in the file `log_output.txt`. If you need to submit a bug, it is this file that you will need to submit with the report.
 
