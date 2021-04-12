@@ -31,7 +31,7 @@ class Resource:
         wait_time = 60
         try:
             response = requests.get(url)
-            if response.status_code == 200:
+            if re.match(r'^2\d{2}', str(response.status_code)) and response.content:
                 return response.content
             elif response.status_code in (408, 429):
                 raise requests.exceptions.ConnectionError(f'Response code {response.status_code}')
