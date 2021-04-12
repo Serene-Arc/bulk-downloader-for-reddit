@@ -134,7 +134,8 @@ def test_format_full_with_index_suffix(
         format_string_file: str,
         index: Optional[int],
         expected: str,
-        reddit_submission: praw.models.Submission):
+        reddit_submission: praw.models.Submission,
+):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory)
     result = test_formatter.format_path(test_resource, Path('test'), index)
