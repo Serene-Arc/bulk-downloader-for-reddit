@@ -112,6 +112,10 @@ The following options apply only to the `download` command. This command downloa
 - `--make-hard-links`
   - This flag will create hard links to an existing file when a duplicate is downloaded
   - This will make the file appear in multiple directories while only taking the space of a single instance
+- `--max-wait-time`
+  - This option specifies the maximum wait time for downloading a resource
+  - The default is 120 seconds
+  - See [Rate Limiting](#rate-limiting) for details
 - `--no-dupes`
   - This flag will not redownload files if they already exist somewhere in the root folder tree
   - This is calculated by MD5 hash
@@ -201,6 +205,7 @@ The logging output for each run of the BDFR will be saved to this directory in t
 The `config.cfg` is the file that supplies the BDFR with the configuration to use. At the moment, the following keys **must** be included in the configuration file supplied.
 
   - `backup_log_count`
+  - `max_wait_time`
   - `client_id`
   - `client_secret`
   - `scopes`
@@ -208,6 +213,14 @@ The `config.cfg` is the file that supplies the BDFR with the configuration to us
 All of these should not be modified unless you know what you're doing, as the default values will enable the BDFR to function just fine. A configuration is included in the BDFR when it is installed, and this will be placed in the configuration directory as the default.
 
 Most of these values have to do with OAuth2 configuration and authorisation. The key `backup_log_count` however has to do with the log rollover. The logs in the configuration directory can be verbose and for long runs of the BDFR, can grow quite large. To combat this, the BDFR will overwrite previous logs. This value determines how many previous run logs will be kept. The default is 3, which means that the BDFR will keep at most three past logs plus the current one. Any runs past this will overwrite the oldest log file, called "rolling over". If you want more records of past runs, increase this number.
+
+#### Rate Limiting
+
+The option `max_wait_time` has to do with retrying downloads. There are certain HTTP errors that mean that no amount of requests will return the wanted data, but some errors are from rate-limiting. This is when a single client is making so many requests that the remote website cuts the client off to preserve the function of the site. This is a common situation when downloading many resources from the same site. It is polite and best practice to obey the website's wishes in these cases.
+
+To this end, the BDFR will sleep for a time before retrying the download, giving the remote server time to "rest". This is done in 60 second increments. For example, if a rate-limiting-related error is given, the BDFR will sleep for 60 seconds before retrying. Then, if the same type of error occurs, it will sleep for another 120 seconds, then 180 seconds, and so on.
+
+The option `--max-wait-time` and the configuration option `max_wait_time` both specify the maximum time the BDFR will wait. If both are present, the command-line option takes precedence. For instance, the default is 120, so the BDFR will wait for 60 seconds, then 120 seconds, and then move one. **Note that this results in a total time of 180 seconds trying the same download**. If you wish to try to bypass the rate-limiting system on the remote site, increasing the maximum wait time may help. However, note that the actual wait times increase exponentially if the resource is not downloaded i.e. specifying a max value of 300 (5 minutes), can make the BDFR pause for 15 minutes on one submission, not 5, in the worst case.
 
 ## Contributing
 
