@@ -297,12 +297,23 @@ def test_multilevel_folder_scheme(
     assert len(result.parents) == (len(expected.split('/')) + 1)
 
 
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.parametrize(('test_submission_id', 'test_file_scheme', 'expected'), (
-    ('mecwk7', '{TITLE}', 'My cat’s paws are so cute'),  # Unicode escape in title
+@pytest.mark.parametrize(('test_name_string', 'expected'), (
+    ('test', 'test'),
+    ('😍', '😍'),
+    ('test😍', 'test😍'),
+    ('test😍 ’', 'test😍 ’'),
+    ('test😍 \\u2019', 'test😍 ’'),
 ))
-def test_edge_case_names(test_submission_id: str, test_file_scheme: str, expected: str, reddit_instance: praw.Reddit):
-    test_submission = reddit_instance.submission(id=test_submission_id)
-    result = FileNameFormatter._format_name(test_submission, test_file_scheme)
+def test_preserve_emojis(test_name_string: str, expected: str, submission: MagicMock):
+    submission.title = test_name_string
+    result = FileNameFormatter._format_name(submission, '{TITLE}')
+    assert result == expected
+
+
+@pytest.mark.parametrize(('test_string', 'expected'), (
+    ('test \\u2019', 'test ’'),
+    ('My cat\\u2019s paws are so cute', 'My cat’s paws are so cute'),
+))
+def test_convert_unicode_escapes(test_string: str, expected: str):
+    result = FileNameFormatter._convert_unicode_escapes(test_string)
     assert result == expected

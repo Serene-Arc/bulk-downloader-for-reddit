@@ -44,7 +44,7 @@ class FileNameFormatter:
         for key in attributes.keys():
             if re.search(fr'(?i).*{{{key}}}.*', result):
                 key_value = str(attributes.get(key, 'unknown'))
-                key_value = bytes(key_value, 'utf-8').decode('unicode-escape')
+                key_value = FileNameFormatter._convert_unicode_escapes(key_value)
                 result = re.sub(fr'(?i){{{key}}}', key_value, result,)
                 logger.log(9, f'Found key string {key} in name')
 
@@ -54,6 +54,16 @@ class FileNameFormatter:
             result = FileNameFormatter._format_for_windows(result)
 
         return result
+
+    @staticmethod
+    def _convert_unicode_escapes(in_string: str) -> str:
+        pattern = re.compile(r'(\\u\d{4})')
+        matches = re.search(pattern, in_string)
+        if matches:
+            for match in matches.groups():
+                converted_match = bytes(match, 'utf-8').decode('unicode-escape')
+                in_string = in_string.replace(match, converted_match)
+        return in_string
 
     @staticmethod
     def _generate_name_dict_from_submission(submission: Submission) -> dict:
