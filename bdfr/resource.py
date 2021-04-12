@@ -33,22 +33,11 @@ class Resource:
             response = requests.get(url)
             if response.status_code == 200:
                 return response.content
-            elif response.status_code in (
-                301,
-                400,
-                401,
-                403,
-                404,
-                407,
-                410,
-                500,
-                501,
-                502,
-            ):
+            elif response.status_code in (408, 429):
+                raise requests.exceptions.ConnectionError(f'Response code {response.status_code}')
+            else:
                 raise BulkDownloaderException(
                     f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
-            else:
-                raise requests.exceptions.ConnectionError(f'Response code {response.status_code}')
         except requests.exceptions.ConnectionError as e:
             logger.warning(f'Error occured downloading from {url}, waiting {wait_time} seconds: {e}')
             time.sleep(wait_time)
