@@ -15,6 +15,8 @@ from bdfr.resource import Resource
     ('https://www.resource.com/test/example.jpg', '.jpg'),
     ('hard.png.mp4', '.mp4'),
     ('https://preview.redd.it/7zkmr1wqqih61.png?width=237&format=png&auto=webp&s=19de214e634cbcad99', '.png'),
+    ('test.jpg#test','.jpg'),
+    ('test.jpg?width=247#test','.jpg'),
 ))
 def test_resource_get_extension(test_url: str, expected: str):
     test_resource = Resource(MagicMock(), test_url)
