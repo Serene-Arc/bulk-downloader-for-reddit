@@ -46,7 +46,6 @@ class FileNameFormatter:
                 key_value = str(attributes.get(key, 'unknown'))
                 key_value = FileNameFormatter._convert_unicode_escapes(key_value)
                 result = re.sub(fr'(?i){{{key}}}', key_value, result,)
-                logger.log(9, f'Found key string {key} in name')
 
         result = result.replace('/', '')
 
