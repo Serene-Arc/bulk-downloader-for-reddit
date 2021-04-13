@@ -63,7 +63,7 @@ class Resource:
     def create_hash(self):
         self.hash = hashlib.md5(self.content)
 
-    def _determine_extension(self) -> str:
+    def _determine_extension(self) -> Optional[str]:
         extension_pattern = re.compile(r'.*(\..{3,5})(?:\?.*)?$')
         match = re.search(extension_pattern, self.url)
         if match:
