@@ -303,6 +303,7 @@ def test_multilevel_folder_scheme(
     ('test😍', 'test😍'),
     ('test😍 ’', 'test😍 ’'),
     ('test😍 \\u2019', 'test😍 ’'),
+    ('Using that real good [1\\4]', 'Using that real good [1\\4]'),
 ))
 def test_preserve_emojis(test_name_string: str, expected: str, submission: MagicMock):
     submission.title = test_name_string

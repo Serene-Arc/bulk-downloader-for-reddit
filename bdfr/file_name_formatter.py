@@ -45,7 +45,8 @@ class FileNameFormatter:
             if re.search(fr'(?i).*{{{key}}}.*', result):
                 key_value = str(attributes.get(key, 'unknown'))
                 key_value = FileNameFormatter._convert_unicode_escapes(key_value)
-                result = re.sub(fr'(?i){{{key}}}', key_value, result,)
+                key_value = key_value.replace('\\', '\\\\')
+                result = re.sub(fr'(?i){{{key}}}', key_value, result)
 
         result = result.replace('/', '')
 
