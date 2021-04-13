@@ -132,11 +132,19 @@ class FileNameFormatter:
     ) -> list[tuple[Path, Resource]]:
         out = []
         if len(resources) == 1:
-            out.append((self.format_path(resources[0], destination_directory, None), resources[0]))
+            try:
+                out.append((self.format_path(resources[0], destination_directory, None), resources[0]))
+            except BulkDownloaderException as e:
+                logger.error(f'Could not generate file path for resource {resources[0].url}: {e}')
+                logger.exception('Could not generate file path')
         else:
             for i, res in enumerate(resources, start=1):
                 logger.log(9, f'Formatting filename with index {i}')
-                out.append((self.format_path(res, destination_directory, i), res))
+                try:
+                    out.append((self.format_path(res, destination_directory, i), res))
+                except BulkDownloaderException as e:
+                    logger.error(f'Could not generate file path for resource {res.url}: {e}')
+                    logger.exception('Could not generate file path')
         return out
 
     @staticmethod
