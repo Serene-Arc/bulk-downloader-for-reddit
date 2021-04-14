@@ -1,13 +1,17 @@
-# Bulk Downloader for Reddit v2-beta
+# Bulk Downloader for Reddit v2 [BETA]
 
 This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface.
 
 Some quick reference commands are:
 
-  - `python3 -m bdfr download --subreddit Python -L 10`
-  - `python3 -m bdfr download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'`
-  - `python3 -m bdfr download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links`
-  - `python3 -m bdfr archive --subreddit all --format yaml -L 500 --folder-scheme ''`
+```bash
+python3 -m bdfr download --subreddit Python -L 10
+python3 -m bdfr download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'
+python3 -m bdfr download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links
+python3 -m bdfr archive --subreddit all --format yaml -L 500 --folder-scheme ''
+```
+
+If you wish to open an issue, please read [the guide on opening issues](docs/CONTRIBUTING.md#opening-an-issue) to ensure that your issue is clear and contains everything it needs to for the developers to investigate.
 
 ## Usage
 
@@ -26,7 +30,7 @@ Many websites and links are supported for the downloader:
   - Reddit Text Posts
   - Reddit Videos
   - Redgifs
-  - Youtube
+  - YouTube
 
 ### Options
 
@@ -36,7 +40,7 @@ The following options are common between both the `archive` and `download` comma
   - This is the directory to which the BDFR will download and place all files
 - `--authenticate`
   - This flag will make the BDFR attempt to use an authenticated Reddit session
-  - See [Authentication](#authentication) for more details
+  - See [Authentication](#authentication-and-security) for more details
 - `--config`
   - If the path to a configuration file is supplied with this option, the BDFR will use the specified config
   - See [Configuration Files](#configuration) for more details
@@ -149,7 +153,7 @@ The following options are for the `archive` command specifically.
     - `xml`
     - `yaml`
 
-## Authentication and Secuirity
+## Authentication and Security
 
 The BDFR uses OAuth2 authentication to connect to Reddit if authentication is required. This means that it is a secure, token-based system for making requests. This also means that the BDFR only has access to specific parts of the account authenticated, by default only saved posts, upvoted posts, and the identity of the authenticated account. Note that authentication is not required unless accessing private things like upvoted posts, saved posts, and private multireddits.
 
