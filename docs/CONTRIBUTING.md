@@ -2,20 +2,28 @@
 
 When making a contribution to the BDFR project, please open an issue beforehand so that the maintainers can weigh in on it. This helps create a trail on GitHub and keeps things organised.
 
-If you have a question, **please don't open an issue on GitHub**. There is a subreddit specifically for the BDFR where questions can be asked. If you believe that something is a bug, or that a feature should be added, then by all means open an issue.
+If you have a question, **please don't open an issue on GitHub**. There is a discussion tab on the repository's GitHub where you can interact with the developers and ask questions. If you believe that something is a bug, or that a feature should be added, then by all means open an issue.
 
 All communication on GitHub, Discord, email, or any other medium must conform to the [Code of Conduct](CODE_OF_CONDUCT.md). It's not that hard to stay respectful.
 
+## Opening an Issue
+
+When opening an issue about a bug, **please provide the full log file for the run in which the bug occurred**. This log file is named `log_output.txt` in the configuration folder. Check the [README](../README.md) for information on where this is. This log file will contain all the information required for the developers to recreate the bug. 
+
+If you do not have or cannot find the log file, then at minimum please provide the **Reddit ID for the submission** or comment which caused the issue. Also copy in the command that you used to run the BDFR from the command line, as that will also provide helpful information when trying to find and fix the bug. If needed, more information will be asked in the thread of the bug. 
+
+In the case of requesting a feature or an enhancement, there are fewer requirements. However, please be clear in what you would like the BDFR to do and also how the feature/enhancement would be used or would be useful to more people. Be aware that proposed enhancements may be rejected for multiple reasons, or no reason, at the discretion of the developers. 
+
 ## Pull Requests
 
-Before creating a pull request (PR), check out [ARCHITECTURE](ARCHITECTURE.md) for a short introduction to the way that the BDFR is coded and how the code is organised. Also read the [Style Guide](#style-guide) below before actually writing any code.
+Before creating a pull request (PR), check out [ARCHITECTURE](ARCHITECTURE.md) for a short introduction to the way that the BDFR is coded and how the code is organised. Also read the [Style Guide](#style-guide) section below before actually writing any code.
 
 Once you have done both of these, the below list shows the path that should be followed when writing a PR.
   
   1. If an issue does not already exist, open one that will relate to the PR.
   2. Ensure that any changes fit into the architecture specified above.
   3. Ensure that you have written tests that cover the new code.
-  4. Ensure that no existing tests fail, unless there is a good reason for them to do so. If there is, note why in the PR.
+  4. Ensure that no existing tests fail, unless there is a good reason for them to do so. If there is, note which tests fail and why this is expected and okay in the PR.
   5. If needed, update any documentation with changes.
   6. Open a pull request that references the relevant issue.
   7. Expect changes or suggestions and heed the Code of Conduct. We're all volunteers here.
@@ -44,12 +52,15 @@ Note that the last bracket is on its own line, and that the first bracket has a 
 
 ### Running Tests
 
-There are a lot of tests in the BDFR. When submitting a PR, it is required that you run **all** possible tests to ensure that any new commits haven't broken anything. Otherwise, while writing the development, it can be helpful (and much quicker) to run only a subset of the tests.
+There are a lot of tests in the BDFR. In fact, there are more tests than lines of functional code. This is one of the strengths of the BDFR in that it is fully tested. The codebase uses the package pytest to create the tests, which is a third-party package that provides many functions and objects useful for testing Python code.
+
+When submitting a PR, it is required that you run **all** possible tests to ensure that any new commits haven't broken anything. Otherwise, while writing the request, it can be helpful (and much quicker) to run only a subset of the tests.
 
 This is accomplished with marks, a system that pytest uses to categorise tests. There are currently the current marks in use in the BDFR test suite.
 
 - `slow`
   - This marks a test that may take a long time to complete
+  - Usually marks a test that downloads many submissions or downloads a particularly large resource
 - `online`
   - This marks a test that requires an internet connection and uses online resources
 - `reddit`
@@ -67,9 +78,12 @@ To exclude one or more marks, the following command can be used, substituting th
 
 ```bash
 pytest -m "not online"
+pytest -m "not reddit and not authenticated"
 ```
 
-Many IDEs also provide integrated methods to run and display the results from tests, and almost all of them support pytest in some capacity. This would be the recommended method due to the additional debugging and general capabilities.
+For more details, review the pytest documentation that is freely available online.
+
+Many IDEs also provide integrated functionality to run and display the results from tests, and almost all of them support pytest in some capacity. This would be the recommended method due to the additional debugging and general capabilities.
 
 ### Writing Tests
 
