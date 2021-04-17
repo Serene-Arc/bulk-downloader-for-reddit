@@ -11,7 +11,7 @@ from bdfr.site_downloaders.vreddit import VReddit
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.parametrize(('test_submission_id', 'expected_hash'), (
-    ('lu8l8g', '93a15642d2f364ae39f00c6d1be354ff'),
+    ('lu8l8g', 'c5f8c0ba2ff6e37a14e267a787696cc6'),
 ))
 def test_find_resources(test_submission_id: str, expected_hash: str, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)
