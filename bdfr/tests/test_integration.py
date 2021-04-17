@@ -9,10 +9,11 @@ from click.testing import CliRunner
 
 from bdfr.__main__ import cli
 
+does_test_config_exist = Path('test_config.cfg').exists()
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-s', 'Mindustry', '-L', 1],
     ['-s', 'r/Mindustry', '-L', 1],
@@ -42,7 +43,7 @@ def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-l', 'm2601g'],
     ['-l', 'https://www.reddit.com/r/TrollXChromosomes/comments/m2601g/its_a_step_in_the_right_direction/'],
@@ -59,7 +60,7 @@ def test_cli_download_links(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10],
     ['--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10, '--sort', 'rising'],
@@ -76,7 +77,7 @@ def test_cli_download_multireddit(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'helen_darten', '-m', 'xxyyzzqwerty', '-L', 10],
 ))
@@ -92,7 +93,7 @@ def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Pa
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.authenticated
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'me', '--upvoted', '--authenticate', '-L', 10],
     ['--user', 'me', '--saved', '--authenticate', '-L', 10],
@@ -113,7 +114,7 @@ def test_cli_download_user_data_good(test_args: list[str], tmp_path: Path):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.authenticated
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'me', '-L', 10, '--folder-scheme', ''],
 ))
@@ -127,7 +128,7 @@ def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'python', '-L', 10, '--search-existing'],
 ))
@@ -142,7 +143,7 @@ def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'tumblr', '-L', '25', '--skip', 'png', '--skip', 'jpg'],
 ))
@@ -157,7 +158,7 @@ def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.slow
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'all', '-L', '100', '--sort', 'new'],
 ))
@@ -170,7 +171,7 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-l', 'gstd4hk'],
     ['-l', 'm2601g'],
@@ -185,7 +186,7 @@ def test_cli_archive_single(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'Mindustry', '-L', 25],
     ['--subreddit', 'Mindustry', '-L', 25, '--format', 'xml'],
@@ -204,7 +205,7 @@ def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'me', '--authenticate', '--all-comments', '-L', '10'],
 ))
@@ -218,7 +219,7 @@ def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.slow
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'all', '-L', 100],
     ['--subreddit', 'all', '-L', 100, '--sort', 'new'],
@@ -234,7 +235,7 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.slow
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'sdclhgsolgjeroij', '--submitted', '-L', 10],
     ['--user', 'me', '--upvoted', '-L', 10],
@@ -250,7 +251,7 @@ def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.slow
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--time', 'random'],
     ['--sort', 'random'],
@@ -271,7 +272,7 @@ def test_cli_download_use_default_config(tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-l', 'm2601g', '--exclude-id', 'm2601g'],
 ))
@@ -286,7 +287,7 @@ def test_cli_download_links_exclusion(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-l', 'm2601g', '--skip-subreddit', 'trollxchromosomes'],
     ['-s', 'trollxchromosomes', '--skip-subreddit', 'trollxchromosomes', '-L', '3'],
@@ -302,7 +303,7 @@ def test_cli_download_subreddit_exclusion(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(Path('test_config.cfg') is False, reason='A test config file is required for integration tests')
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--file-scheme', '{TITLE}'],
     ['--file-scheme', '{TITLE}_test_{SUBREDDIT}'],
