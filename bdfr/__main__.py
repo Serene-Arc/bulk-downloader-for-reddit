@@ -53,6 +53,7 @@ def cli():
 @click.option('--search-existing', is_flag=True, default=None)
 @click.option('--skip', default=None, multiple=True)
 @click.option('--skip-domain', default=None, multiple=True)
+@click.option('--skip-subreddit', default=None, multiple=True)
 @_add_common_options
 @click.pass_context
 def cli_download(context: click.Context, **_):

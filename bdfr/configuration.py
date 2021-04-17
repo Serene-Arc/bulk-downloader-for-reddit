@@ -27,6 +27,7 @@ class Configuration(Namespace):
         self.folder_scheme: str = '{SUBREDDIT}'
         self.skip: list[str] = []
         self.skip_domain: list[str] = []
+        self.skip_subreddit: list[str] = []
         self.sort: str = 'hot'
         self.submitted: bool = False
         self.subreddit: list[str] = []

@@ -139,6 +139,10 @@ The following options apply only to the `download` command. This command downloa
 - `--skip`
   - This adds file types to the download filter i.e. submissions with one of the supplied file extensions will not be downloaded
   - Can be specified multiple times
+- `--skip-subreddit`
+  - This skips all submissions from the specified subreddit
+  - Can be specified multiple times
+  - Also accepts CSV subreddit names
 
 #### Archiver Options
 
