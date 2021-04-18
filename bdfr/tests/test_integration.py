@@ -101,7 +101,6 @@ def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Pa
     ['--user', 'djnish', '--submitted', '-L', 10],
     ['--user', 'djnish', '--submitted', '-L', 10, '--time', 'month'],
     ['--user', 'djnish', '--submitted', '-L', 10, '--sort', 'controversial'],
-    ['--user', 'djnish', '--submitted', '-L', 10, '--sort', 'controversial', '--time', 'month'],
 ))
 def test_cli_download_user_data_good(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

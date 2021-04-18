@@ -6,6 +6,7 @@ import logging
 import re
 import time
 from typing import Optional
+import urllib.parse
 
 import _hashlib
 import requests
@@ -64,7 +65,8 @@ class Resource:
         self.hash = hashlib.md5(self.content)
 
     def _determine_extension(self) -> Optional[str]:
-        extension_pattern = re.compile(r'.*(\..{3,5})(?:\?.*)?(?:#.*)?$')
-        match = re.search(extension_pattern, self.url)
+        extension_pattern = re.compile(r'.*(\..{3,5})$')
+        stripped_url = urllib.parse.urlsplit(self.url).path
+        match = re.search(extension_pattern, stripped_url)
         if match:
             return match.group(1)

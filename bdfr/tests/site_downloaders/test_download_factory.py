@@ -58,3 +58,14 @@ def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownlo
 def test_factory_lever_bad(test_url: str):
     with pytest.raises(NotADownloadableLinkError):
         DownloadFactory.pull_lever(test_url)
+
+
+@pytest.mark.parametrize(('test_url', 'expected'), (
+    ('www.test.com/test.png', 'test.com/test.png'),
+    ('www.test.com/test.png?test_value=random', 'test.com/test.png'),
+    ('https://youtube.com/watch?v=Gv8Wz74FjVA', 'youtube.com/watch'),
+    ('https://i.imgur.com/BuzvZwb.gifv', 'i.imgur.com/BuzvZwb.gifv'),
+))
+def test_sanitise_urll(test_url: str, expected: str):
+    result = DownloadFactory._sanitise_url(test_url)
+    assert result == expected

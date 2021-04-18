@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import re
+import urllib.parse
 from typing import Type
 
 from bdfr.exceptions import NotADownloadableLinkError
@@ -21,30 +22,38 @@ from bdfr.site_downloaders.youtube import Youtube
 class DownloadFactory:
     @staticmethod
     def pull_lever(url: str) -> Type[BaseDownloader]:
-        url_beginning = r'\s*(https?://(www\.)?)'
-        if re.match(url_beginning + r'(i\.)?imgur.*\.gifv$', url):
+        sanitised_url = DownloadFactory._sanitise_url(url)
+        if re.match(r'(i\.)?imgur.*\.gifv$', sanitised_url):
             return Imgur
-        elif re.match(url_beginning + r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', url):
+        elif re.match(r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', sanitised_url):
             return Direct
-        elif re.match(url_beginning + r'erome\.com.*', url):
+        elif re.match(r'erome\.com.*', sanitised_url):
             return Erome
-        elif re.match(url_beginning + r'reddit\.com/gallery/.*', url):
+        elif re.match(r'reddit\.com/gallery/.*', sanitised_url):
             return Gallery
-        elif re.match(url_beginning + r'gfycat\.', url):
+        elif re.match(r'gfycat\.', sanitised_url):
             return Gfycat
-        elif re.match(url_beginning + r'gifdeliverynetwork', url):
+        elif re.match(r'gifdeliverynetwork', sanitised_url):
             return GifDeliveryNetwork
-        elif re.match(url_beginning + r'(m\.)?imgur.*', url):
+        elif re.match(r'(m\.)?imgur.*', sanitised_url):
             return Imgur
-        elif re.match(url_beginning + r'redgifs.com', url):
+        elif re.match(r'redgifs.com', sanitised_url):
             return Redgifs
-        elif re.match(url_beginning + r'reddit\.com/r/', url):
+        elif re.match(r'reddit\.com/r/', sanitised_url):
             return SelfPost
-        elif re.match(url_beginning + r'v\.redd\.it', url):
+        elif re.match(r'v\.redd\.it', sanitised_url):
             return VReddit
-        elif re.match(url_beginning + r'(m\.)?youtu\.?be', url):
+        elif re.match(r'(m\.)?youtu\.?be', sanitised_url):
             return Youtube
-        elif re.match(url_beginning + r'i\.redd\.it.*', url):
+        elif re.match(r'i\.redd\.it.*', sanitised_url):
             return Direct
         else:
             raise NotADownloadableLinkError(f'No downloader module exists for url {url}')
+
+    @staticmethod
+    def _sanitise_url(url: str) -> str:
+        beginning_regex = re.compile(r'\s*(www\.?)?')
+        split_url = urllib.parse.urlsplit(url)
+        split_url = split_url.netloc + split_url.path
+        split_url = re.sub(beginning_regex, '', split_url)
+        return split_url
