@@ -269,32 +269,25 @@ def printLogo():
     )
 
 def main():
-    
-    sys.argv = sys.argv + GLOBAL.config["options"].split()
-    arguments = Arguments.parse()
-    GLOBAL.arguments = arguments
 
-    if arguments.config:
-        if arguments.use_local_config:
-            sys.exit()
-        if Path(arguments.config).exists():
-            GLOBAL.configDirectory = Path(arguments.config)
-        else:
-            VanillaPrint("custom config",arguments.config,"not found. Exiting.")
-            sys.exit()
+    if not Path(GLOBAL.defaultConfigDirectory).is_dir():
+        os.makedirs(GLOBAL.defaultConfigDirectory)
+
+    if Path("config.json").exists():
+        GLOBAL.configDirectory = Path("config.json")
     else:
-        if Path("config.json").exists():
-            GLOBAL.configDirectory = Path("config.json")
-        else:
-            if not Path(GLOBAL.defaultConfigDirectory).is_dir():
-                os.makedirs(GLOBAL.defaultConfigDirectory)
-            GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory / "config.json"
+        GLOBAL.configDirectory = GLOBAL.defaultConfigDirectory  / "config.json"
     try:
         GLOBAL.config = Config(GLOBAL.configDirectory).generate()
     except InvalidJSONFile as exception:
         VanillaPrint(str(exception.__class__.__name__), ">>", str(exception))
         VanillaPrint("Resolve it or remove it to proceed")
         sys.exit()
+
+    sys.argv = sys.argv + GLOBAL.config["options"].split()
+
+    arguments = Arguments.parse()
+    GLOBAL.arguments = arguments
 
     if arguments.set_filename:
         Config(GLOBAL.configDirectory).setCustomFileName()
@@ -382,5 +375,5 @@ if __name__ == "__main__":
                       exc_info=full_exc_info(sys.exc_info()))
         print(GLOBAL.log_stream.getvalue())
 
-    if not GLOBAL.arguments.quit:
-        input("\nPress enter to quit\n")
+    if not GLOBAL.arguments.quit: input("\nPress enter to quit\n")
+              

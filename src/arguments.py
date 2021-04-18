@@ -170,12 +170,6 @@ class Arguments:
             type=int,
             help="Amount, in seconds, to delay before beginning the next item in the download queue")
         
-        parser.add_argument(
-            "--config","-c",
-            help="Specify exact config.json file to use. " \
-            "Disables reading from 'Bulk downloader for " \
-            "reddit/config.json' and --use-local-config " \
-            "option.")
 
         if arguments == []:
             return parser.parse_args()

@@ -186,15 +186,6 @@ Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
   
 ## **`--downloaded-delay`**
 When specified, it delays every download for given seconds.
-  
-
-## **`--config`**
-Specify a `config.json` file to use. This will disable reading from the default `Bulk downloader for reddit/config.json` file, as well as `--use-local-config` option.
-
-Example usage: **`--config /etc/bdfr/config.json`**
-Example usage: **`-c ~/config.json`**
-Example usage: **`--config c:\Users\Me\Downloads\config.json`**
-Example usage: **`-c c:\config.json`**
 
 ## ❔ FAQ
 
