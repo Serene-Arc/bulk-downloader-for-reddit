@@ -2,17 +2,21 @@
 
 When making a contribution to the BDFR project, please open an issue beforehand so that the maintainers can weigh in on it. This helps create a trail on GitHub and keeps things organised.
 
-If you have a question, **please don't open an issue on GitHub**. There is a discussion tab on the repository's GitHub where you can interact with the developers and ask questions. If you believe that something is a bug, or that a feature should be added, then by all means open an issue.
+**Please don't open an issue on GitHub** unless you are reporting a bug or proposing a feature. For questions, there is a discussion tab on the repository's GitHub page where you can interact with the developers and ask questions. If you believe that something is a bug, or that a feature should be added, then by all means open an issue.
 
 All communication on GitHub, Discord, email, or any other medium must conform to the [Code of Conduct](CODE_OF_CONDUCT.md). It's not that hard to stay respectful.
 
 ## Opening an Issue
 
+**Before opening a new issue**, be sure that no issues regarding your problem already exist. If a similar issue exists, try to contribute to the issue.
+
+### Bugs
 When opening an issue about a bug, **please provide the full log file for the run in which the bug occurred**. This log file is named `log_output.txt` in the configuration folder. Check the [README](../README.md) for information on where this is. This log file will contain all the information required for the developers to recreate the bug. 
 
 If you do not have or cannot find the log file, then at minimum please provide the **Reddit ID for the submission** or comment which caused the issue. Also copy in the command that you used to run the BDFR from the command line, as that will also provide helpful information when trying to find and fix the bug. If needed, more information will be asked in the thread of the bug. 
 
-In the case of requesting a feature or an enhancement, there are fewer requirements. However, please be clear in what you would like the BDFR to do and also how the feature/enhancement would be used or would be useful to more people. Be aware that proposed enhancements may be rejected for multiple reasons, or no reason, at the discretion of the developers. 
+### Feature requests
+In the case of requesting a feature or an enhancement, there are fewer requirements. However, please be clear in what you would like the BDFR to do and also how the feature/enhancement would be used or would be useful to more people. It is crucial that the feature is justified. Any feature request without a concrete reason for it to be implemented has a very small chance to get accepted. Be aware that proposed enhancements may be rejected for multiple reasons, or no reason, at the discretion of the developers.  
 
 ## Pull Requests
 
@@ -23,12 +27,32 @@ Once you have done both of these, the below list shows the path that should be f
   1. If an issue does not already exist, open one that will relate to the PR.
   2. Ensure that any changes fit into the architecture specified above.
   3. Ensure that you have written tests that cover the new code.
-  4. Ensure that no existing tests fail, unless there is a good reason for them to do so. If there is, note which tests fail and why this is expected and okay in the PR.
+  4. Ensure that no existing tests fail, unless there is a good reason for them to do so.
   5. If needed, update any documentation with changes.
   6. Open a pull request that references the relevant issue.
   7. Expect changes or suggestions and heed the Code of Conduct. We're all volunteers here.
 
-Someone will review your pull request as soon as possible, but remember that all maintainers are volunteers and this won't happen immediately. Once it is approved, congratulations! Your code is now part of the BDFR.
+Someone will review your pull request as soon as possible, but remember that all maintainers are volunteers and this won't happen immediately. Once it is approved, congratulations! Your code is now part of the BDFR.  
+
+## Preparing the environment for development
+
+Bulk Downloader for Reddit requires Python 3.9 at minimum. First, ensure that your Python installation satisfies this. 
+
+BDfR is built in a way that it can be packaged and installed via `pip`. This places BDfR next to other Python packages and enables you to run the program from any directory. Since it is managed by pip, you can also uninstall it.
+
+To install the program, clone the repository and run pip inside the project's root directory:
+```bash
+$ git clone https://github.com/aliparlakci/bulk-downloader-for-reddit.git
+$ cd ./bulk-downloader-for-reddit
+$ python3 -m pip install -e .
+```
+
+**`-e`** parameter creates a link to that folder. That is, any change inside the folder affects the package immidiately. So, when developing, you can be sure that the package is not stale and Python is always running your latest changes. (Due to this linking, moving/removing/renaming the folder might break it)  
+
+Then, you can run the program from anywhere in your disk as such:
+```bash
+$ python3 -m bdfr
+```
 
 ## Style Guide
 
