@@ -8,27 +8,36 @@ on:
 
 jobs:
   test:
+  
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+        
     steps:
+    
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
+    - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
+        python -m pip install --upgrade pip flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Setup config file
+
+    - name: Setup test configuration
       run: |
         cp bdfr/default_config.cfg ./test_config.cfg
-        echo "" >> ./test_config.cfg
-        echo "user_token = ${{ secrets.REDDIT_TEST_TOKEN }}" >> ./test_config.cfg
-    - name: Lint with flake8
+        echo -e "\nuser_token = ${{ secrets.REDDIT_TEST_TOKEN }}" >> ./test_config.cfg
+
+    - name: Lint w/ flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    - name: Test with pytest
+
+    - name: Test w/ PyTest
       run: |
         pytest -m 'not slow' --verbose
