@@ -1,0 +1,49 @@
+name: Python Test
+
+on:
+  push:
+    branches: [ v2 ]
+  pull_request:
+    branches: [ v2 ]
+
+jobs:
+  test:
+  
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.9]
+        
+    steps:
+    
+    - uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip flake8 pytest pytest-cov
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Setup test configuration
+      run: |
+        cp bdfr/default_config.cfg ./test_config.cfg
+        echo -e "\nuser_token = ${{ secrets.REDDIT_TEST_TOKEN }}" >> ./test_config.cfg
+
+    - name: Lint w/ flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+    - name: Test w/ PyTest
+      run: |
+        pytest -m 'not slow' --verbose --cov=./bdfr/ --cov-report term:skip-covered --cov-report html
+        
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage_report
+        path: htmlcov/

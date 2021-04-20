@@ -1,213 +1,259 @@
-# [Bulk Downloader for Reddit v2-beta](https://github.com/aliparlakci/bulk-downloader-for-reddit/tree/v2) is out!
-[Serene-Arc](https://github.com/Serene-Arc) has reimplemented the Bulk Downloader for Reddit so that it is more flexible, roboust and is easier to contribute. If you are having issues with master, v2 is worth checking out. After cloning the repository, switch to the branch *v2* with `git checkout v2`
+# Bulk Downloader for Reddit
+[![Python Test](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml/badge.svg?branch=v2)](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml)
 
-# 📥 Bulk Downloader for Reddit
+This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface. [List of currently supported sources](#list-of-currently-supported-sources)
 
-Downloads reddit posts. Made by [u/aliparlakci](https://reddit.com/u/aliparlakci)
-  
-Please give feedback *(errors, feature requests, etc.)* on the [Issues](https://github.com/aliparlakci/bulk-downloader-for-reddit/issues) page. I will try to resolve them ASAP.
+If you wish to open an issue, please read [the guide on opening issues](docs/CONTRIBUTING.md#opening-an-issue) to ensure that your issue is clear and contains everything it needs to for the developers to investigate.
 
-## [Download the latest release here](https://github.com/aliparlakci/bulk-downloader-for-reddit/releases/latest)
+## Installation
+*Bulk Downloader for Reddit* needs Python version 3.9 or above. Please update Python before installation to meet the requirement. Then, you can install it as such:
+```bash
+python3 -m pip install bdfr
+```
 
-## 🚀 How to use
-If you run **Windows**, after you extract the zip file, double-click on the *bulk-downloader-for-reddit.exe*. The program will guide you through. Also, take a look at the [Setting up the program](#🔨-setting-up-the-program) section. **However**, Bulk Dowloader for Reddit has a plenty of features which can only be activated via command line arguments. See [Options](#⚙-Options) for it.
+If you want to use the source code or make contributions, refer to [CONTRIBUTING](docs/CONTRIBUTING.md#preparing-the-environment-for-development)
 
-Unfortunately, there is no binary for **MacOS** or **Linux**. If you are a MacOS or Linux user, you must use the program from the source code. See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page.
-  
-However, binary version for Linux is being worked. So, stay tuned.
-  
-OR, regardless of your operating system, you can fire up the program from the **source code**.
+## Usage
 
-### `python3 -m pip install -r requirements.txt`
+The BDFR works by taking submissions from a variety of "sources" from Reddit and then parsing them to download. These sources might be a subreddit, multireddit, a user list, or individual links. These sources are combined and downloaded to disk, according to a naming and organisational scheme defined by the user.
 
-### `python3 script.py`
+There are two modes to the BDFR: download, and archive. Each one has a command that performs similar but distinct functions. The `download` command will download the resource linked in the Reddit submission, such as the images, video, etc. The `archive` command will download the submission data itself and store it, such as the submission details, upvotes, text, statistics, as and all the comments on that submission. These can then be saved in a data markup language form, such as JSON, XML, or YAML.
 
-See the [Interpret from source code](docs/INTERPRET_FROM_SOURCE.md) page for more information.
+After installation, run the program from any directory as shown below:
+```bash
+python3 -m bdfr download
+```
+```bash
+python3 -m bdfr archive
+```
 
-## 🔨 Setting up the program
-### 📽 ffmpeg Library
-  
-Program needs **ffmpeg software** to add audio to some video files. However, installing it is **voluntary**. Although the program can still run with no errors without the ffmpeg library, some video files might have no sound.
-  
-Install it through a package manager such as **Chocolatey** in Windows, **apt** in Linux or **Homebrew** in MacOS:
+However, these commands are not enough. You should chain parameters in [Options](#options) according to your use case. Don't forget that some parameters can be provided multiple times. Some quick reference commands are:
 
-- **in Windows**: After you **[install Chocolatey](https://chocolatey.org/install)**, type **`choco install ffmpeg`** in either Command Promt or Powershell.
-- **in Linux**: Type **`sudo apt install ffmpeg`** in Terminal.
-- **in MacOS**: After you **[install Homebrew](https://brew.sh/)**, type **`brew install ffmpeg`** in Terminal
+```bash
+python3 -m bdfr download --subreddit Python -L 10
+```
+```bash
+python3 -m bdfr download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'
+```
+```bash
+python3 -m bdfr download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links
+```
+```bash
+python3 -m bdfr archive --subreddit all --format yaml -L 500 --folder-scheme ''
+```
 
-OR, [Download ffmpeg](https://www.ffmpeg.org/download.html) manually on your system and [add the bin folder in the downloaded folder's directory to `PATH` of your system.](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) However, package manager option is suggested.
+## Options
 
-## 🐋 Docker
-There is also a complete ready to go Docker integration. Install **Docker** and **docker-compose**. Then run the following command from the repository root:
-### `docker-compose run --service-ports bdfr`
-And you'll find youself right in the app. The files will be downloaded to `downloads/`. Since it is docker, you may want to change the ownership of the files once you're done (belongs to root by default).
+The following options are common between both the `archive` and `download` commands of the BDFR.
 
-_Credits to [wAuner](https://github.com/wAuner)_
+- `directory`
+  - This is the directory to which the BDFR will download and place all files
+- `--authenticate`
+  - This flag will make the BDFR attempt to use an authenticated Reddit session
+  - See [Authentication](#authentication-and-security) for more details
+- `--config`
+  - If the path to a configuration file is supplied with this option, the BDFR will use the specified config
+  - See [Configuration Files](#configuration) for more details
+- `--saved`
+  - This option will make the BDFR use the supplied user's saved posts list as a download source
+  - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
+- `--search`
+  - This will apply the specified search term to specific lists when scraping submissions
+  - A search term can only be applied to subreddits and multireddits, supplied with the `- s` and `-m` flags respectively
+- `--submitted`
+  - This will use a user's submissions as a source
+  - A user must be specified with `--user`
+- `--upvoted`
+  - This will use a user's upvoted posts as a source of posts to scrape
+  - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
+- `-L, --limit`
+  - This is the limit on the number of submissions retrieve
+  - Default is max possible
+  - Note that this limit applies to **each source individually** e.g. if a `--limit` of 10 and three subreddits are provided, then 30 total submissions will be scraped
+  - If it is not supplied, then the BDFR will default to the maximum allowed by Reddit, roughly 1000 posts. **We cannot bypass this.**
+- `-S, --sort`
+  - This is the sort type for each applicable submission source supplied to the BDFR
+  - This option does not apply to upvoted or saved posts when scraping from these sources
+  - The following options are available:
+    - `controversial`
+    - `hot` (default)
+    - `new`
+    - `relevance` (only available when using `--search`)
+    - `rising`
+    - `top`
+- `-l, --link`
+  - This is a direct link to a submission to download, either as a URL or an ID
+  - Can be specified multiple times
+- `-m, --multireddit`
+  - This is the name of a multireddit to add as a source
+  - Can be specified multiple times
+      - This can be done by using `-m` multiple times
+      - Multireddits can also be used to provide CSV multireddits e.g. `-m 'chess, favourites'`
+  - The specified multireddits must all belong to the user specified with the `--user` option
+- `-s, --subreddit`
+  - This adds a subreddit as a source
+  - Can be used mutliple times
+    - This can be done by using `-s` multiple times
+    - Subreddits can also be used to provide CSV subreddits e.g. `-m 'all, python, mindustry'`
+- `-t, --time`
+  - This is the time filter that will be applied to all applicable sources
+  - This option does not apply to upvoted or saved posts when scraping from these sources
+  - The following options are available:
+    - `all` (default)
+    - `hour`
+    - `day`
+    - `week`
+    - `month`
+    - `year`
+- `-u, --user`
+  - This specifies the user to scrape in concert with other options
+  - When using `--authenticate`, `--user me` can be used to refer to the authenticated user
+- `-v, --verbose`
+  - Increases the verbosity of the program
+  - Can be specified multiple times
 
-## ⚙ Options
+### Downloader Options
 
-Some of the below features are available only through command-line.
-  
-Open the [Command Promt](https://youtu.be/bgSSJQolR0E?t=18), [Powershell](https://youtu.be/bgSSJQolR0E?t=18) or [Terminal](https://youtu.be/Pz4yHAB3G8w?t=31) in the folder that contains bulk-downloader-for-reddit file (click on the links to see how)
-  
-After you type **`bulk-downloader-for-reddit.exe`**, type the preffered options.
+The following options apply only to the `download` command. This command downloads the files and resources linked to in the submission, or a text submission itself, to the disk in the specified directory.
 
-Example: **`bulk-downloader-for-reddit.exe --subreddit pics --sort top --limit 10`**
+- `--exclude-id`
+  - This will skip the download of any submission with the ID provided
+  - Can be specified multiple times
+- `--exclude-id-file`
+  - This will skip the download of any submission with any of the IDs in the files provided
+  - Can be specified multiple times
+  - Format is one ID per line
+- `--make-hard-links`
+  - This flag will create hard links to an existing file when a duplicate is downloaded
+  - This will make the file appear in multiple directories while only taking the space of a single instance
+- `--max-wait-time`
+  - This option specifies the maximum wait time for downloading a resource
+  - The default is 120 seconds
+  - See [Rate Limiting](#rate-limiting) for details
+- `--no-dupes`
+  - This flag will not redownload files if they already exist somewhere in the root folder tree
+  - This is calculated by MD5 hash
+- `--search-existing`
+  - This will make the BDFR compile the hashes for every file in `directory` and store them to remove duplicates if `--no-dupes` is also supplied
+- `--file-scheme`
+  - Sets the scheme for files
+  - Default is `{REDDITOR}_{TITLE}_{POSTID}`
+  - See [Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
+- `--folder-scheme`
+  - Sets the scheme for folders
+  - Default is `{SUBREDDIT}`
+  - See [Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
+- `--skip-domain`
+  - This adds domains to the download filter i.e. submissions coming from these domains will not be downloaded
+  - Can be specified multiple times
+- `--skip`
+  - This adds file types to the download filter i.e. submissions with one of the supplied file extensions will not be downloaded
+  - Can be specified multiple times
+- `--skip-subreddit`
+  - This skips all submissions from the specified subreddit
+  - Can be specified multiple times
+  - Also accepts CSV subreddit names
 
-## **`--subreddit`** 
-Downloads posts from given subreddit(s). Takes number of subreddit names as a paramater.
-  
-Example usage: **`--subreddit IAmA pics --sort hot --limit 10`**
+### Archiver Options
 
-## **`--multireddit`**
-Downloads posts from given subreddit. Takes a single multireddit name as a parameter. **`--user`** option is required.
-  
-Example usage: **`--multireddit myMulti --user me --sort top --time week`**
+The following options are for the `archive` command specifically.
 
-## **`--search`**
-Searches for given query in given subreddit(s) or multireddit. Takes a search query as a parameter. **`--subreddit`** or **`--multireddit`** option is required. **`--sort`** option is required.
-  
-Example usage: **`--search carter --subreddit funny`**
-  
-## **`--submitted`** 
-Downloads given redditor's submitted posts. Does not take any parameter. **`--user`** option is required.
+- `--all-comments`
+  - When combined with the `--user` option, this will download all the user's comments
+- `-f, --format`
+  - This specifies the format of the data file saved to disk
+  - The following formats are available:
+    - `json` (default)
+    - `xml`
+    - `yaml`
 
-Example usage: **`--submitted --user spɛz --sort top --time week`**
-  
-## **`--upvoted`**
-Downloads given redditor's upvoted posts. Does not take any parameter. **`--user`** option is required.
+## Authentication and Security
 
-Example usage: **`--upvoted --user spɛz`**
-  
-## **`--saved`** 
-Downloads logged in redditor's saved posts. Does not take any parameter. Example usage: **`--saved`**
-  
-## **`--link`**
-Takes a reddit link as a parameter and downloads the posts in the link. Put the link in " " (double quotes).
-  
-Example usage: **`--link "https://www.reddit.com/r/funny/comments/25blmh/"`**
+The BDFR uses OAuth2 authentication to connect to Reddit if authentication is required. This means that it is a secure, token-based system for making requests. This also means that the BDFR only has access to specific parts of the account authenticated, by default only saved posts, upvoted posts, and the identity of the authenticated account. Note that authentication is not required unless accessing private things like upvoted posts, saved posts, and private multireddits.
 
-## **`--log`**
-Program saves the found posts into POSTS.json file and the failed posts to FAILED.json file in LOG_FILES folder. You can use those files to redownload the posts inside them.  
-  
-Uses a .json file to redownload posts from. Takes single directory to a .json file as a parameter.
+To authenticate, the BDFR will first look for a token in the configuration file that signals that there's been a previous authentication. If this is not there, then the BDFR will attempt to register itself with your account. This is normal, and if you run the program, it will pause and show a Reddit URL. Click on this URL and it will take you to Reddit, where the permissions being requested will be shown. Read this and **confirm that there are no more permissions than needed to run the program**. You should not grant unneeded permissions; by default, the BDFR only requests permission to read your saved or upvoted submissions and identify as you.
 
-Example usage: **`--log D:\pics\LOG_FILES\FAILED.json`**
+If the permissions look safe, confirm it, and the BDFR will save a token that will allow it to authenticate with Reddit from then on.
 
----
+## Changing Permissions
 
-## **`--user`**
-Takes a reddit username as a parameter. Example usage: **`--user spɛz`**
-  
-## **`--sort`**
-Takes a valid sorting type as a parameter. Valid sort types are `hot`, `top`, `new`, `rising`, `controversial` and `relevance` (if you are using `--search` option)
+Most users will not need to do anything extra to use any of the current features. However, if additional features such as scraping messages, PMs, etc are added in the future, these will require additional scopes. Additionally, advanced users may wish to use the BDFR with their own API key and secret. There is normally no need to do this, but it *is* allowed by the BDFR.
 
-Example usage: **`--sort top`**
-  
-## **`--time`**
-Takes a valid time as a parameter. Valid times are `hour`, `day`, `week`, `month`, `year` and `all`. Example usage: **`--time all`**
-  
-## **`--limit`**
-Takes a number to specify how many should program get. Upper bound is 1000 posts for **each** subreddit. For example, if you are downloading posts from pics and IAmA, the upper bound is 2000. Do not use the option to set it to highest bound possible.
+The configuration file for the BDFR contains the API secret and key, as well as the scopes that the BDFR will request when registering itself to a Reddit account via OAuth2. These can all be changed if the user wishes, however do not do so if you don't know what you are doing. The defaults are specifically chosen to have a very low security risk if your token were to be compromised, however unlikely that actually is. Never grant more permissions than you absolutely need.
 
-Example usage: **`--limit 500`**
+For more details on the configuration file and the values therein, see [Configuration Files](#configuration).
 
----
+## Folder and File Name Schemes
 
-## **`--skip`**
-Takes a number of file types as a parameter to skip the posts from those domains. Valid file types are `images`, `videos`, `gifs`, `self`
-  
-Example usage: **`--skip self videos`**
-  
-## **`--skip-domain`**
-Takes a number of domains as a parameter to skip the posts from those domains.
+The naming and folder schemes for the BDFR are both completely customisable. A number of different fields can be given which will be replaced with properties from a submission when downloading it. The scheme format takes the form of `{KEY}`, where `KEY` is a string from the below list.
 
-Example usage: **`--skip v.redd.it youtube.com youtu.be`**
-  
-## **`--quit`**
-Automatically quits the application after it finishes. Otherwise, it will wait for an input to quit.
+  - `DATE`
+  - `FLAIR`
+  - `POSTID`
+  - `REDDITOR`
+  - `SUBREDDIT`
+  - `TITLE`
+  - `UPVOTES`
 
-Example usage: **`--quit`**
-  
-## **`--directory`**
-Takes a directory which the posts should be downloaded to. Overrides the given default directory. Use `..\` to imply upper level and `.\` to imply the current level.
+Each of these can be enclosed in curly bracket, `{}`, and included in the name. For example, to just title every downloaded post with the unique submission ID, you can use `{POSTID}`. Static strings can also be included, such as `download_{POSTID}` which will not change from submission to submission. For example, the previous string will result in the following submission file names:
 
-Example usage: **`--directory D:\bdfr\`**  
-Example usage: **`--directory ..\images\`**  
-Example usage: **`-d ..\images\`**  
-Example usage: **`-d .\`**  
-  
-## **`--set-filename`**
-Starts the program to set a filename template to use for downloading posts. **Does not take any parameter.**
-  
-When the programs starts, you will be prompted to type a filename template. Use `SUBREDDIT`, `REDDITOR`, `POSTID`, `TITLE`, `UPVOTES`, `FLAIR`, `DATE` in curly brakets `{ }` to refer to the corrosponding property of a post.
+  - `download_aaaaaa.png`
+  - `download_bbbbbb.png`
 
-❗ Do NOT change the filename structure frequently. If you did, the program could not find duplicates and would download the already downloaded files again. This would not create any duplicates in the directory but the program would not be as snappy as it should be.
-  
-The default filename template is **`{REDDITOR}_{TITLE}_{POSTID}`**
+At least one key *must* be included in the file scheme, otherwise an error will be thrown. The folder scheme however, can be null or a simple static string. In the former case, all files will be placed in the folder specified with the `directory` argument. If the folder scheme is a static string, then all submissions will be placed in a folder of that name. In both cases, there will be no separation between all submissions.
 
-Example usage: **`--set-filename`**
-  
-## **`--set-folderpath`**
-Starts the program to set a folder structure  to use for downloading posts. **Does not take any parameter.**
-  
-When the programs starts, you will be prompted to type a filename template. Use `SUBREDDIT`, `REDDITOR`, `POSTID`, `TITLE`, `UPVOTES`, `FLAIR`, `DATE` in curly brakets `{ }` to refer to the corrosponding property of a post. Do not put slashes `/` or backslashes `\` at either ends. For instance, **`{REDDITOR}/{SUBREDDIT}/{FLAIR}`**
-  
-The default filename template is **`{SUBREDDIT}`**
+It is highly recommended that the file name scheme contain the parameter `{POSTID}` as this is **the only parameter guaranteed to be unique**. No combination of other keys will necessarily be unique and may result in posts being skipped as the BDFR will see files by the same name and skip the download, assuming that they are already downloaded.
 
-Example usage: **`--set-folderpath`**
-  
-## **`--set-default-directory`**
-Starts the program to set a default directory to use in case no directory is given. **Does not take any parameter.**
-  
-When the programs starts, you will be prompted to type a default directory. You can use {time} in foler names to use to timestamp it. For instance, **`D:\bdfr\posts_{time}`**
+## Configuration
 
-Example usage: **`--set-default-directory`**
-  
-## **`--use-local-config`**
-Sets the program to use config.json file in the current directory. Creates it if it does not exists. Useful for having different configurations. **Does not take any parameter.**
-  
-Example usage: **`--use-local-config`**
-  
-## **`--no-dupes`**
-Skips the same posts in different subreddits. Does not take any parameter.
+The configuration files are, by default, stored in the configuration directory for the user. This differs depending on the OS that the BDFR is being run on. For Windows, this will be:
+  - `C:\Users\<User>\AppData\Local\BDFR\bdfr`
 
-Example usage: **`--no-dupes`**
-  
-## **`--no-download`**
-Quits the program without downloading the posts. Does not take any parameter
+On Mac OSX, this will be:
+  - `~/Library/Application Support/bdfr`. 
+    
+Lastly, on a Linux system, this will be:
+  - `~/.local/share/bdfr`
 
-Example usage: **`--no-download`**
-  
-## **`--downloaded-posts`**
-Takes a file directory as a parameter and skips the posts if it matches with the post IDs inside the file. It also saves the newly downloaded posts to the given file.
+The logging output for each run of the BDFR will be saved to this directory in the file `log_output.txt`. If you need to submit a bug, it is this file that you will need to submit with the report.
 
-Example usage: **`--downloaded-posts D:\bdfr\ALL_POSTS.txt`**
-  
-## **`--downloaded-delay`**
-When specified, it delays every download for given seconds.
+### Configuration File
 
-## ❔ FAQ
+The `config.cfg` is the file that supplies the BDFR with the configuration to use. At the moment, the following keys **must** be included in the configuration file supplied.
 
-### I am running the script on a headless machine or on a remote server. How can I authenticate my reddit account?
-- Download the script on your everday computer and run it for once.
-- Authenticate the program on both reddit and imgur.
-- Go to your Home folder (for Windows users it is `C:\Users\[USERNAME]\`, for Linux users it is `/home/[USERNAME]`)
-- Copy the *config.json* file inside the Bulk Downloader for Reddit folder and paste it **next to** the file that you run the program.
+  - `backup_log_count`
+  - `max_wait_time`
+  - `client_id`
+  - `client_secret`
+  - `scopes`
 
-### How can I change my credentials?
-- All of the user data is held in **config.json** file which is in a folder named "Bulk Downloader for Reddit" in your **Home** directory. You can edit them, there.  
+All of these should not be modified unless you know what you're doing, as the default values will enable the BDFR to function just fine. A configuration is included in the BDFR when it is installed, and this will be placed in the configuration directory as the default.
 
-  Also if you already have a config.json file, you can paste it **next to** the script and override the one on your Home directory. 
+Most of these values have to do with OAuth2 configuration and authorisation. The key `backup_log_count` however has to do with the log rollover. The logs in the configuration directory can be verbose and for long runs of the BDFR, can grow quite large. To combat this, the BDFR will overwrite previous logs. This value determines how many previous run logs will be kept. The default is 3, which means that the BDFR will keep at most three past logs plus the current one. Any runs past this will overwrite the oldest log file, called "rolling over". If you want more records of past runs, increase this number.
 
-### What do the dots resemble when getting posts?
-- Each dot means that 100 posts are scanned.
+### Rate Limiting
 
-### Getting posts takes too long.
-- You can press *Ctrl+C* to interrupt it and start downloading.
+The option `max_wait_time` has to do with retrying downloads. There are certain HTTP errors that mean that no amount of requests will return the wanted data, but some errors are from rate-limiting. This is when a single client is making so many requests that the remote website cuts the client off to preserve the function of the site. This is a common situation when downloading many resources from the same site. It is polite and best practice to obey the website's wishes in these cases.
 
-### How do I open self post files?
-- Self posts are held at reddit as styled with markdown. So, the script downloads them as they are in order not to lose their stylings.
-  However, there is a [great Chrome extension](https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk) for viewing Markdown files with its styling. Install it and open the files with [Chrome](https://www.google.com/intl/tr/chrome/).  
+To this end, the BDFR will sleep for a time before retrying the download, giving the remote server time to "rest". This is done in 60 second increments. For example, if a rate-limiting-related error is given, the BDFR will sleep for 60 seconds before retrying. Then, if the same type of error occurs, it will sleep for another 120 seconds, then 180 seconds, and so on.
 
-  However, they are basically text files. You can also view them with any text editor such as Notepad on Windows, gedit on Linux or Text Editor on MacOS.
+The option `--max-wait-time` and the configuration option `max_wait_time` both specify the maximum time the BDFR will wait. If both are present, the command-line option takes precedence. For instance, the default is 120, so the BDFR will wait for 60 seconds, then 120 seconds, and then move one. **Note that this results in a total time of 180 seconds trying the same download**. If you wish to try to bypass the rate-limiting system on the remote site, increasing the maximum wait time may help. However, note that the actual wait times increase exponentially if the resource is not downloaded i.e. specifying a max value of 300 (5 minutes), can make the BDFR pause for 15 minutes on one submission, not 5, in the worst case.
+
+## List of currently supported sources
+
+  - Direct links (links leading to a file)
+  - Erome
+  - Gfycat
+  - Gif Delivery Network
+  - Imgur
+  - Reddit Galleries
+  - Reddit Text Posts
+  - Reddit Videos
+  - Redgifs
+  - YouTube
+
+## Contributing
+
+If you wish to contribute, see [Contributing](docs/CONTRIBUTING.md) for more information.
+
+When reporting any issues or interacting with the developers, please follow the [Code of Conduct](docs/CODE_OF_CONDUCT.md).

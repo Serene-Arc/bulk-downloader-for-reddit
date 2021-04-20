@@ -1,4 +1,9 @@
-bs4
-requests
-praw
-youtube-dl
+appdirs>=1.4.4
+bs4>=0.0.1
+click>=7.1.2
+dict2xml>=1.7.0
+ffmpeg-python>=0.2.0
+praw>=7.2.0
+pyyaml>=5.4.1
+requests>=2.25.1
+youtube-dl>=2021.3.14
