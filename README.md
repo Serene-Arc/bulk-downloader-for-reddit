@@ -6,9 +6,9 @@ This is a tool to download submissions or submission data from Reddit. It can be
 If you wish to open an issue, please read [the guide on opening issues](docs/CONTRIBUTING.md#opening-an-issue) to ensure that your issue is clear and contains everything it needs to for the developers to investigate.
 
 ## Installation
-*Bulk Downloader for Reddit* **requires** Python 3.9.x and it is distributed via `pip`. Install it as such:
+*Bulk Downloader for Reddit* needs Python version 3.9 or above. Please update Python before installation to meet the requirement. Then, you can install it as such:
 ```bash
-pip install bdfr
+python3 -m pip install bdfr
 ```
 
 If you want to use the source code or make contributions, refer to [CONTRIBUTING](docs/CONTRIBUTING.md#preparing-the-environment-for-development)
