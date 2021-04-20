@@ -104,7 +104,13 @@ To exclude one or more marks, the following command can be used, substituting th
 pytest -m "not online"
 pytest -m "not reddit and not authenticated"
 ```
+  
+### Configuration for authenticated tests
 
+There should be configuration file `test_config.cfg` in the project's root directory to be able to run the integration tests with reddit authentication. See how to create such files [here](../README.md#configuration). The easiest way of creating this file is copying your existing `default_config.cfg` file from the path stated in the previous link and renaming it to `test_config.cfg` Be sure that user_token key exists in test_config.cfg.
+  
+---
+  
 For more details, review the pytest documentation that is freely available online.
 
 Many IDEs also provide integrated functionality to run and display the results from tests, and almost all of them support pytest in some capacity. This would be the recommended method due to the additional debugging and general capabilities.
