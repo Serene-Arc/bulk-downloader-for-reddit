@@ -40,4 +40,10 @@ jobs:
 
     - name: Test w/ PyTest
       run: |
-        pytest -m 'not slow' --verbose --cov=./bdfr/ --cov-report term:skip-covered
+        pytest -m 'not slow' --verbose --cov=./bdfr/ --cov-report term:skip-covered --cov-report html
+        
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage_report
+        path: htmlcov/
