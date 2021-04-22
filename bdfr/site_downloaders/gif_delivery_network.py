@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Optional
+import json
 
 from bs4 import BeautifulSoup
 from praw.models import Submission
@@ -24,13 +25,12 @@ class GifDeliveryNetwork(BaseDownloader):
         page = GifDeliveryNetwork.retrieve_url(url)
 
         soup = BeautifulSoup(page.text, 'html.parser')
-        content = soup.find('source', attrs={'id': 'mp4Source', 'type': 'video/mp4'})
+        content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
 
         try:
-            out = content['src']
-            if not out:
-                raise KeyError
-        except KeyError:
+            content = json.loads(content.string)
+            out = content['video']['contentUrl']
+        except (json.JSONDecodeError, KeyError, TypeError):
             raise SiteDownloaderError('Could not find source link')
 
         return out
