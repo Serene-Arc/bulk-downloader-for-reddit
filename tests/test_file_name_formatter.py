@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from unittest.mock import MagicMock
@@ -21,7 +22,7 @@ def submission() -> MagicMock:
     test.id = '12345'
     test.score = 1000
     test.link_flair_text = 'test_flair'
-    test.created_utc = 123456789
+    test.created_utc = datetime(2021, 4, 21, 9, 30, 0).timestamp()
     test.__class__ = praw.models.Submission
     return test
 
@@ -37,7 +38,7 @@ def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     ('{POSTID}', '12345'),
     ('{UPVOTES}', '1000'),
     ('{FLAIR}', 'test_flair'),
-    ('{DATE}', '123456789'),
+    ('{DATE}', '2021-04-21T09:30:00'),
     ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345'),
     ('{RANDOM}', '{RANDOM}'),
 ))
@@ -317,4 +318,15 @@ def test_preserve_emojis(test_name_string: str, expected: str, submission: Magic
 ))
 def test_convert_unicode_escapes(test_string: str, expected: str):
     result = FileNameFormatter._convert_unicode_escapes(test_string)
+    assert result == expected
+
+
+@pytest.mark.parametrize(('test_datetime', 'expected'), (
+    (datetime(2020, 1, 1, 8, 0, 0), '2020-01-01T08:00:00'),
+    (datetime(2020, 1, 1, 8, 0), '2020-01-01T08:00:00'),
+    (datetime(2021, 4, 21, 8, 30, 21), '2021-04-21T08:30:21'),
+))
+def test_convert_timestamp(test_datetime: datetime, expected: str):
+    test_timestamp = test_datetime.timestamp()
+    result = FileNameFormatter._convert_timestamp(test_timestamp)
     assert result == expected

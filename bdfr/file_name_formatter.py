@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
-
+import datetime
 import logging
 import platform
 import re
@@ -74,9 +74,14 @@ class FileNameFormatter:
             'postid': submission.id,
             'upvotes': submission.score,
             'flair': submission.link_flair_text,
-            'date': submission.created_utc
+            'date': FileNameFormatter._convert_timestamp(submission.created_utc),
         }
         return submission_attributes
+
+    @staticmethod
+    def _convert_timestamp(timestamp: float) -> str:
+        input_time = datetime.datetime.fromtimestamp(timestamp)
+        return input_time.isoformat()
 
     @staticmethod
     def _generate_name_dict_from_comment(comment: Comment) -> dict:
@@ -87,7 +92,7 @@ class FileNameFormatter:
             'postid': comment.id,
             'upvotes': comment.score,
             'flair': '',
-            'date': comment.created_utc,
+            'date': FileNameFormatter._convert_timestamp(comment.created_utc),
         }
         return comment_attributes
 
