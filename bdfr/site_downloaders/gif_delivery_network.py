@@ -6,7 +6,7 @@ import json
 from bs4 import BeautifulSoup
 from praw.models import Submission
 
-from bdfr.exceptions import NotADownloadableLinkError, SiteDownloaderError
+from bdfr.exceptions import SiteDownloaderError
 from bdfr.resource import Resource
 from bdfr.site_authenticator import SiteAuthenticator
 from bdfr.site_downloaders.base_downloader import BaseDownloader
