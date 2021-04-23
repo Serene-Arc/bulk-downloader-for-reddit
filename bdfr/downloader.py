@@ -207,7 +207,7 @@ class RedditDownloader:
 
     @staticmethod
     def _sanitise_subreddit_name(subreddit: str) -> str:
-        pattern = re.compile(r'^(?:https://www\.reddit\.com/)?(?:r/)?(.*?)(?:/)?$')
+        pattern = re.compile(r'^(?:https://www\.reddit\.com/)?(?:r/)?(.*?)/?$')
         match = re.match(pattern, subreddit)
         if not match:
             raise errors.BulkDownloaderException(f'Could not find subreddit name in string {subreddit}')
