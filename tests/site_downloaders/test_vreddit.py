@@ -10,8 +10,8 @@ from bdfr.site_downloaders.vreddit import VReddit
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(('test_submission_id'), (
-    ('lu8l8g'),
+@pytest.mark.parametrize('test_submission_id', (
+    'lu8l8g',
 ))
 def test_find_resources(test_submission_id: str, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)
