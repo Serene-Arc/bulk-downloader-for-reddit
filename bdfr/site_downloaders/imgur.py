@@ -26,12 +26,12 @@ class Imgur(BaseDownloader):
         if 'album_images' in self.raw_data:
             images = self.raw_data['album_images']
             for image in images['images']:
-                out.append(self._download_image(image))
+                out.append(self._compute_image_url(image))
         else:
-            out.append(self._download_image(self.raw_data))
+            out.append(self._compute_image_url(self.raw_data))
         return out
 
-    def _download_image(self, image: dict) -> Resource:
+    def _compute_image_url(self, image: dict) -> Resource:
         image_url = 'https://i.imgur.com/' + image['hash'] + self._validate_extension(image['ext'])
         return Resource(self.post, image_url)
 
