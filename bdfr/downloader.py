@@ -14,7 +14,7 @@ from datetime import datetime
 from enum import Enum, auto
 from multiprocessing import Pool
 from pathlib import Path
-from typing import Iterator
+from typing import Callable, Iterator
 
 import appdirs
 import praw
@@ -265,7 +265,7 @@ class RedditDownloader:
                 supplied_submissions.append(self.reddit_instance.submission(url=sub_id))
         return [supplied_submissions]
 
-    def _determine_sort_function(self):
+    def _determine_sort_function(self) -> Callable:
         if self.sort_filter is RedditTypes.SortType.NEW:
             sort_function = praw.models.Subreddit.new
         elif self.sort_filter is RedditTypes.SortType.RISING:
