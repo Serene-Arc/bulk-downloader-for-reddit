@@ -11,6 +11,7 @@ from bdfr.__main__ import cli
 
 does_test_config_exist = Path('test_config.cfg').exists()
 
+
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
