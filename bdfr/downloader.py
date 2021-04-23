@@ -225,7 +225,6 @@ class RedditDownloader:
     def _get_subreddits(self) -> list[praw.models.ListingGenerator]:
         if self.args.subreddit:
             out = []
-            sort_function = self._determine_sort_function()
             for reddit in self._split_args_input(self.args.subreddit):
                 try:
                     reddit = self.reddit_instance.subreddit(reddit)
