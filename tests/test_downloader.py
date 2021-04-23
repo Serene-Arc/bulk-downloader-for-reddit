@@ -458,3 +458,21 @@ def test_read_excluded_submission_ids_from_file(downloader_mock: MagicMock, tmp_
     downloader_mock.args.exclude_id_file = [test_file]
     results = RedditDownloader._read_excluded_ids(downloader_mock)
     assert results == {'aaaaaa', 'bbbbbb'}
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_redditor_name', 'expected'), (
+    ('anthonyhui', True),  # Real
+    ('lhnhfkuhwreolo', False),  # Fake
+    ('Bree-Boo', False),  # Banned
+))
+def test_check_user_existence(
+        test_redditor_name: str,
+        expected: bool,
+        reddit_instance: praw.Reddit,
+        downloader_mock: MagicMock,
+):
+    downloader_mock.reddit_instance = reddit_instance
+    result = RedditDownloader._check_user_existence(downloader_mock, test_redditor_name)
+    assert result == expected

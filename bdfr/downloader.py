@@ -344,7 +344,7 @@ class RedditDownloader:
         try:
             if not user.id:
                 return False
-        except prawcore.exceptions.NotFound:
+        except (prawcore.exceptions.NotFound, AttributeError):
             return False
         return True
 
