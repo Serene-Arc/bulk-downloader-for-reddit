@@ -314,8 +314,10 @@ class RedditDownloader:
     def _get_user_data(self) -> list[Iterator]:
         if any([self.args.submitted, self.args.upvoted, self.args.saved]):
             if self.args.user:
-                if not self._check_user_existence(self.args.user):
-                    logger.error(f'User {self.args.user} does not exist')
+                try:
+                    self._check_user_existence(self.args.user)
+                except errors.BulkDownloaderException as e:
+                    logger.error(e)
                     return []
                 generators = []
                 if self.args.submitted:
@@ -339,14 +341,16 @@ class RedditDownloader:
         else:
             return []
 
-    def _check_user_existence(self, name: str) -> bool:
+    def _check_user_existence(self, name: str):
         user = self.reddit_instance.redditor(name=name)
         try:
-            if not user.id:
-                return False
-        except (prawcore.exceptions.NotFound, AttributeError):
-            return False
-        return True
+            if user.id:
+                return
+        except prawcore.exceptions.NotFound:
+            raise errors.BulkDownloaderException(f'Could not find user {name}')
+        except AttributeError:
+            if hasattr(user, 'is_suspended'):
+                raise errors.BulkDownloaderException(f'User {name} is banned')
 
     def _create_file_name_formatter(self) -> FileNameFormatter:
         return FileNameFormatter(self.args.file_scheme, self.args.folder_scheme)
