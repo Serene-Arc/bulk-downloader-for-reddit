@@ -203,7 +203,13 @@ class RedditDownloader:
             backupCount=backup_count,
         )
         if log_path.exists():
-            file_handler.doRollover()
+            try:
+                file_handler.doRollover()
+            except PermissionError as e:
+                logger.critical(
+                    'Cannot rollover logfile, make sure this is the only '
+                    'BDFR process or specify alternate logfile location')
+                raise
         formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] - %(message)s')
         file_handler.setFormatter(formatter)
         file_handler.setLevel(0)
