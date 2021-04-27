@@ -20,6 +20,7 @@ _common_options = [
     click.option('-m', '--multireddit', multiple=True, default=None, type=str),
     click.option('-L', '--limit', default=None, type=int),
     click.option('--authenticate', is_flag=True, default=None),
+    click.option('--log', type=str, default=None),
     click.option('--submitted', is_flag=True, default=None),
     click.option('--upvoted', is_flag=True, default=None),
     click.option('--saved', is_flag=True, default=None),

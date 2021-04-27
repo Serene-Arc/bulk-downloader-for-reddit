@@ -190,7 +190,12 @@ class RedditDownloader:
 
     def _create_file_logger(self):
         main_logger = logging.getLogger()
-        log_path = Path(self.config_directory, 'log_output.txt')
+        if self.args.log is None:
+            log_path = Path(self.config_directory, 'log_output.txt')
+        else:
+            log_path = Path(self.args.log).resolve().expanduser()
+            if not log_path.parent.exists():
+                raise errors.BulkDownloaderException(f'Designated location for logfile does not exist')
         backup_count = self.cfg_parser.getint('DEFAULT', 'backup_log_count', fallback=3)
         file_handler = logging.handlers.RotatingFileHandler(
             log_path,
