@@ -27,23 +27,20 @@ class Redgifs(GifDeliveryNetwork):
         except AttributeError:
             raise SiteDownloaderError(f'Could not extract Redgifs ID from {url}')
 
-        url = 'https://redgifs.com/watch/' + redgif_id
+        url = f'https://api.redgifs.com/v1/gfycats/{redgif_id}'
 
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                          ' Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.64',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                          'Chrome/90.0.4430.93 Safari/537.36',
         }
 
-        page = Redgifs.retrieve_url(url, headers=headers)
-
-        soup = BeautifulSoup(page.text, 'html.parser')
-        content = soup.find('script', attrs={'data-react-helmet': 'true', 'type': 'application/ld+json'})
+        content = Redgifs.retrieve_url(url, headers=headers)
 
         if content is None:
             raise SiteDownloaderError('Could not read the page source')
 
         try:
-            out = json.loads(content.contents[0])['video']['contentUrl']
+            out = content.json()["gfyItem"]["mp4Url"]
         except (IndexError, KeyError, AttributeError):
             raise SiteDownloaderError('Failed to find JSON data in page')
         except json.JSONDecodeError as e:
