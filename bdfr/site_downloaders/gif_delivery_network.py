@@ -30,7 +30,7 @@ class GifDeliveryNetwork(BaseDownloader):
         try:
             content = json.loads(content.string)
             out = content['video']['contentUrl']
-        except (json.JSONDecodeError, KeyError, TypeError):
+        except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
             raise SiteDownloaderError('Could not find source link')
 
         return out
