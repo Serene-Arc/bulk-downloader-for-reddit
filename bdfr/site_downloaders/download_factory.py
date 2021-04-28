@@ -11,7 +11,6 @@ from bdfr.site_downloaders.direct import Direct
 from bdfr.site_downloaders.erome import Erome
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
-from bdfr.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
@@ -33,11 +32,9 @@ class DownloadFactory:
             return Gallery
         elif re.match(r'gfycat\.', sanitised_url):
             return Gfycat
-        elif re.match(r'gifdeliverynetwork', sanitised_url):
-            return GifDeliveryNetwork
         elif re.match(r'(m\.)?imgur.*', sanitised_url):
             return Imgur
-        elif re.match(r'redgifs.com', sanitised_url):
+        elif re.match(r'(redgifs|gifdeliverynetwork)', sanitised_url):
             return Redgifs
         elif re.match(r'reddit\.com/r/', sanitised_url):
             return SelfPost

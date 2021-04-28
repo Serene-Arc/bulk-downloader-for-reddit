@@ -11,7 +11,6 @@ from bdfr.site_downloaders.download_factory import DownloadFactory
 from bdfr.site_downloaders.erome import Erome
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
-from bdfr.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
@@ -35,7 +34,7 @@ from bdfr.site_downloaders.youtube import Youtube
     ('https://www.erome.com/a/NWGw0F09', Erome),
     ('https://youtube.com/watch?v=Gv8Wz74FjVA', Youtube),
     ('https://redgifs.com/watch/courageousimpeccablecanvasback', Redgifs),
-    ('https://www.gifdeliverynetwork.com/repulsivefinishedandalusianhorse', GifDeliveryNetwork),
+    ('https://www.gifdeliverynetwork.com/repulsivefinishedandalusianhorse', Redgifs),
     ('https://youtu.be/DevfjHOhuFc', Youtube),
     ('https://m.youtube.com/watch?v=kr-FeojxzUM', Youtube),
     ('https://i.imgur.com/3SKrQfK.jpg?1', Direct),
