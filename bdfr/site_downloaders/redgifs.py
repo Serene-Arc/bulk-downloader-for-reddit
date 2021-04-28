@@ -10,15 +10,16 @@ from praw.models import Submission
 from bdfr.exceptions import SiteDownloaderError
 from bdfr.resource import Resource
 from bdfr.site_authenticator import SiteAuthenticator
-from bdfr.site_downloaders.gif_delivery_network import GifDeliveryNetwork
+from bdfr.site_downloaders.base_downloader import BaseDownloader
 
 
-class Redgifs(GifDeliveryNetwork):
+class Redgifs(BaseDownloader):
     def __init__(self, post: Submission):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
-        return super().find_resources(authenticator)
+        media_url = self._get_link(self.post.url)
+        return [Resource(self.post, media_url, '.mp4')]
 
     @staticmethod
     def _get_link(url: str) -> str:
