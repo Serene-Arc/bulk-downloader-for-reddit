@@ -44,7 +44,7 @@ class Redgifs(GifDeliveryNetwork):
 
         try:
             out = json.loads(content.contents[0])['video']['contentUrl']
-        except (IndexError, KeyError):
+        except (IndexError, KeyError, AttributeError):
             raise SiteDownloaderError('Failed to find JSON data in page')
         except json.JSONDecodeError as e:
             raise SiteDownloaderError(f'Received data was not valid JSON: {e}')

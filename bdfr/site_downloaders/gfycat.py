@@ -34,7 +34,7 @@ class Gfycat(GifDeliveryNetwork):
 
         try:
             out = json.loads(content.contents[0])['video']['contentUrl']
-        except (IndexError, KeyError) as e:
+        except (IndexError, KeyError, AttributeError) as e:
             raise SiteDownloaderError(f'Failed to download Gfycat link {url}: {e}')
         except json.JSONDecodeError as e:
             raise SiteDownloaderError(f'Did not receive valid JSON data: {e}')
