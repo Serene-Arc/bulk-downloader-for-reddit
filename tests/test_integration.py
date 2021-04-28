@@ -255,6 +255,8 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     ['--user', 'sdclhgsolgjeroij', '--submitted', '-L', 10],
     ['--user', 'me', '--upvoted', '-L', 10],
     ['--user', 'sdclhgsolgjeroij', '--upvoted', '-L', 10],
+    ['--subreddit', 'submitters', '-L', 10],  # Private subreddit
+    ['--subreddit', 'donaldtrump', '-L', 10],  # Banned subreddit
 ))
 def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

@@ -239,6 +239,11 @@ class RedditDownloader:
             for reddit in self._split_args_input(self.args.subreddit):
                 try:
                     reddit = self.reddit_instance.subreddit(reddit)
+                    try:
+                        self._check_subreddit_status(reddit)
+                    except errors.BulkDownloaderException as e:
+                        logger.error(e)
+                        continue
                     if self.args.search:
                         out.append(reddit.search(
                             self.args.search,
@@ -460,3 +465,12 @@ class RedditDownloader:
                 for line in file:
                     out.append(line.strip())
         return set(out)
+
+    @staticmethod
+    def _check_subreddit_status(subreddit: praw.models.Subreddit):
+        try:
+            assert subreddit.id
+        except prawcore.NotFound:
+            raise errors.BulkDownloaderException(f'Source {subreddit.display_name} does not exist or cannot be found')
+        except prawcore.Forbidden:
+            raise errors.BulkDownloaderException(f'Source {subreddit.display_name} is private and cannot be scraped')
