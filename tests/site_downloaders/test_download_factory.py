@@ -14,9 +14,9 @@ from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
+from bdfr.site_downloaders.streamable import Streamable
 from bdfr.site_downloaders.vreddit import VReddit
 from bdfr.site_downloaders.youtube import Youtube
-from bdfr.site_downloaders.streamable import Streamable
 
 
 @pytest.mark.parametrize(('test_submission_url', 'expected_class'), (

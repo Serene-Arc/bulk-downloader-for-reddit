@@ -265,6 +265,7 @@ The way to fix this is to use the `--log` option to manually specify where the l
   - Reddit Videos
   - Redgifs
   - YouTube
+  - Streamable
 
 ## Contributing
 
