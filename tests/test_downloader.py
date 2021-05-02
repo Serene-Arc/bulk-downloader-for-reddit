@@ -513,7 +513,20 @@ def test_check_user_existence_banned(
     ('donaldtrump', 'cannot be found'),
     ('submitters', 'private and cannot be scraped')
 ))
-def test_check_subreddit_status(test_subreddit_name: str, expected_message: str, reddit_instance: praw.Reddit):
+def test_check_subreddit_status_bad(test_subreddit_name: str, expected_message: str, reddit_instance: praw.Reddit):
     test_subreddit = reddit_instance.subreddit(test_subreddit_name)
     with pytest.raises(BulkDownloaderException, match=expected_message):
         RedditDownloader._check_subreddit_status(test_subreddit)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_subreddit_name', (
+    'Python',
+    'Mindustry',
+    'TrollXChromosomes',
+    'all',
+))
+def test_check_subreddit_status_good(test_subreddit_name: str, reddit_instance: praw.Reddit):
+    test_subreddit = reddit_instance.subreddit(test_subreddit_name)
+    RedditDownloader._check_subreddit_status(test_subreddit)

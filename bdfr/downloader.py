@@ -468,6 +468,8 @@ class RedditDownloader:
 
     @staticmethod
     def _check_subreddit_status(subreddit: praw.models.Subreddit):
+        if subreddit.display_name == 'all':
+            return
         try:
             assert subreddit.id
         except prawcore.NotFound:
