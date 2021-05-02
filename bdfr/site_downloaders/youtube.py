@@ -30,7 +30,10 @@ class Youtube(BaseDownloader):
         return [out]
 
     def _download_video(self, ytdl_options: dict) -> Resource:
+        yt_logger = logging.getLogger('youtube-dl')
+        yt_logger.setLevel(logging.CRITICAL)
         ytdl_options['quiet'] = True
+        ytdl_options['logger'] = yt_logger
         with tempfile.TemporaryDirectory() as temp_dir:
             download_path = Path(temp_dir).resolve()
             ytdl_options['outtmpl'] = str(download_path) + '/' + 'test.%(ext)s'
