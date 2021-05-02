@@ -109,6 +109,9 @@ The following options are common between both the `archive` and `download` comma
     - `week`
     - `month`
     - `year`
+  - `--time-format`
+    - This specifies the format of the datetime string that replaces `{DATE}` in file and folder naming schemes
+    - See [Time Formatting Customisation](#time-formatting-customisation) for more details, and the formatting scheme
 - `-u, --user`
   - This specifies the user to scrape in concert with other options
   - When using `--authenticate`, `--user me` can be used to refer to the authenticated user
@@ -225,15 +228,25 @@ The logging output for each run of the BDFR will be saved to this directory in t
 
 The `config.cfg` is the file that supplies the BDFR with the configuration to use. At the moment, the following keys **must** be included in the configuration file supplied.
 
-  - `backup_log_count`
-  - `max_wait_time`
   - `client_id`
   - `client_secret`
   - `scopes`
 
+The following keys are optional, and defaults will be used if they cannot be found.
+
+  - `backup_log_count`
+  - `max_wait_time`
+  - `time_format`
+
 All of these should not be modified unless you know what you're doing, as the default values will enable the BDFR to function just fine. A configuration is included in the BDFR when it is installed, and this will be placed in the configuration directory as the default.
 
 Most of these values have to do with OAuth2 configuration and authorisation. The key `backup_log_count` however has to do with the log rollover. The logs in the configuration directory can be verbose and for long runs of the BDFR, can grow quite large. To combat this, the BDFR will overwrite previous logs. This value determines how many previous run logs will be kept. The default is 3, which means that the BDFR will keep at most three past logs plus the current one. Any runs past this will overwrite the oldest log file, called "rolling over". If you want more records of past runs, increase this number.
+
+#### Time Formatting Customisation
+
+The option `time_format` will specify the format of the timestamp that replaces `{DATE}` in filename and folder name schemes. By default, this is the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format which is highly recommended due to its standardised nature. If you don't **need** to change it, it is recommended that you do not. However, you can specify it to anything required with this option. The `--time-format` option supersedes any specification in the configuration file
+
+The format can be specified through the [format codes](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior) that are standard in the Python `datetime` library.
 
 ### Rate Limiting
 
