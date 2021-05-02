@@ -26,18 +26,18 @@ class FileNameFormatter:
         'upvotes',
     )
 
-    def __init__(self, file_format_string: str, directory_format_string: str):
+    def __init__(self, file_format_string: str, directory_format_string: str, time_format_string: str):
         if not self.validate_string(file_format_string):
             raise BulkDownloaderException(f'"{file_format_string}" is not a valid format string')
         self.file_format_string = file_format_string
         self.directory_format_string: list[str] = directory_format_string.split('/')
+        self.time_format_string = time_format_string
 
-    @staticmethod
-    def _format_name(submission: (Comment, Submission), format_string: str) -> str:
+    def _format_name(self, submission: (Comment, Submission), format_string: str) -> str:
         if isinstance(submission, Submission):
-            attributes = FileNameFormatter._generate_name_dict_from_submission(submission)
+            attributes = self._generate_name_dict_from_submission(submission)
         elif isinstance(submission, Comment):
-            attributes = FileNameFormatter._generate_name_dict_from_comment(submission)
+            attributes = self._generate_name_dict_from_comment(submission)
         else:
             raise BulkDownloaderException(f'Cannot name object {type(submission).__name__}')
         result = format_string
@@ -65,8 +65,7 @@ class FileNameFormatter:
                 in_string = in_string.replace(match, converted_match)
         return in_string
 
-    @staticmethod
-    def _generate_name_dict_from_submission(submission: Submission) -> dict:
+    def _generate_name_dict_from_submission(self, submission: Submission) -> dict:
         submission_attributes = {
             'title': submission.title,
             'subreddit': submission.subreddit.display_name,
@@ -74,17 +73,18 @@ class FileNameFormatter:
             'postid': submission.id,
             'upvotes': submission.score,
             'flair': submission.link_flair_text,
-            'date': FileNameFormatter._convert_timestamp(submission.created_utc),
+            'date': self._convert_timestamp(submission.created_utc),
         }
         return submission_attributes
 
-    @staticmethod
-    def _convert_timestamp(timestamp: float) -> str:
+    def _convert_timestamp(self, timestamp: float) -> str:
         input_time = datetime.datetime.fromtimestamp(timestamp)
-        return input_time.isoformat()
+        if self.time_format_string.upper().strip() == 'ISO':
+            return input_time.isoformat()
+        else:
+            return input_time.strftime(self.time_format_string)
 
-    @staticmethod
-    def _generate_name_dict_from_comment(comment: Comment) -> dict:
+    def _generate_name_dict_from_comment(self, comment: Comment) -> dict:
         comment_attributes = {
             'title': comment.submission.title,
             'subreddit': comment.subreddit.display_name,
@@ -92,7 +92,7 @@ class FileNameFormatter:
             'postid': comment.id,
             'upvotes': comment.score,
             'flair': '',
-            'date': FileNameFormatter._convert_timestamp(comment.created_utc),
+            'date': self._convert_timestamp(comment.created_utc),
         }
         return comment_attributes
 
@@ -160,9 +160,8 @@ class FileNameFormatter:
         result = any([f'{{{key}}}' in test_string.lower() for key in FileNameFormatter.key_terms])
         if result:
             if 'POSTID' not in test_string:
-                logger.warning(
-                    'Some files might not be downloaded due to name conflicts as filenames are'
-                    ' not guaranteed to be be unique without {POSTID}')
+                logger.warning('Some files might not be downloaded due to name conflicts as filenames are'
+                               ' not guaranteed to be be unique without {POSTID}')
             return True
         else:
             return False

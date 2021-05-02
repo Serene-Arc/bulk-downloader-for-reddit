@@ -22,6 +22,7 @@ from bdfr.site_authenticator import SiteAuthenticator
 @pytest.fixture()
 def args() -> Configuration:
     args = Configuration()
+    args.time_format = 'ISO'
     return args
 
 

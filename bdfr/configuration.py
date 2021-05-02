@@ -33,6 +33,7 @@ class Configuration(Namespace):
         self.submitted: bool = False
         self.subreddit: list[str] = []
         self.time: str = 'all'
+        self.time_format = None
         self.upvoted: bool = False
         self.user: Optional[str] = None
         self.verbose: int = 0

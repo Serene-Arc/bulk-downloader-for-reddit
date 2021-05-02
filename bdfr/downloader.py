@@ -105,6 +105,12 @@ class RedditDownloader:
                 logger.log(9, 'Wrote default download wait time download to config file')
             self.args.max_wait_time = self.cfg_parser.getint('DEFAULT', 'max_wait_time')
             logger.debug(f'Setting maximum download wait time to {self.args.max_wait_time} seconds')
+        if self.args.time_format is None:
+            option = self.cfg_parser.get('DEFAULT', 'time_format', fallback='ISO')
+            if re.match(r'^[ \'\"]*$', option):
+                option = 'ISO'
+            logger.debug(f'Setting datetime format string to {option}')
+            self.args.time_format = option
         # Update config on disk
         with open(self.config_location, 'w') as file:
             self.cfg_parser.write(file)
@@ -358,7 +364,7 @@ class RedditDownloader:
                 raise errors.BulkDownloaderException(f'User {name} is banned')
 
     def _create_file_name_formatter(self) -> FileNameFormatter:
-        return FileNameFormatter(self.args.file_scheme, self.args.folder_scheme)
+        return FileNameFormatter(self.args.file_scheme, self.args.folder_scheme, self.args.time_format)
 
     def _create_time_filter(self) -> RedditTypes.TimeType:
         try:

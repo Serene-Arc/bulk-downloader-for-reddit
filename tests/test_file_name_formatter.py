@@ -32,7 +32,7 @@ def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     return reddit_instance.submission(id='lgilgt')
 
 
-@pytest.mark.parametrize(('format_string', 'expected'), (
+@pytest.mark.parametrize(('test_format_string', 'expected'), (
     ('{SUBREDDIT}', 'randomreddit'),
     ('{REDDITOR}', 'person'),
     ('{POSTID}', '12345'),
@@ -40,10 +40,10 @@ def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     ('{FLAIR}', 'test_flair'),
     ('{DATE}', '2021-04-21T09:30:00'),
     ('{REDDITOR}_{TITLE}_{POSTID}', 'person_name_12345'),
-    ('{RANDOM}', '{RANDOM}'),
 ))
-def test_format_name_mock(format_string: str, expected: str, submission: MagicMock):
-    result = FileNameFormatter._format_name(submission, format_string)
+def test_format_name_mock(test_format_string: str, expected: str, submission: MagicMock):
+    test_formatter = FileNameFormatter(test_format_string, '', 'ISO')
+    result = test_formatter._format_name(submission, test_format_string)
     assert result == expected
 
 
@@ -63,7 +63,7 @@ def test_check_format_string_validity(test_string: str, expected: bool):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(('format_string', 'expected'), (
+@pytest.mark.parametrize(('test_format_string', 'expected'), (
     ('{SUBREDDIT}', 'Mindustry'),
     ('{REDDITOR}', 'Gamer_player_boi'),
     ('{POSTID}', 'lgilgt'),
@@ -71,8 +71,9 @@ def test_check_format_string_validity(test_string: str, expected: bool):
     ('{SUBREDDIT}_{TITLE}', 'Mindustry_Toxopid that is NOT humane >:('),
     ('{REDDITOR}_{TITLE}_{POSTID}', 'Gamer_player_boi_Toxopid that is NOT humane >:(_lgilgt')
 ))
-def test_format_name_real(format_string: str, expected: str, reddit_submission: praw.models.Submission):
-    result = FileNameFormatter._format_name(reddit_submission, format_string)
+def test_format_name_real(test_format_string: str, expected: str, reddit_submission: praw.models.Submission):
+    test_formatter = FileNameFormatter(test_format_string, '', '')
+    result = test_formatter._format_name(reddit_submission, test_format_string)
     assert result == expected
 
 
@@ -101,7 +102,7 @@ def test_format_full(
         expected: str,
         reddit_submission: praw.models.Submission):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
-    test_formatter = FileNameFormatter(format_string_file, format_string_directory)
+    test_formatter = FileNameFormatter(format_string_file, format_string_directory, 'ISO')
     result = test_formatter.format_path(test_resource, Path('test'))
     assert str(result) == expected
 
@@ -118,7 +119,7 @@ def test_format_full_conform(
         format_string_file: str,
         reddit_submission: praw.models.Submission):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
-    test_formatter = FileNameFormatter(format_string_file, format_string_directory)
+    test_formatter = FileNameFormatter(format_string_file, format_string_directory, 'ISO')
     test_formatter.format_path(test_resource, Path('test'))
 
 
@@ -138,7 +139,7 @@ def test_format_full_with_index_suffix(
         reddit_submission: praw.models.Submission,
 ):
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
-    test_formatter = FileNameFormatter(format_string_file, format_string_directory)
+    test_formatter = FileNameFormatter(format_string_file, format_string_directory, 'ISO')
     result = test_formatter.format_path(test_resource, Path('test'), index)
     assert str(result) == expected
 
@@ -152,7 +153,7 @@ def test_format_multiple_resources():
         new_mock.source_submission.title = 'test'
         new_mock.source_submission.__class__ = praw.models.Submission
         mocks.append(new_mock)
-    test_formatter = FileNameFormatter('{TITLE}', '')
+    test_formatter = FileNameFormatter('{TITLE}', '', 'ISO')
     results = test_formatter.format_resource_paths(mocks, Path('.'))
     results = set([str(res[0]) for res in results])
     assert results == {'test_1.png', 'test_2.png', 'test_3.png', 'test_4.png'}
@@ -196,7 +197,7 @@ def test_shorten_filenames(submission: MagicMock, tmp_path: Path):
     submission.subreddit.display_name = 'test'
     submission.id = 'BBBBBB'
     test_resource = Resource(submission, 'www.example.com/empty', '.jpeg')
-    test_formatter = FileNameFormatter('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}')
+    test_formatter = FileNameFormatter('{REDDITOR}_{TITLE}_{POSTID}', '{SUBREDDIT}', 'ISO')
     result = test_formatter.format_path(test_resource, tmp_path)
     result.parent.mkdir(parents=True)
     result.touch()
@@ -237,7 +238,8 @@ def test_strip_emojies(test_string: str, expected: str):
 ))
 def test_generate_dict_for_submission(test_submission_id: str, expected: dict, reddit_instance: praw.Reddit):
     test_submission = reddit_instance.submission(id=test_submission_id)
-    result = FileNameFormatter._generate_name_dict_from_submission(test_submission)
+    test_formatter = FileNameFormatter('{TITLE}', '', 'ISO')
+    result = test_formatter._generate_name_dict_from_submission(test_submission)
     assert all([result.get(key) == expected[key] for key in expected.keys()])
 
 
@@ -253,7 +255,8 @@ def test_generate_dict_for_submission(test_submission_id: str, expected: dict, r
 ))
 def test_generate_dict_for_comment(test_comment_id: str, expected: dict, reddit_instance: praw.Reddit):
     test_comment = reddit_instance.comment(id=test_comment_id)
-    result = FileNameFormatter._generate_name_dict_from_comment(test_comment)
+    test_formatter = FileNameFormatter('{TITLE}', '', 'ISO')
+    result = test_formatter._generate_name_dict_from_comment(test_comment)
     assert all([result.get(key) == expected[key] for key in expected.keys()])
 
 
@@ -272,7 +275,7 @@ def test_format_archive_entry_comment(
         reddit_instance: praw.Reddit,
 ):
     test_comment = reddit_instance.comment(id=test_comment_id)
-    test_formatter = FileNameFormatter(test_file_scheme, test_folder_scheme)
+    test_formatter = FileNameFormatter(test_file_scheme, test_folder_scheme, 'ISO')
     test_entry = Resource(test_comment, '', '.json')
     result = test_formatter.format_path(test_entry, tmp_path)
     assert result.name == expected_name
@@ -288,7 +291,7 @@ def test_multilevel_folder_scheme(
         tmp_path: Path,
         submission: MagicMock,
 ):
-    test_formatter = FileNameFormatter('{POSTID}', test_folder_scheme)
+    test_formatter = FileNameFormatter('{POSTID}', test_folder_scheme, 'ISO')
     test_resource = MagicMock()
     test_resource.source_submission = submission
     test_resource.extension = '.png'
@@ -308,7 +311,8 @@ def test_multilevel_folder_scheme(
 ))
 def test_preserve_emojis(test_name_string: str, expected: str, submission: MagicMock):
     submission.title = test_name_string
-    result = FileNameFormatter._format_name(submission, '{TITLE}')
+    test_formatter = FileNameFormatter('{TITLE}', '', 'ISO')
+    result = test_formatter._format_name(submission, '{TITLE}')
     assert result == expected
 
 
@@ -328,5 +332,18 @@ def test_convert_unicode_escapes(test_string: str, expected: str):
 ))
 def test_convert_timestamp(test_datetime: datetime, expected: str):
     test_timestamp = test_datetime.timestamp()
-    result = FileNameFormatter._convert_timestamp(test_timestamp)
+    test_formatter = FileNameFormatter('{POSTID}', '', 'ISO')
+    result = test_formatter._convert_timestamp(test_timestamp)
+    assert result == expected
+
+
+@pytest.mark.parametrize(('test_time_format', 'expected'), (
+    ('ISO', '2021-05-02T13:33:00'),
+    ('%Y_%m', '2021_05'),
+    ('%Y-%m-%d', '2021-05-02'),
+))
+def test_time_string_formats(test_time_format: str, expected: str):
+    test_time = datetime(2021, 5, 2, 13, 33)
+    test_formatter = FileNameFormatter('{TITLE}', '', test_time_format)
+    result = test_formatter._convert_timestamp(test_time.timestamp())
     assert result == expected
