@@ -9,6 +9,7 @@ from bdfr.site_downloaders.base_downloader import BaseDownloader
 from bdfr.site_downloaders.direct import Direct
 from bdfr.site_downloaders.download_factory import DownloadFactory
 from bdfr.site_downloaders.erome import Erome
+from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import YoutubeDlFallback
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
@@ -19,6 +20,7 @@ from bdfr.site_downloaders.vreddit import VReddit
 from bdfr.site_downloaders.youtube import Youtube
 
 
+@pytest.mark.online
 @pytest.mark.parametrize(('test_submission_url', 'expected_class'), (
     ('https://v.redd.it/9z1dnk3xr5k61', VReddit),
     ('https://www.reddit.com/r/TwoXChromosomes/comments/lu29zn/i_refuse_to_live_my_life'
@@ -41,7 +43,9 @@ from bdfr.site_downloaders.youtube import Youtube
     ('https://i.imgur.com/3SKrQfK.jpg?1', Direct),
     ('https://dynasty-scans.com/system/images_images/000/017/819/original/80215103_p0.png?1612232781', Direct),
     ('https://m.imgur.com/a/py3RW0j', Imgur),
-    ('https://streamable.com/dt46y', Streamable)
+    ('https://streamable.com/dt46y', Streamable),
+    ('https://vimeo.com/channels/31259/53576664', YoutubeDlFallback),
+    ('http://video.pbs.org/viralplayer/2365173446/', YoutubeDlFallback),
 ))
 def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     result = DownloadFactory.pull_lever(test_submission_url)

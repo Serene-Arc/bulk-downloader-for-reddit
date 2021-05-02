@@ -9,6 +9,7 @@ from bdfr.exceptions import NotADownloadableLinkError
 from bdfr.site_downloaders.base_downloader import BaseDownloader
 from bdfr.site_downloaders.direct import Direct
 from bdfr.site_downloaders.erome import Erome
+from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import YoutubeDlFallback
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
@@ -47,6 +48,8 @@ class DownloadFactory:
             return Streamable
         elif re.match(r'i\.redd\.it.*', sanitised_url):
             return Direct
+        elif YoutubeDlFallback.can_handle_link(sanitised_url):
+            return YoutubeDlFallback
         else:
             raise NotADownloadableLinkError(
                 f'No downloader module exists for url {url}')
