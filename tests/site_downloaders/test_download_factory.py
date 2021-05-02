@@ -15,7 +15,6 @@ from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
-from bdfr.site_downloaders.streamable import Streamable
 from bdfr.site_downloaders.vreddit import VReddit
 from bdfr.site_downloaders.youtube import Youtube
 
@@ -43,7 +42,7 @@ from bdfr.site_downloaders.youtube import Youtube
     ('https://i.imgur.com/3SKrQfK.jpg?1', Direct),
     ('https://dynasty-scans.com/system/images_images/000/017/819/original/80215103_p0.png?1612232781', Direct),
     ('https://m.imgur.com/a/py3RW0j', Imgur),
-    ('https://streamable.com/dt46y', Streamable),
+    ('https://streamable.com/dt46y', YoutubeDlFallback),
     ('https://vimeo.com/channels/31259/53576664', YoutubeDlFallback),
     ('http://video.pbs.org/viralplayer/2365173446/', YoutubeDlFallback),
 ))
