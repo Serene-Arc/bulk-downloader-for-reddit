@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from unittest.mock import MagicMock
+
 import pytest
 
 from bdfr.download_filter import DownloadFilter
+from bdfr.resource import Resource
 
 
 @pytest.fixture()
@@ -11,13 +14,14 @@ def download_filter() -> DownloadFilter:
     return DownloadFilter(['mp4', 'mp3'], ['test.com', 'reddit.com'])
 
 
-@pytest.mark.parametrize(('test_url', 'expected'), (
-    ('test.mp4', False),
-    ('test.avi', True),
-    ('test.random.mp3', False),
+@pytest.mark.parametrize(('test_extension', 'expected'), (
+    ('.mp4', False),
+    ('.avi', True),
+    ('.random.mp3', False),
+    ('mp4', False),
 ))
-def test_filter_extension(test_url: str, expected: bool, download_filter: DownloadFilter):
-    result = download_filter._check_extension(test_url)
+def test_filter_extension(test_extension: str, expected: bool, download_filter: DownloadFilter):
+    result = download_filter._check_extension(test_extension)
     assert result == expected
 
 
@@ -42,7 +46,8 @@ def test_filter_domain(test_url: str, expected: bool, download_filter: DownloadF
     ('http://reddit.com/test.gif', False),
 ))
 def test_filter_all(test_url: str, expected: bool, download_filter: DownloadFilter):
-    result = download_filter.check_url(test_url)
+    test_resource = Resource(MagicMock(), test_url)
+    result = download_filter.check_resource(test_resource)
     assert result == expected
 
 
@@ -54,5 +59,6 @@ def test_filter_all(test_url: str, expected: bool, download_filter: DownloadFilt
 ))
 def test_filter_empty_filter(test_url: str):
     download_filter = DownloadFilter()
-    result = download_filter.check_url(test_url)
+    test_resource = Resource(MagicMock(), test_url)
+    result = download_filter.check_resource(test_resource)
     assert result is True

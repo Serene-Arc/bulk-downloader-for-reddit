@@ -394,9 +394,6 @@ class RedditDownloader:
         if not isinstance(submission, praw.models.Submission):
             logger.warning(f'{submission.id} is not a submission')
             return
-        if not self.download_filter.check_url(submission.url):
-            logger.debug(f'Download filter removed submission {submission.id} with URL {submission.url}')
-            return
         try:
             downloader_class = DownloadFactory.pull_lever(submission.url)
             downloader = downloader_class(submission)
@@ -413,6 +410,8 @@ class RedditDownloader:
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
                 logger.debug(f'File {destination} already exists, continuing')
+            elif not self.download_filter.check_resource(res):
+                logger.debug(f'Download filter removed {submission.id} with URL {submission.url}')
             else:
                 try:
                     res.download(self.args.max_wait_time)
