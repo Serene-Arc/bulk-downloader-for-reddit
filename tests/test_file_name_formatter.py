@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from unittest.mock import MagicMock
+import platform
 
 import praw.models
 import pytest
@@ -27,6 +28,22 @@ def submission() -> MagicMock:
     return test
 
 
+def do_test_string_equality(result: str, expected: str) -> bool:
+    if platform.system() == 'Windows':
+        expected = FileNameFormatter._format_for_windows(expected)
+    return expected == result
+
+
+def do_test_path_equality(result: Path, expected: str) -> bool:
+    if platform.system() == 'Windows':
+        expected = expected.split('/')
+        expected = [FileNameFormatter._format_for_windows(part) for part in expected]
+        expected = Path(*expected)
+    else:
+        expected = Path(expected)
+    return result == expected
+
+
 @pytest.fixture(scope='session')
 def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
     return reddit_instance.submission(id='lgilgt')
@@ -44,7 +61,7 @@ def reddit_submission(reddit_instance: praw.Reddit) -> praw.models.Submission:
 def test_format_name_mock(test_format_string: str, expected: str, submission: MagicMock):
     test_formatter = FileNameFormatter(test_format_string, '', 'ISO')
     result = test_formatter._format_name(submission, test_format_string)
-    assert result == expected
+    assert do_test_string_equality(result, expected)
 
 
 @pytest.mark.parametrize(('test_string', 'expected'), (
@@ -74,7 +91,7 @@ def test_check_format_string_validity(test_string: str, expected: bool):
 def test_format_name_real(test_format_string: str, expected: str, reddit_submission: praw.models.Submission):
     test_formatter = FileNameFormatter(test_format_string, '', '')
     result = test_formatter._format_name(reddit_submission, test_format_string)
-    assert result == expected
+    assert do_test_string_equality(result, expected)
 
 
 @pytest.mark.online
@@ -104,7 +121,7 @@ def test_format_full(
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory, 'ISO')
     result = test_formatter.format_path(test_resource, Path('test'))
-    assert str(result) == expected
+    assert do_test_path_equality(result, expected)
 
 
 @pytest.mark.online
@@ -141,7 +158,7 @@ def test_format_full_with_index_suffix(
     test_resource = Resource(reddit_submission, 'i.reddit.com/blabla.png')
     test_formatter = FileNameFormatter(format_string_file, format_string_directory, 'ISO')
     result = test_formatter.format_path(test_resource, Path('test'), index)
-    assert str(result) == expected
+    assert do_test_path_equality(result, expected)
 
 
 def test_format_multiple_resources():
@@ -278,7 +295,7 @@ def test_format_archive_entry_comment(
     test_formatter = FileNameFormatter(test_file_scheme, test_folder_scheme, 'ISO')
     test_entry = Resource(test_comment, '', '.json')
     result = test_formatter.format_path(test_entry, tmp_path)
-    assert result.name == expected_name
+    assert do_test_string_equality(result.name, expected_name)
 
 
 @pytest.mark.parametrize(('test_folder_scheme', 'expected'), (
@@ -297,7 +314,7 @@ def test_multilevel_folder_scheme(
     test_resource.extension = '.png'
     result = test_formatter.format_path(test_resource, tmp_path)
     result = result.relative_to(tmp_path)
-    assert str(result.parent) == expected
+    assert do_test_path_equality(result.parent, expected)
     assert len(result.parents) == (len(expected.split('/')) + 1)
 
 
@@ -313,7 +330,7 @@ def test_preserve_emojis(test_name_string: str, expected: str, submission: Magic
     submission.title = test_name_string
     test_formatter = FileNameFormatter('{TITLE}', '', 'ISO')
     result = test_formatter._format_name(submission, '{TITLE}')
-    assert result == expected
+    assert do_test_string_equality(result, expected)
 
 
 @pytest.mark.parametrize(('test_string', 'expected'), (
