@@ -35,6 +35,6 @@ class YoutubeDlFallback(BaseFallbackDownloader, Youtube):
                 if result:
                     return True
             except youtube_dl.DownloadError as e:
-                logger.exception(e)
+                logger.debug("Submission cannot be downloaded using the youtube-dl fallback downloader")
                 return False
         return False
