@@ -23,7 +23,13 @@ def create_basic_args_for_download_runner(test_args: list[str], tmp_path: Path):
 
 
 def create_basic_args_for_archive_runner(test_args: list[str], tmp_path: Path):
-    out = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    out = [
+        'archive',
+        str(tmp_path),
+        '-v',
+        '--config', 'test_config.cfg',
+        '--log', str(Path(tmp_path, 'test_log.txt')),
+    ] + test_args
     return out
 
 
