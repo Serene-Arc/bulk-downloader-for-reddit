@@ -34,11 +34,7 @@ class YoutubeDlFallback(BaseFallbackDownloader, Youtube):
                 result = ydl.extract_info(url, download=False)
                 if result:
                     return True
-            except youtube_dl.DownloadError as e:
-                logger.debug("Submission cannot be downloaded using the youtube-dl fallback downloader")
-                return False
             except Exception as e:
-                logger.error("Youtube-DL quitted unexpectedly.")
                 logger.exception(e)
                 return False
         return False
