@@ -89,7 +89,7 @@ class Archiver(RedditDownloader):
     def _write_content_to_disk(self, resource: Resource, content: str):
         file_path = self.file_name_formatter.format_path(resource, self.download_directory)
         file_path.parent.mkdir(exist_ok=True, parents=True)
-        with open(file_path, 'w') as file:
+        with open(file_path, 'w', encoding="utf-8") as file:
             logger.debug(
                 f'Writing entry {resource.source_submission.id} to file in {resource.extension[1:].upper()}'
                 f' format at {file_path}')

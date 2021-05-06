@@ -196,7 +196,8 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-l', 'gstd4hk'],
-    ['-l', 'm2601g'],
+    ['-l', 'm2601g', '-f', 'yaml'],
+    ['-l', 'n60t4c', '-f', 'xml'],
 ))
 def test_cli_archive_single(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
