@@ -12,6 +12,11 @@ If you wish to open an issue, please read [the guide on opening issues](docs/CON
 python3 -m pip install bdfr
 ```
 
+If on Arch Linux or derivative operating systems such as Manjaro, the BDFR can be installed through the AUR.
+
+- Latest Release: https://aur.archlinux.org/packages/python-bdfr/
+- Latest Development Build: https://aur.archlinux.org/packages/python-bdfr-git/
+
 If you want to use the source code or make contributions, refer to [CONTRIBUTING](docs/CONTRIBUTING.md#preparing-the-environment-for-development)
 
 ## Usage
