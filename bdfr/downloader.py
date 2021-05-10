@@ -422,8 +422,8 @@ class RedditDownloader:
                 try:
                     res.download(self.args.max_wait_time)
                 except errors.BulkDownloaderException as e:
-                    logger.error(
-                        f'Failed to download resource {res.url} with downloader {downloader_class.__name__}: {e}')
+                    logger.error(f'Failed to download resource {res.url} in submission {submission.id} '
+                                 f'with downloader {downloader_class.__name__}: {e}')
                     return
                 resource_hash = res.hash.hexdigest()
                 destination.parent.mkdir(parents=True, exist_ok=True)
