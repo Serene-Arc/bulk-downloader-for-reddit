@@ -15,3 +15,4 @@ else
 fi
 
 grep 'Could not download submission' "$file" | awk '{ print $12 }' | rev | cut -c 2- | rev >>"$output"
+grep 'Failed to download resource' "$file" | awk '{ print $15 }' >>"$output"
