@@ -214,13 +214,20 @@ It is highly recommended that the file name scheme contain the parameter `{POSTI
 ## Configuration
 
 The configuration files are, by default, stored in the configuration directory for the user. This differs depending on the OS that the BDFR is being run on. For Windows, this will be:
+
   - `C:\Users\<User>\AppData\Local\BDFR\bdfr`
 
+If Python has been installed through the Windows Store, the folder will appear in a different place. Note that the hash included in the file path may change from installation to installation.
+
+  - `C:\Users\<User>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\Local\BDFR\bdfr`
+
 On Mac OSX, this will be:
+
   - `~/Library/Application Support/bdfr`. 
     
 Lastly, on a Linux system, this will be:
-  - `~/.local/share/bdfr`
+
+  - `~/.config/bdfr/`
 
 The logging output for each run of the BDFR will be saved to this directory in the file `log_output.txt`. If you need to submit a bug, it is this file that you will need to submit with the report.
 
