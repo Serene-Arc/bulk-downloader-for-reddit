@@ -36,16 +36,16 @@ python3 -m bdfr archive
 However, these commands are not enough. You should chain parameters in [Options](#options) according to your use case. Don't forget that some parameters can be provided multiple times. Some quick reference commands are:
 
 ```bash
-python3 -m bdfr download --subreddit Python -L 10
+python3 -m bdfr download ./path/to/output --subreddit Python -L 10
 ```
 ```bash
-python3 -m bdfr download --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'
+python3 -m bdfr download ./path/to/output --user me --saved --authenticate -L 25 --file-scheme '{POSTID}'
 ```
 ```bash
-python3 -m bdfr download --subreddit 'Python, all, mindustry' -L 10 --make-hard-links
+python3 -m bdfr download ./path/to/output --subreddit 'Python, all, mindustry' -L 10 --make-hard-links
 ```
 ```bash
-python3 -m bdfr archive --subreddit all --format yaml -L 500 --folder-scheme ''
+python3 -m bdfr archive ./path/to/output --subreddit all --format yaml -L 500 --folder-scheme ''
 ```
 
 ## Options
