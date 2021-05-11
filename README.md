@@ -12,6 +12,11 @@ If you wish to open an issue, please read [the guide on opening issues](docs/CON
 python3 -m pip install bdfr
 ```
 
+If on Arch Linux or derivative operating systems such as Manjaro, the BDFR can be installed through the AUR.
+
+- Latest Release: https://aur.archlinux.org/packages/python-bdfr/
+- Latest Development Build: https://aur.archlinux.org/packages/python-bdfr-git/
+
 If you want to use the source code or make contributions, refer to [CONTRIBUTING](docs/CONTRIBUTING.md#preparing-the-environment-for-development)
 
 ## Usage
@@ -55,6 +60,9 @@ The following options are common between both the `archive` and `download` comma
 - `--config`
   - If the path to a configuration file is supplied with this option, the BDFR will use the specified config
   - See [Configuration Files](#configuration) for more details
+- `--log`
+  - This allows one to specify the location of the logfile
+  - This must be done when running multiple instances of the BDFR, see [Multiple Instances](#multiple-instances) below
 - `--saved`
   - This option will make the BDFR use the supplied user's saved posts list as a download source
   - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
@@ -106,6 +114,9 @@ The following options are common between both the `archive` and `download` comma
     - `week`
     - `month`
     - `year`
+  - `--time-format`
+    - This specifies the format of the datetime string that replaces `{DATE}` in file and folder naming schemes
+    - See [Time Formatting Customisation](#time-formatting-customisation) for more details, and the formatting scheme
 - `-u, --user`
   - This specifies the user to scrape in concert with other options
   - When using `--authenticate`, `--user me` can be used to refer to the authenticated user
@@ -208,13 +219,20 @@ It is highly recommended that the file name scheme contain the parameter `{POSTI
 ## Configuration
 
 The configuration files are, by default, stored in the configuration directory for the user. This differs depending on the OS that the BDFR is being run on. For Windows, this will be:
+
   - `C:\Users\<User>\AppData\Local\BDFR\bdfr`
 
+If Python has been installed through the Windows Store, the folder will appear in a different place. Note that the hash included in the file path may change from installation to installation.
+
+  - `C:\Users\<User>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\Local\BDFR\bdfr`
+
 On Mac OSX, this will be:
+
   - `~/Library/Application Support/bdfr`. 
     
 Lastly, on a Linux system, this will be:
-  - `~/.local/share/bdfr`
+
+  - `~/.config/bdfr/`
 
 The logging output for each run of the BDFR will be saved to this directory in the file `log_output.txt`. If you need to submit a bug, it is this file that you will need to submit with the report.
 
@@ -222,15 +240,25 @@ The logging output for each run of the BDFR will be saved to this directory in t
 
 The `config.cfg` is the file that supplies the BDFR with the configuration to use. At the moment, the following keys **must** be included in the configuration file supplied.
 
-  - `backup_log_count`
-  - `max_wait_time`
   - `client_id`
   - `client_secret`
   - `scopes`
 
+The following keys are optional, and defaults will be used if they cannot be found.
+
+  - `backup_log_count`
+  - `max_wait_time`
+  - `time_format`
+
 All of these should not be modified unless you know what you're doing, as the default values will enable the BDFR to function just fine. A configuration is included in the BDFR when it is installed, and this will be placed in the configuration directory as the default.
 
 Most of these values have to do with OAuth2 configuration and authorisation. The key `backup_log_count` however has to do with the log rollover. The logs in the configuration directory can be verbose and for long runs of the BDFR, can grow quite large. To combat this, the BDFR will overwrite previous logs. This value determines how many previous run logs will be kept. The default is 3, which means that the BDFR will keep at most three past logs plus the current one. Any runs past this will overwrite the oldest log file, called "rolling over". If you want more records of past runs, increase this number.
+
+#### Time Formatting Customisation
+
+The option `time_format` will specify the format of the timestamp that replaces `{DATE}` in filename and folder name schemes. By default, this is the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format which is highly recommended due to its standardised nature. If you don't **need** to change it, it is recommended that you do not. However, you can specify it to anything required with this option. The `--time-format` option supersedes any specification in the configuration file
+
+The format can be specified through the [format codes](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior) that are standard in the Python `datetime` library.
 
 ### Rate Limiting
 
@@ -239,6 +267,16 @@ The option `max_wait_time` has to do with retrying downloads. There are certain 
 To this end, the BDFR will sleep for a time before retrying the download, giving the remote server time to "rest". This is done in 60 second increments. For example, if a rate-limiting-related error is given, the BDFR will sleep for 60 seconds before retrying. Then, if the same type of error occurs, it will sleep for another 120 seconds, then 180 seconds, and so on.
 
 The option `--max-wait-time` and the configuration option `max_wait_time` both specify the maximum time the BDFR will wait. If both are present, the command-line option takes precedence. For instance, the default is 120, so the BDFR will wait for 60 seconds, then 120 seconds, and then move one. **Note that this results in a total time of 180 seconds trying the same download**. If you wish to try to bypass the rate-limiting system on the remote site, increasing the maximum wait time may help. However, note that the actual wait times increase exponentially if the resource is not downloaded i.e. specifying a max value of 300 (5 minutes), can make the BDFR pause for 15 minutes on one submission, not 5, in the worst case.
+
+## Multiple Instances
+
+The BDFR can be run in multiple instances with multiple configurations, either concurrently or consecutively. The use of scripting files facilitates this the easiest, either Powershell on Windows operating systems or Bash elsewhere. This allows multiple scenarios to be run with data being scraped from different sources, as any two sets of scenarios might be mutually exclusive i.e. it is not possible to download any combination of data from a single run of the BDFR. To download from multiple users for example, multiple runs of the BDFR are required.
+
+Running these scenarios consecutively is done easily, like any single run. Configuration files that differ may be specified with the `--config` option to switch between tokens, for example. Otherwise, almost all configuration for data sources can be specified per-run through the command line.
+
+Running scenarious concurrently (at the same time) however, is more complicated. The BDFR will look to a single, static place to put the detailed log files, in a directory with the configuration file specified above. If there are multiple instances, or processes, of the BDFR running at the same time, they will all be trying to write to a single file. On Linux and other UNIX based operating systems, this will succeed, though there is a substantial risk that the logfile will be useless due to garbled and jumbled data. On Windows however, attempting this will raise an error that crashes the program as Windows forbids multiple processes from accessing the same file.
+
+The way to fix this is to use the `--log` option to manually specify where the logfile is to be stored. If the given location is unique to each instance of the BDFR, then it will run fine.
 
 ## List of currently supported sources
 
@@ -252,6 +290,7 @@ The option `--max-wait-time` and the configuration option `max_wait_time` both s
   - Reddit Videos
   - Redgifs
   - YouTube
+  - Streamable
 
 ## Contributing
 

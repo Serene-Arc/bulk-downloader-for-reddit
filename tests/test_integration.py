@@ -11,6 +11,28 @@ from bdfr.__main__ import cli
 
 does_test_config_exist = Path('test_config.cfg').exists()
 
+
+def create_basic_args_for_download_runner(test_args: list[str], tmp_path: Path):
+    out = [
+        'download', str(tmp_path),
+        '-v',
+        '--config', 'test_config.cfg',
+        '--log', str(Path(tmp_path, 'test_log.txt')),
+    ] + test_args
+    return out
+
+
+def create_basic_args_for_archive_runner(test_args: list[str], tmp_path: Path):
+    out = [
+        'archive',
+        str(tmp_path),
+        '-v',
+        '--config', 'test_config.cfg',
+        '--log', str(Path(tmp_path, 'test_log.txt')),
+    ] + test_args
+    return out
+
+
 @pytest.mark.online
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
@@ -35,7 +57,7 @@ does_test_config_exist = Path('test_config.cfg').exists()
 ))
 def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Added submissions from subreddit ' in result.output
@@ -53,7 +75,7 @@ def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_links(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
 
@@ -69,7 +91,7 @@ def test_cli_download_links(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_multireddit(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Added submissions from multireddit ' in result.output
@@ -83,7 +105,7 @@ def test_cli_download_multireddit(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Failed to get submissions for multireddit' in result.output
@@ -104,7 +126,7 @@ def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Pa
 ))
 def test_cli_download_user_data_good(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Downloaded submission ' in result.output
@@ -119,7 +141,7 @@ def test_cli_download_user_data_good(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'To use "me" as a user, an authenticated Reddit instance must be used' in result.output
@@ -134,7 +156,7 @@ def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp
 def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
     Path(tmp_path, 'test.txt').touch()
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Calculating hashes for' in result.output
@@ -145,13 +167,14 @@ def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'tumblr', '-L', '25', '--skip', 'png', '--skip', 'jpg'],
+    ['--subreddit', 'MaliciousCompliance', '-L', '25', '--skip', 'txt'],
 ))
 def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert 'Download filter removed submission' in result.output
+    assert 'Download filter removed ' in result.output
 
 
 @pytest.mark.online
@@ -163,7 +186,7 @@ def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_long(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
 
@@ -173,11 +196,12 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['-l', 'gstd4hk'],
-    ['-l', 'm2601g'],
+    ['-l', 'm2601g', '-f', 'yaml'],
+    ['-l', 'n60t4c', '-f', 'xml'],
 ))
 def test_cli_archive_single(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert re.search(r'Writing entry .*? to file in .*? format', result.output)
@@ -196,7 +220,7 @@ def test_cli_archive_single(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert re.search(r'Writing entry .*? to file in .*? format', result.output)
@@ -210,7 +234,7 @@ def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
 
@@ -225,7 +249,7 @@ def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['archive', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert re.search(r'Writing entry .*? to file in .*? format', result.output)
@@ -239,10 +263,12 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     ['--user', 'sdclhgsolgjeroij', '--submitted', '-L', 10],
     ['--user', 'me', '--upvoted', '-L', 10],
     ['--user', 'sdclhgsolgjeroij', '--upvoted', '-L', 10],
+    ['--subreddit', 'submitters', '-L', 10],  # Private subreddit
+    ['--subreddit', 'donaldtrump', '-L', 10],  # Banned subreddit
 ))
 def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
 
@@ -257,7 +283,7 @@ def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_hard_fail(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code != 0
 
@@ -277,7 +303,7 @@ def test_cli_download_use_default_config(tmp_path: Path):
 ))
 def test_cli_download_links_exclusion(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'in exclusion list' in result.output
@@ -293,7 +319,7 @@ def test_cli_download_links_exclusion(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_download_subreddit_exclusion(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'in skip list' in result.output
@@ -309,7 +335,7 @@ def test_cli_download_subreddit_exclusion(test_args: list[str], tmp_path: Path):
 ))
 def test_cli_file_scheme_warning(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
-    test_args = ['download', str(tmp_path), '-v', '--config', 'test_config.cfg'] + test_args
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
     assert 'Some files might not be downloaded due to name conflicts' in result.output

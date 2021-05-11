@@ -8,7 +8,7 @@ from typing import Optional
 import requests
 from praw.models import Submission
 
-from bdfr.exceptions import ResourceNotFound
+from bdfr.exceptions import ResourceNotFound, SiteDownloaderError
 from bdfr.resource import Resource
 from bdfr.site_authenticator import SiteAuthenticator
 
@@ -27,7 +27,11 @@ class BaseDownloader(ABC):
 
     @staticmethod
     def retrieve_url(url: str, cookies: dict = None, headers: dict = None) -> requests.Response:
-        res = requests.get(url, cookies=cookies, headers=headers)
+        try:
+            res = requests.get(url, cookies=cookies, headers=headers)
+        except requests.exceptions.RequestException as e:
+            logger.exception(e)
+            raise SiteDownloaderError(f'Failed to get page {url}')
         if res.status_code != 200:
             raise ResourceNotFound(f'Server responded with {res.status_code} to {url}')
         return res

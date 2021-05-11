@@ -22,6 +22,7 @@ from bdfr.site_authenticator import SiteAuthenticator
 @pytest.fixture()
 def args() -> Configuration:
     args = Configuration()
+    args.time_format = 'ISO'
     return args
 
 
@@ -458,3 +459,75 @@ def test_read_excluded_submission_ids_from_file(downloader_mock: MagicMock, tmp_
     downloader_mock.args.exclude_id_file = [test_file]
     results = RedditDownloader._read_excluded_ids(downloader_mock)
     assert results == {'aaaaaa', 'bbbbbb'}
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_redditor_name', (
+    'Paracortex',
+    'crowdstrike',
+    'HannibalGoddamnit',
+))
+def test_check_user_existence_good(
+    test_redditor_name: str,
+    reddit_instance: praw.Reddit,
+    downloader_mock: MagicMock,
+):
+    downloader_mock.reddit_instance = reddit_instance
+    RedditDownloader._check_user_existence(downloader_mock, test_redditor_name)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_redditor_name', (
+    'lhnhfkuhwreolo',
+    'adlkfmnhglojh',
+))
+def test_check_user_existence_nonexistent(
+        test_redditor_name: str,
+        reddit_instance: praw.Reddit,
+        downloader_mock: MagicMock,
+):
+    downloader_mock.reddit_instance = reddit_instance
+    with pytest.raises(BulkDownloaderException, match='Could not find'):
+        RedditDownloader._check_user_existence(downloader_mock, test_redditor_name)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_redditor_name', (
+    'Bree-Boo',
+))
+def test_check_user_existence_banned(
+        test_redditor_name: str,
+        reddit_instance: praw.Reddit,
+        downloader_mock: MagicMock,
+):
+    downloader_mock.reddit_instance = reddit_instance
+    with pytest.raises(BulkDownloaderException, match='is banned'):
+        RedditDownloader._check_user_existence(downloader_mock, test_redditor_name)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_subreddit_name', 'expected_message'), (
+    ('donaldtrump', 'cannot be found'),
+    ('submitters', 'private and cannot be scraped')
+))
+def test_check_subreddit_status_bad(test_subreddit_name: str, expected_message: str, reddit_instance: praw.Reddit):
+    test_subreddit = reddit_instance.subreddit(test_subreddit_name)
+    with pytest.raises(BulkDownloaderException, match=expected_message):
+        RedditDownloader._check_subreddit_status(test_subreddit)
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize('test_subreddit_name', (
+    'Python',
+    'Mindustry',
+    'TrollXChromosomes',
+    'all',
+))
+def test_check_subreddit_status_good(test_subreddit_name: str, reddit_instance: praw.Reddit):
+    test_subreddit = reddit_instance.subreddit(test_subreddit_name)
+    RedditDownloader._check_subreddit_status(test_subreddit)

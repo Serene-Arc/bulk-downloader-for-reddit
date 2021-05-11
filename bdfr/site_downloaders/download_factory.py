@@ -9,13 +9,12 @@ from bdfr.exceptions import NotADownloadableLinkError
 from bdfr.site_downloaders.base_downloader import BaseDownloader
 from bdfr.site_downloaders.direct import Direct
 from bdfr.site_downloaders.erome import Erome
+from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import YoutubeDlFallback
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
-from bdfr.site_downloaders.gif_delivery_network import GifDeliveryNetwork
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
-from bdfr.site_downloaders.vreddit import VReddit
 from bdfr.site_downloaders.youtube import Youtube
 
 
@@ -33,22 +32,21 @@ class DownloadFactory:
             return Gallery
         elif re.match(r'gfycat\.', sanitised_url):
             return Gfycat
-        elif re.match(r'gifdeliverynetwork', sanitised_url):
-            return GifDeliveryNetwork
         elif re.match(r'(m\.)?imgur.*', sanitised_url):
             return Imgur
-        elif re.match(r'redgifs.com', sanitised_url):
+        elif re.match(r'(redgifs|gifdeliverynetwork)', sanitised_url):
             return Redgifs
         elif re.match(r'reddit\.com/r/', sanitised_url):
             return SelfPost
-        elif re.match(r'v\.redd\.it', sanitised_url):
-            return VReddit
         elif re.match(r'(m\.)?youtu\.?be', sanitised_url):
             return Youtube
         elif re.match(r'i\.redd\.it.*', sanitised_url):
             return Direct
+        elif YoutubeDlFallback.can_handle_link(sanitised_url):
+            return YoutubeDlFallback
         else:
-            raise NotADownloadableLinkError(f'No downloader module exists for url {url}')
+            raise NotADownloadableLinkError(
+                f'No downloader module exists for url {url}')
 
     @staticmethod
     def _sanitise_url(url: str) -> str:

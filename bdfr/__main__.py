@@ -20,10 +20,12 @@ _common_options = [
     click.option('-m', '--multireddit', multiple=True, default=None, type=str),
     click.option('-L', '--limit', default=None, type=int),
     click.option('--authenticate', is_flag=True, default=None),
+    click.option('--log', type=str, default=None),
     click.option('--submitted', is_flag=True, default=None),
     click.option('--upvoted', is_flag=True, default=None),
     click.option('--saved', is_flag=True, default=None),
     click.option('--search', default=None, type=str),
+    click.option('--time-format', type=str, default=None),
     click.option('-u', '--user', type=str, default=None),
     click.option('-t', '--time', type=click.Choice(('all', 'hour', 'day', 'week', 'month', 'year')), default=None),
     click.option('-S', '--sort', type=click.Choice(('hot', 'top', 'new',
@@ -73,7 +75,7 @@ def cli_download(context: click.Context, **_):
 @cli.command('archive')
 @_add_common_options
 @click.option('--all-comments', is_flag=True, default=None)
-@click.option('-f,', '--format', type=click.Choice(('xml', 'json', 'yaml')), default=None)
+@click.option('-f', '--format', type=click.Choice(('xml', 'json', 'yaml')), default=None)
 @click.pass_context
 def cli_archive(context: click.Context, **_):
     config = Configuration()
