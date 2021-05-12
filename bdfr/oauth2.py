@@ -70,8 +70,8 @@ class OAuth2Authenticator:
     def receive_connection() -> socket.socket:
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server.bind(('localhost', 7634))
-        logger.log(9, 'Server listening on localhost:7634')
+        server.bind(('0.0.0.0', 7634))
+        logger.log(9, 'Server listening on 0.0.0.0:7634')
 
         server.listen(1)
         client = server.accept()[0]
