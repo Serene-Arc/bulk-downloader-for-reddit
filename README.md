@@ -9,14 +9,17 @@ If you wish to open an issue, please read [the guide on opening issues](docs/CON
 ## Installation
 *Bulk Downloader for Reddit* needs Python version 3.9 or above. Please update Python before installation to meet the requirement. Then, you can install it as such:
 ```bash
-python3 -m pip install bdfr
+python3 -m pip install bdfr --upgrade
 ```
+**To update BDFR**, run the above command again after the installation.
 
+### AUR Package
 If on Arch Linux or derivative operating systems such as Manjaro, the BDFR can be installed through the AUR.
 
 - Latest Release: https://aur.archlinux.org/packages/python-bdfr/
 - Latest Development Build: https://aur.archlinux.org/packages/python-bdfr-git/
 
+### Source code
 If you want to use the source code or make contributions, refer to [CONTRIBUTING](docs/CONTRIBUTING.md#preparing-the-environment-for-development)
 
 ## Usage
