@@ -9,7 +9,7 @@ Due to the verboseness of the logs, a great deal of information can be gathered 
 
 ## Extract all Successfully Downloaded IDs
 
-This script is contained [here](extract_successful_ids.sh) and will result in a file that contains the IDs of everything that was successfully downloaded without an error. That is, a list will be created of submissions that, with the `--exclude-id-file` option, can be used so that the BDFR will not attempt to redownload these submissions/comments. This is likely to cause a performance increase, especially when the BDFR run finds many resources.
+This script is contained [here](extract_successful_ids.sh) and will result in a file that contains the IDs of everything that was successfully downloaded without an error. That is, a list will be created of submissions that, with the `--skip-id-file` option, can be used so that the BDFR will not attempt to redownload these submissions/comments. This is likely to cause a performance increase, especially when the BDFR run finds many resources.
 
 The script can be used with the following signature:
 

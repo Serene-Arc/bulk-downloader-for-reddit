@@ -131,10 +131,10 @@ The following options are common between both the `archive` and `download` comma
 
 The following options apply only to the `download` command. This command downloads the files and resources linked to in the submission, or a text submission itself, to the disk in the specified directory.
 
-- `--exclude-id`
+- `--skip-id`
   - This will skip the download of any submission with the ID provided
   - Can be specified multiple times
-- `--exclude-id-file`
+- `--skip-id-file`
   - This will skip the download of any submission with any of the IDs in the files provided
   - Can be specified multiple times
   - Format is one ID per line

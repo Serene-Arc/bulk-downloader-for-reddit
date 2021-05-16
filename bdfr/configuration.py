@@ -13,8 +13,8 @@ class Configuration(Namespace):
         self.authenticate = False
         self.config = None
         self.directory: str = '.'
-        self.exclude_id = []
-        self.exclude_id_file = []
+        self.skip_id = []
+        self.skip_id_file = []
         self.limit: Optional[int] = None
         self.link: list[str] = []
         self.log: Optional[str] = None

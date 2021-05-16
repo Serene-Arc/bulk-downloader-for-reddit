@@ -456,7 +456,7 @@ def test_excluded_ids(test_ids: tuple[str], test_excluded: tuple[str], expected_
 def test_read_excluded_submission_ids_from_file(downloader_mock: MagicMock, tmp_path: Path):
     test_file = tmp_path / 'test.txt'
     test_file.write_text('aaaaaa\nbbbbbb')
-    downloader_mock.args.exclude_id_file = [test_file]
+    downloader_mock.args.skip_id_file = [test_file]
     results = RedditDownloader._read_excluded_ids(downloader_mock)
     assert results == {'aaaaaa', 'bbbbbb'}
 

@@ -460,8 +460,8 @@ class RedditDownloader:
 
     def _read_excluded_ids(self) -> set[str]:
         out = []
-        out.extend(self.args.exclude_id)
-        for id_file in self.args.exclude_id_file:
+        out.extend(self.args.skip_id)
+        for id_file in self.args.skip_id_file:
             id_file = Path(id_file).resolve().expanduser()
             if not id_file.exists():
                 logger.warning(f'ID exclusion file at {id_file} does not exist')

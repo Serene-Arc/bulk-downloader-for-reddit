@@ -299,7 +299,7 @@ def test_cli_download_use_default_config(tmp_path: Path):
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['-l', 'm2601g', '--exclude-id', 'm2601g'],
+    ['-l', 'm2601g', '--skip-id', 'm2601g'],
 ))
 def test_cli_download_links_exclusion(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

@@ -45,14 +45,14 @@ def cli():
 
 
 @cli.command('download')
-@click.option('--exclude-id', default=None, multiple=True)
-@click.option('--exclude-id-file', default=None, multiple=True)
 @click.option('--file-scheme', default=None, type=str)
 @click.option('--folder-scheme', default=None, type=str)
 @click.option('--make-hard-links', is_flag=True, default=None)
 @click.option('--max-wait-time', type=int, default=None)
 @click.option('--no-dupes', is_flag=True, default=None)
 @click.option('--search-existing', is_flag=True, default=None)
+@click.option('--skip-id', default=None, multiple=True)
+@click.option('--skip-id-file', default=None, multiple=True)
 @click.option('--skip-format', default=None, multiple=True)
 @click.option('--skip-domain', default=None, multiple=True)
 @click.option('--skip-subreddit', default=None, multiple=True)
