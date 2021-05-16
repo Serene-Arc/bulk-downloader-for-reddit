@@ -27,3 +27,9 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+    
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/

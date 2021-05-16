@@ -27,6 +27,7 @@ class Gfycat(Redgifs):
 
         response = Gfycat.retrieve_url(url)
         if re.search(r'(redgifs|gifdeliverynetwork)', response.url):
+            url = url.lower()  # Fixes error with old gfycat/redgifs links
             return Redgifs._get_link(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
