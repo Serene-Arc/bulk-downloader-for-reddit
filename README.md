@@ -161,7 +161,7 @@ The following options apply only to the `download` command. This command downloa
 - `--skip-domain`
   - This adds domains to the download filter i.e. submissions coming from these domains will not be downloaded
   - Can be specified multiple times
-- `--skip`
+- `--skip-format`
   - This adds file types to the download filter i.e. submissions with one of the supplied file extensions will not be downloaded
   - Can be specified multiple times
 - `--skip-subreddit`

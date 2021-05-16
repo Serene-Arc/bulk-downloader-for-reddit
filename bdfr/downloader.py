@@ -379,7 +379,7 @@ class RedditDownloader:
             return RedditTypes.SortType.HOT
 
     def _create_download_filter(self) -> DownloadFilter:
-        return DownloadFilter(self.args.skip, self.args.skip_domain)
+        return DownloadFilter(self.args.skip_format, self.args.skip_domain)
 
     def _create_authenticator(self) -> SiteAuthenticator:
         return SiteAuthenticator(self.cfg_parser)

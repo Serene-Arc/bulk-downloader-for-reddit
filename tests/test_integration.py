@@ -166,8 +166,8 @@ def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--subreddit', 'tumblr', '-L', '25', '--skip', 'png', '--skip', 'jpg'],
-    ['--subreddit', 'MaliciousCompliance', '-L', '25', '--skip', 'txt'],
+    ['--subreddit', 'tumblr', '-L', '25', '--skip-format', 'png', '--skip-format', 'jpg'],
+    ['--subreddit', 'MaliciousCompliance', '-L', '25', '--skip-format', 'txt'],
 ))
 def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

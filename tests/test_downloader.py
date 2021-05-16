@@ -56,7 +56,7 @@ def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
     (['.test'], ['test.com'],),
 ))
 def test_create_download_filter(skip_extensions: list[str], skip_domains: list[str], downloader_mock: MagicMock):
-    downloader_mock.args.skip = skip_extensions
+    downloader_mock.args.skip_format = skip_extensions
     downloader_mock.args.skip_domain = skip_domains
     result = RedditDownloader._create_download_filter(downloader_mock)
 
