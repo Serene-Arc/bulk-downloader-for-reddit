@@ -10,6 +10,7 @@ import os
 import re
 import shutil
 import socket
+import time
 from datetime import datetime
 from enum import Enum, auto
 from multiprocessing import Pool
@@ -440,6 +441,8 @@ class RedditDownloader:
                 with open(destination, 'wb') as file:
                     file.write(res.content)
                 logger.debug(f'Written file to {destination}')
+                creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
+                os.utime(destination, (creation_time, creation_time))
                 self.master_hash_list[resource_hash] = destination
                 logger.debug(f'Hash added to master list: {resource_hash}')
                 logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
