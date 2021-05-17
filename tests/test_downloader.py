@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import re
+import os
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -80,6 +81,32 @@ def test_mark_hard_link(
 
     assert test_file_1_stats.st_nlink == 2
     assert test_file_1_stats.st_ino == test_file_2_inode
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(('test_submission_id', 'test_creation_date'), (
+    ('ndzz50', 1621204841.0),
+))
+def test_file_creation_date(
+        test_submission_id: str,
+        test_creation_date: float,
+        downloader_mock: MagicMock,
+        tmp_path: Path,
+        reddit_instance: praw.Reddit
+):
+    downloader_mock.reddit_instance = reddit_instance
+    downloader_mock.download_directory = tmp_path
+    downloader_mock.args.folder_scheme = ''
+    downloader_mock.args.file_scheme = '{POSTID}'
+    downloader_mock.file_name_formatter = RedditConnector.create_file_name_formatter(downloader_mock)
+    submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
+
+    RedditDownloader._download_submission(downloader_mock, submission)
+
+    for file_path in Path(tmp_path).iterdir():
+        file_stats = os.stat(file_path)
+        assert file_stats.st_mtime == test_creation_date
 
 
 def test_search_existing_files():
