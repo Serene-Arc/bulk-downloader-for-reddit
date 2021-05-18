@@ -372,7 +372,7 @@ def test_time_string_formats(test_time_format: str, expected: str):
 
 def test_get_max_path_length():
     result = FileNameFormatter.find_max_path_length()
-    assert result in (4096, 260)
+    assert result in (4096, 260, 1024)
 
 
 def test_windows_max_path():
