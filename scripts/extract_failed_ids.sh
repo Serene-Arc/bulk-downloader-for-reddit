@@ -14,5 +14,8 @@ else
     output="failed.txt"
 fi
 
-grep 'Could not download submission' "$file" | awk '{ print $12 }' | rev | cut -c 2- | rev >>"$output"
-grep 'Failed to download resource' "$file" | awk '{ print $15 }' >>"$output"
+{
+    grep 'Could not download submission' "$file" | awk '{ print $12 }' | rev | cut -c 2- | rev ; \
+    grep 'Failed to download resource' "$file" | awk '{ print $15 }' ; \
+    grep 'failed to download submission' "$file" | awk '{ print $14 }' | rev | cut -c 2- | rev ; \
+} >>"$output"
