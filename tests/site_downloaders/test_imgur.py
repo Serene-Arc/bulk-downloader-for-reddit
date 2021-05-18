@@ -122,6 +122,14 @@ def test_imgur_extension_validation_bad(test_extension: str):
             '029c475ce01b58fdf1269d8771d33913',
         ),
     ),
+    (
+        'https://imgur.com/a/eemHCCK',
+        (
+            '9cb757fd8f055e7ef7aa88addc9d9fa5',
+            'b6cb6c918e2544e96fb7c07d828774b5',
+            'fb6c913d721c0bbb96aa65d7f560d385',
+        ),
+    ),
 ))
 def test_find_resources(test_url: str, expected_hashes: list[str]):
     mock_download = Mock()
@@ -131,5 +139,4 @@ def test_find_resources(test_url: str, expected_hashes: list[str]):
     assert all([isinstance(res, Resource) for res in results])
     [res.download(120) for res in results]
     hashes = set([res.hash.hexdigest() for res in results])
-    assert len(results) == len(expected_hashes)
     assert hashes == set(expected_hashes)
