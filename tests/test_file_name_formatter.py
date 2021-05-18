@@ -380,4 +380,4 @@ def test_windows_max_path():
         with unittest.mock.patch('bdfr.file_name_formatter.FileNameFormatter.find_max_path_length', return_value=260):
             result = FileNameFormatter._limit_file_name_length('test' * 50, '_1.png', Path('test' * 25))
             assert len(str(result)) <= 260
-            assert len(result.name) <= 75
+            assert len(result.name) <= 150
