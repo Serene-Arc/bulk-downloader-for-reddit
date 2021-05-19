@@ -5,8 +5,8 @@ import hashlib
 import logging
 import re
 import time
-from typing import Optional
 import urllib.parse
+from typing import Optional
 
 import _hashlib
 import requests
@@ -39,7 +39,7 @@ class Resource:
             else:
                 raise BulkDownloaderException(
                     f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
-        except requests.exceptions.ConnectionError as e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.ChunkedEncodingError) as e:
             logger.warning(f'Error occured downloading from {url}, waiting {wait_time} seconds: {e}')
             time.sleep(wait_time)
             if wait_time < max_wait_time:
