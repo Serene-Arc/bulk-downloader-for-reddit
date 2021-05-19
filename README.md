@@ -1,6 +1,7 @@
 # Bulk Downloader for Reddit
-[![Python Test](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml/badge.svg?branch=v2)](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml)
-[![PyPI version](https://badge.fury.io/py/bdfr.svg)](https://badge.fury.io/py/bdfr)
+[![PyPI version](https://img.shields.io/pypi/v/bdfr.svg)](https://pypi.python.org/pypi/bdfr)
+[![PyPI downloads](https://img.shields.io/pypi/dm/bdfr)](https://pypi.python.org/pypi/bdfr)
+[![Python Test](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/aliparlakci/bulk-downloader-for-reddit/actions/workflows/test.yml)
 
 This is a tool to download submissions or submission data from Reddit. It can be used to archive data or even crawl Reddit to gather research data. The BDFR is flexible and can be used in scripts if needed through an extensive command-line interface. [List of currently supported sources](#list-of-currently-supported-sources)
 
