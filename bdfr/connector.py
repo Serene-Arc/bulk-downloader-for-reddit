@@ -367,7 +367,7 @@ class RedditConnector(metaclass=ABCMeta):
             return RedditTypes.SortType.HOT
 
     def create_download_filter(self) -> DownloadFilter:
-        return DownloadFilter(self.args.skip_format, self.args.skip_domain)
+        return DownloadFilter(self.args.skip, self.args.skip_domain)
 
     def create_authenticator(self) -> SiteAuthenticator:
         return SiteAuthenticator(self.cfg_parser)
@@ -389,8 +389,8 @@ class RedditConnector(metaclass=ABCMeta):
 
     def read_excluded_ids(self) -> set[str]:
         out = []
-        out.extend(self.args.skip_id)
-        for id_file in self.args.skip_id_file:
+        out.extend(self.args.exclude_id)
+        for id_file in self.args.exclude_id_file:
             id_file = Path(id_file).resolve().expanduser()
             if not id_file.exists():
                 logger.warning(f'ID exclusion file at {id_file} does not exist')
