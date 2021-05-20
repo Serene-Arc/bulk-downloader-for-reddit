@@ -26,6 +26,7 @@ class BaseArchiveEntry(ABC):
             'stickied': in_comment.stickied,
             'body': in_comment.body,
             'is_submitter': in_comment.is_submitter,
+            'distinguished': in_comment.distinguished,
             'created_utc': in_comment.created_utc,
             'parent_id': in_comment.parent_id,
             'replies': [],

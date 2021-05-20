@@ -35,6 +35,10 @@ class SubmissionArchiveEntry(BaseArchiveEntry):
             'link_flair_text': self.source.link_flair_text,
             'num_comments': self.source.num_comments,
             'over_18': self.source.over_18,
+            'spoiler': self.source.spoiler,
+            'pinned': self.source.pinned,
+            'locked': self.source.locked,
+            'distinguished': self.source.distinguished,
             'created_utc': self.source.created_utc,
         }
 
