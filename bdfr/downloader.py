@@ -71,35 +71,36 @@ class RedditDownloader(RedditConnector):
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
                 logger.debug(f'File {destination} already exists, continuing')
+                continue
             elif not self.download_filter.check_resource(res):
                 logger.debug(f'Download filter removed {submission.id} with URL {submission.url}')
-            else:
-                try:
-                    res.download(self.args.max_wait_time)
-                except errors.BulkDownloaderException as e:
-                    logger.error(f'Failed to download resource {res.url} in submission {submission.id} '
-                                 f'with downloader {downloader_class.__name__}: {e}')
+                continue
+            try:
+                res.download(self.args.max_wait_time)
+            except errors.BulkDownloaderException as e:
+                logger.error(f'Failed to download resource {res.url} in submission {submission.id} '
+                             f'with downloader {downloader_class.__name__}: {e}')
+                return
+            resource_hash = res.hash.hexdigest()
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            if resource_hash in self.master_hash_list:
+                if self.args.no_dupes:
+                    logger.info(
+                        f'Resource hash {resource_hash} from submission {submission.id} downloaded elsewhere')
                     return
-                resource_hash = res.hash.hexdigest()
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                if resource_hash in self.master_hash_list:
-                    if self.args.no_dupes:
-                        logger.info(
-                            f'Resource hash {resource_hash} from submission {submission.id} downloaded elsewhere')
-                        return
-                    elif self.args.make_hard_links:
-                        self.master_hash_list[resource_hash].link_to(destination)
-                        logger.info(
-                            f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}')
-                        return
-                with open(destination, 'wb') as file:
-                    file.write(res.content)
-                logger.debug(f'Written file to {destination}')
-                creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
-                os.utime(destination, (creation_time, creation_time))
-                self.master_hash_list[resource_hash] = destination
-                logger.debug(f'Hash added to master list: {resource_hash}')
-                logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
+                elif self.args.make_hard_links:
+                    self.master_hash_list[resource_hash].link_to(destination)
+                    logger.info(
+                        f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}')
+                    return
+            with open(destination, 'wb') as file:
+                file.write(res.content)
+            logger.debug(f'Written file to {destination}')
+            creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
+            os.utime(destination, (creation_time, creation_time))
+            self.master_hash_list[resource_hash] = destination
+            logger.debug(f'Hash added to master list: {resource_hash}')
+            logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
 
     @staticmethod
     def scan_existing_files(directory: Path) -> dict[str, Path]:
