@@ -22,9 +22,15 @@ logger = logging.getLogger(__name__)
 
 
 def _calc_hash(existing_file: Path):
+    CHUNK_SIZE = 1024 * 1024
+    md5_hash = hashlib.md5()
     with open(existing_file, 'rb') as file:
-        file_hash = hashlib.md5(file.read()).hexdigest()
-        return existing_file, file_hash
+        chunk = file.read(CHUNK_SIZE)
+        while chunk:
+            md5_hash.update(chunk)
+            chunk = file.read(CHUNK_SIZE)
+    file_hash = md5_hash.hexdigest()
+    return existing_file, file_hash
 
 
 class RedditDownloader(RedditConnector):
