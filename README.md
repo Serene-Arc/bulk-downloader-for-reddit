@@ -151,17 +151,17 @@ The following options apply only to the `download` command. This command downloa
   - Sets the scheme for folders
   - Default is `{SUBREDDIT}`
   - See [Folder and File Name Schemes](#folder-and-file-name-schemes) for more details
-- `--skip-id`
+- `--exclude-id`
   - This will skip the download of any submission with the ID provided
   - Can be specified multiple times
-- `--skip-id-file`
+- `--exclude-id-file`
   - This will skip the download of any submission with any of the IDs in the files provided
   - Can be specified multiple times
   - Format is one ID per line
 - `--skip-domain`
   - This adds domains to the download filter i.e. submissions coming from these domains will not be downloaded
   - Can be specified multiple times
-- `--skip-format`
+- `--skip`
   - This adds file types to the download filter i.e. submissions with one of the supplied file extensions will not be downloaded
   - Can be specified multiple times
 - `--skip-subreddit`

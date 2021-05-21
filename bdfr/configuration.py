@@ -13,8 +13,8 @@ class Configuration(Namespace):
         self.authenticate = False
         self.config = None
         self.directory: str = '.'
-        self.skip_id = []
-        self.skip_id_file = []
+        self.exclude_id = []
+        self.exclude_id_file = []
         self.limit: Optional[int] = None
         self.link: list[str] = []
         self.log: Optional[str] = None
@@ -26,7 +26,7 @@ class Configuration(Namespace):
         self.search_existing: bool = False
         self.file_scheme: str = '{REDDITOR}_{TITLE}_{POSTID}'
         self.folder_scheme: str = '{SUBREDDIT}'
-        self.skip_format: list[str] = []
+        self.skip: list[str] = []
         self.skip_domain: list[str] = []
         self.skip_subreddit: list[str] = []
         self.sort: str = 'hot'

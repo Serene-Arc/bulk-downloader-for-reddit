@@ -54,7 +54,7 @@ def test_determine_directories(tmp_path: Path, downloader_mock: MagicMock):
     (['.test'], ['test.com'],),
 ))
 def test_create_download_filter(skip_extensions: list[str], skip_domains: list[str], downloader_mock: MagicMock):
-    downloader_mock.args.skip_format = skip_extensions
+    downloader_mock.args.skip = skip_extensions
     downloader_mock.args.skip_domain = skip_domains
     result = RedditConnector.create_download_filter(downloader_mock)
 
@@ -324,7 +324,7 @@ def test_split_subreddit_entries(test_subreddit_entries: list[str], expected: se
 def test_read_excluded_submission_ids_from_file(downloader_mock: MagicMock, tmp_path: Path):
     test_file = tmp_path / 'test.txt'
     test_file.write_text('aaaaaa\nbbbbbb')
-    downloader_mock.args.skip_id_file = [test_file]
+    downloader_mock.args.exclude_id_file = [test_file]
     results = RedditConnector.read_excluded_ids(downloader_mock)
     assert results == {'aaaaaa', 'bbbbbb'}
 
