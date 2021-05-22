@@ -70,7 +70,7 @@ class RedditDownloader(RedditConnector):
             return
         for destination, res in self.file_name_formatter.format_resource_paths(content, self.download_directory):
             if destination.exists():
-                logger.debug(f'File {destination} already exists, continuing')
+                logger.debug(f'File {destination} from submission {submission.id} already exists, continuing')
                 continue
             elif not self.download_filter.check_resource(res):
                 logger.debug(f'Download filter removed {submission.id} with URL {submission.url}')
@@ -91,7 +91,8 @@ class RedditDownloader(RedditConnector):
                 elif self.args.make_hard_links:
                     self.master_hash_list[resource_hash].link_to(destination)
                     logger.info(
-                        f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}')
+                        f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}'
+                        f' in submission {submission.id}')
                     return
             with open(destination, 'wb') as file:
                 file.write(res.content)
