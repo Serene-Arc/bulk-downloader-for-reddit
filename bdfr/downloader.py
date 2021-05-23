@@ -94,9 +94,13 @@ class RedditDownloader(RedditConnector):
                         f'Hard link made linking {destination} to {self.master_hash_list[resource_hash]}'
                         f' in submission {submission.id}')
                     return
-            with open(destination, 'wb') as file:
-                file.write(res.content)
-            logger.debug(f'Written file to {destination}')
+            try:
+                with open(destination, 'wb') as file:
+                    file.write(res.content)
+                logger.debug(f'Written file to {destination}')
+            except OSError as e:
+                logger.exception(e)
+                logger.error(f'Failed to write file to {destination} in submission {submission.id}: {e}')
             creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
             os.utime(destination, (creation_time, creation_time))
             self.master_hash_list[resource_hash] = destination
