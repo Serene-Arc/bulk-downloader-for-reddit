@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import re
 import os
+import re
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -111,7 +111,7 @@ def test_file_creation_date(
 
 def test_search_existing_files():
     results = RedditDownloader.scan_existing_files(Path('.'))
-    assert len(results.keys()) >= 40
+    assert len(results.keys()) != 0
 
 
 @pytest.mark.online
@@ -163,7 +163,8 @@ def test_download_submission_file_exists(
     folder_contents = list(tmp_path.iterdir())
     output = capsys.readouterr()
     assert len(folder_contents) == 1
-    assert 'Arneeman_Metagaming isn\'t always a bad thing_m1hqw6.png already exists' in output.out
+    assert 'Arneeman_Metagaming isn\'t always a bad thing_m1hqw6.png'\
+           ' from submission m1hqw6 already exists' in output.out
 
 
 @pytest.mark.online
