@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 def _calc_hash(existing_file: Path):
-    CHUNK_SIZE = 1024 * 1024
+    chunk_size = 1024 * 1024
     md5_hash = hashlib.md5()
     with open(existing_file, 'rb') as file:
-        chunk = file.read(CHUNK_SIZE)
+        chunk = file.read(chunk_size)
         while chunk:
             md5_hash.update(chunk)
-            chunk = file.read(CHUNK_SIZE)
+            chunk = file.read(chunk_size)
     file_hash = md5_hash.hexdigest()
     return existing_file, file_hash
 
