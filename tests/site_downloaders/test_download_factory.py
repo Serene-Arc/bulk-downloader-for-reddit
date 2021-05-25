@@ -69,6 +69,6 @@ def test_factory_lever_bad(test_url: str):
     ('https://youtube.com/watch?v=Gv8Wz74FjVA', 'youtube.com/watch'),
     ('https://i.imgur.com/BuzvZwb.gifv', 'i.imgur.com/BuzvZwb.gifv'),
 ))
-def test_sanitise_urll(test_url: str, expected: str):
+def test_sanitise_url(test_url: str, expected: str):
     result = DownloadFactory._sanitise_url(test_url)
     assert result == expected
