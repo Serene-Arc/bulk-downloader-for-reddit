@@ -9,7 +9,7 @@ assignees: ''
 
 - [ ] I am reporting a bug.
 - [ ] I am running the latest version of BDfR
-- [ ] I have read the [Opening an issue](../../README.md#configuration)
+- [ ] I have read the [Opening an issue](https://github.com/aliparlakci/bulk-downloader-for-reddit/blob/master/docs/CONTRIBUTING.md#opening-an-issue)
   
 ## Description
 A clear and concise description of what the bug is.
