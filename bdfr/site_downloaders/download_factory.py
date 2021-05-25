@@ -21,10 +21,11 @@ from bdfr.site_downloaders.youtube import Youtube
 class DownloadFactory:
     @staticmethod
     def pull_lever(url: str) -> Type[BaseDownloader]:
-        sanitised_url = DownloadFactory._sanitise_url(url)
+        sanitised_url = DownloadFactory.sanitise_url(url)
         if re.match(r'(i\.)?imgur.*\.gifv$', sanitised_url):
             return Imgur
-        elif re.match(r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', sanitised_url):
+        elif re.match(r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', sanitised_url) and \
+                not DownloadFactory.is_web_resource(sanitised_url):
             return Direct
         elif re.match(r'erome\.com.*', sanitised_url):
             return Erome
@@ -49,9 +50,29 @@ class DownloadFactory:
                 f'No downloader module exists for url {url}')
 
     @staticmethod
-    def _sanitise_url(url: str) -> str:
+    def sanitise_url(url: str) -> str:
         beginning_regex = re.compile(r'\s*(www\.?)?')
         split_url = urllib.parse.urlsplit(url)
         split_url = split_url.netloc + split_url.path
         split_url = re.sub(beginning_regex, '', split_url)
         return split_url
+
+    @staticmethod
+    def is_web_resource(url: str) -> bool:
+        web_extensions = (
+            'asp',
+            'aspx',
+            'cfm',
+            'cfml',
+            'css',
+            'htm',
+            'html',
+            'js',
+            'php',
+            'php3',
+            'xhtml',
+        )
+        if re.match(rf'(?i).*/.*\.({"|".join(web_extensions)})$', url):
+            return True
+        else:
+            return False
