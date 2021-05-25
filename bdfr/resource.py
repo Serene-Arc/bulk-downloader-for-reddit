@@ -28,8 +28,7 @@ class Resource:
             self.extension = self._determine_extension()
 
     @staticmethod
-    def retry_download(url: str, max_wait_time: int) -> Optional[bytes]:
-        wait_time = 60
+    def retry_download(url: str, max_wait_time: int, current_wait_time: int = 60) -> Optional[bytes]:
         try:
             response = requests.get(url)
             if re.match(r'^2\d{2}', str(response.status_code)) and response.content:
@@ -40,10 +39,11 @@ class Resource:
                 raise BulkDownloaderException(
                     f'Unrecoverable error requesting resource: HTTP Code {response.status_code}')
         except (requests.exceptions.ConnectionError, requests.exceptions.ChunkedEncodingError) as e:
-            logger.warning(f'Error occured downloading from {url}, waiting {wait_time} seconds: {e}')
-            time.sleep(wait_time)
-            if wait_time < max_wait_time:
-                return Resource.retry_download(url, max_wait_time)
+            logger.warning(f'Error occured downloading from {url}, waiting {current_wait_time} seconds: {e}')
+            time.sleep(current_wait_time)
+            if current_wait_time < max_wait_time:
+                current_wait_time += 60
+                return Resource.retry_download(url, max_wait_time, current_wait_time)
             else:
                 logger.error(f'Max wait time exceeded for resource at url {url}')
                 raise
