@@ -72,3 +72,16 @@ def test_factory_lever_bad(test_url: str):
 def test_sanitise_url(test_url: str, expected: str):
     result = DownloadFactory.sanitise_url(test_url)
     assert result == expected
+
+
+@pytest.mark.parametrize(('test_url', 'expected'), (
+    ('www.example.com/test.asp', True),
+    ('www.example.com/test.html', True),
+    ('www.example.com/test.js', True),
+    ('www.example.com/test.xhtml', True),
+    ('www.example.com/test.mp4', False),
+    ('www.example.com/test.png', False),
+))
+def test_is_web_resource(test_url: str, expected: bool):
+    result = DownloadFactory.is_web_resource(test_url)
+    assert result == expected
