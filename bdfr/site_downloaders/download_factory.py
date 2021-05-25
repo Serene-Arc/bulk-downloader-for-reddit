@@ -61,12 +61,15 @@ class DownloadFactory:
     def is_web_resource(url: str) -> bool:
         web_extensions = (
             'asp',
+            'aspx',
             'cfm',
             'cfml',
             'css',
+            'htm',
             'html',
             'js',
             'php',
+            'php3',
             'xhtml',
         )
         if re.match(rf'(?i).*/.*\.({"|".join(web_extensions)})$', url):
