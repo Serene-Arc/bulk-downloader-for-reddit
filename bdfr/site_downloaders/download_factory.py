@@ -21,7 +21,7 @@ from bdfr.site_downloaders.youtube import Youtube
 class DownloadFactory:
     @staticmethod
     def pull_lever(url: str) -> Type[BaseDownloader]:
-        sanitised_url = DownloadFactory._sanitise_url(url)
+        sanitised_url = DownloadFactory.sanitise_url(url)
         if re.match(r'(i\.)?imgur.*\.gifv$', sanitised_url):
             return Imgur
         elif re.match(r'.*/.*\.\w{3,4}(\?[\w;&=]*)?$', sanitised_url):
@@ -49,7 +49,7 @@ class DownloadFactory:
                 f'No downloader module exists for url {url}')
 
     @staticmethod
-    def _sanitise_url(url: str) -> str:
+    def sanitise_url(url: str) -> str:
         beginning_regex = re.compile(r'\s*(www\.?)?')
         split_url = urllib.parse.urlsplit(url)
         split_url = split_url.netloc + split_url.path
