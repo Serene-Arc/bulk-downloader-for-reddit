@@ -117,6 +117,7 @@ def test_cli_download_multireddit_nonexistent(test_args: list[str], tmp_path: Pa
 @pytest.mark.authenticated
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
+    ['--user', 'djnish', '--submitted', '--user', 'FriesWithThat', '-L', 10],
     ['--user', 'me', '--upvoted', '--authenticate', '-L', 10],
     ['--user', 'me', '--saved', '--authenticate', '-L', 10],
     ['--user', 'me', '--submitted', '--authenticate', '-L', 10],
@@ -231,6 +232,7 @@ def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
     ['--user', 'me', '--authenticate', '--all-comments', '-L', '10'],
+    ['--user', 'me', '--user', 'djnish', '--authenticate', '--all-comments', '-L', '10'],
 ))
 def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
@@ -265,12 +267,14 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     ['--user', 'sdclhgsolgjeroij', '--upvoted', '-L', 10],
     ['--subreddit', 'submitters', '-L', 10],  # Private subreddit
     ['--subreddit', 'donaldtrump', '-L', 10],  # Banned subreddit
+    ['--user', 'djnish', '--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10],
 ))
 def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
+    assert 'Downloaded' not in result.output
 
 
 @pytest.mark.online

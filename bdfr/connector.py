@@ -74,7 +74,7 @@ class RedditConnector(metaclass=ABCMeta):
         logger.log(9, 'Create file name formatter')
 
         self.create_reddit_instance()
-        self.resolve_user_name()
+        self.args.user = list(filter(None, [self.resolve_user_name(user) for user in self.args.user]))
 
         self.excluded_submission_ids = self.read_excluded_ids()
 
@@ -256,14 +256,16 @@ class RedditConnector(metaclass=ABCMeta):
         else:
             return []
 
-    def resolve_user_name(self):
-        if self.args.user == 'me':
+    def resolve_user_name(self, in_name: str) -> str:
+        if in_name == 'me':
             if self.authenticated:
-                self.args.user = self.reddit_instance.user.me().name
-                logger.log(9, f'Resolved user to {self.args.user}')
+                resolved_name = self.reddit_instance.user.me().name
+                logger.log(9, f'Resolved user to {resolved_name}')
+                return resolved_name
             else:
-                self.args.user = None
                 logger.warning('To use "me" as a user, an authenticated Reddit instance must be used')
+        else:
+            return in_name
 
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
@@ -289,10 +291,13 @@ class RedditConnector(metaclass=ABCMeta):
 
     def get_multireddits(self) -> list[Iterator]:
         if self.args.multireddit:
+            if len(self.args.user) != 1:
+                logger.error(f'Only 1 user can be supplied when retrieving from multireddits')
+                return []
             out = []
             for multi in self.split_args_input(self.args.multireddit):
                 try:
-                    multi = self.reddit_instance.multireddit(self.args.user, multi)
+                    multi = self.reddit_instance.multireddit(self.args.user[0], multi)
                     if not multi.subreddits:
                         raise errors.BulkDownloaderException
                     out.append(self.create_filtered_listing_generator(multi))
@@ -312,31 +317,31 @@ class RedditConnector(metaclass=ABCMeta):
 
     def get_user_data(self) -> list[Iterator]:
         if any([self.args.submitted, self.args.upvoted, self.args.saved]):
-            if self.args.user:
+            if not self.args.user:
+                logger.warning('At least one user must be supplied to download user data')
+                return []
+            generators = []
+            for user in self.args.user:
                 try:
-                    self.check_user_existence(self.args.user)
+                    self.check_user_existence(user)
                 except errors.BulkDownloaderException as e:
                     logger.error(e)
-                    return []
-                generators = []
+                    continue
                 if self.args.submitted:
                     logger.debug(f'Retrieving submitted posts of user {self.args.user}')
                     generators.append(self.create_filtered_listing_generator(
-                        self.reddit_instance.redditor(self.args.user).submissions,
+                        self.reddit_instance.redditor(user).submissions,
                     ))
                 if not self.authenticated and any((self.args.upvoted, self.args.saved)):
                     logger.warning('Accessing user lists requires authentication')
                 else:
                     if self.args.upvoted:
                         logger.debug(f'Retrieving upvoted posts of user {self.args.user}')
-                        generators.append(self.reddit_instance.redditor(self.args.user).upvoted(limit=self.args.limit))
+                        generators.append(self.reddit_instance.redditor(user).upvoted(limit=self.args.limit))
                     if self.args.saved:
                         logger.debug(f'Retrieving saved posts of user {self.args.user}')
-                        generators.append(self.reddit_instance.redditor(self.args.user).saved(limit=self.args.limit))
-                return generators
-            else:
-                logger.warning('A user must be supplied to download user data')
-                return []
+                        generators.append(self.reddit_instance.redditor(user).saved(limit=self.args.limit))
+            return generators
         else:
             return []
 
