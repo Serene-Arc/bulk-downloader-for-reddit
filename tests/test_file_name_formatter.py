@@ -375,9 +375,9 @@ def test_get_max_path_length():
     assert result in (4096, 260, 1024)
 
 
-def test_windows_max_path():
+def test_windows_max_path(tmp_path: Path):
     with unittest.mock.patch('platform.system', return_value='Windows'):
         with unittest.mock.patch('bdfr.file_name_formatter.FileNameFormatter.find_max_path_length', return_value=260):
-            result = FileNameFormatter._limit_file_name_length('test' * 50, '_1.png', Path('test' * 25))
+            result = FileNameFormatter._limit_file_name_length('test' * 100, '_1.png', tmp_path)
             assert len(str(result)) <= 260
-            assert len(result.name) <= 150
+            assert len(result.name) <= (260 - len(str(tmp_path)))
