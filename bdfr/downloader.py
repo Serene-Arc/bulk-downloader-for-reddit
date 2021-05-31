@@ -105,7 +105,7 @@ class RedditDownloader(RedditConnector):
             os.utime(destination, (creation_time, creation_time))
             self.master_hash_list[resource_hash] = destination
             logger.debug(f'Hash added to master list: {resource_hash}')
-            logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
+        logger.info(f'Downloaded submission {submission.id} from {submission.subreddit.display_name}')
 
     @staticmethod
     def scan_existing_files(directory: Path) -> dict[str, Path]:
