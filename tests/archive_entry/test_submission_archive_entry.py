@@ -26,6 +26,13 @@ def test_get_comments(test_submission_id: str, min_comments: int, reddit_instanc
         'author': 'sinjen-tos',
         'id': 'm3reby',
         'link_flair_text': 'image',
+        'pinned': False,
+        'spoiler': False,
+        'over_18': False,
+        'locked': False,
+        'distinguished': None,
+        'created_utc': 1615583837,
+        'permalink': '/r/australia/comments/m3reby/this_little_guy_fell_out_of_a_tree_and_in_front/'
     }),
     ('m3kua3', {'author': 'DELETED'}),
 ))

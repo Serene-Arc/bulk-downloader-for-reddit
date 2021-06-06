@@ -15,6 +15,7 @@ from bdfr.archive_entry.comment_archive_entry import CommentArchiveEntry
         'subreddit': 'Python',
         'submission': 'mgi4op',
         'submission_title': '76% Faster CPython',
+        'distinguished': None,
     }),
 ))
 def test_get_comment_details(test_comment_id: str, expected_dict: dict, reddit_instance: praw.Reddit):

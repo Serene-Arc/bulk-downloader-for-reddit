@@ -34,9 +34,6 @@ def test_get_link(test_url: str, expected_urls: tuple[str]):
     ('https://www.erome.com/a/vqtPuLXh', {
         '5da2a8d60d87bed279431fdec8e7d72f'
     }),
-    ('https://www.erome.com/i/ItASD33e', {
-        'b0d73fedc9ce6995c2f2c4fdb6f11eff'
-    }),
     ('https://www.erome.com/a/lGrcFxmb', {
         '0e98f9f527a911dcedde4f846bb5b69f',
         '25696ae364750a5303fc7d7dc78b35c1',

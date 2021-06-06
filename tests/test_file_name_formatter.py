@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+import platform
+import unittest.mock
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from unittest.mock import MagicMock
-import platform
 
 import praw.models
 import pytest
@@ -28,10 +29,10 @@ def submission() -> MagicMock:
     return test
 
 
-def do_test_string_equality(result: str, expected: str) -> bool:
+def do_test_string_equality(result: [Path, str], expected: str) -> bool:
     if platform.system() == 'Windows':
         expected = FileNameFormatter._format_for_windows(expected)
-    return expected == result
+    return str(result).endswith(expected)
 
 
 def do_test_path_equality(result: Path, expected: str) -> bool:
@@ -41,7 +42,7 @@ def do_test_path_equality(result: Path, expected: str) -> bool:
         expected = Path(*expected)
     else:
         expected = Path(expected)
-    return result == expected
+    return str(result).endswith(str(expected))
 
 
 @pytest.fixture(scope='session')
@@ -172,8 +173,9 @@ def test_format_multiple_resources():
         mocks.append(new_mock)
     test_formatter = FileNameFormatter('{TITLE}', '', 'ISO')
     results = test_formatter.format_resource_paths(mocks, Path('.'))
-    results = set([str(res[0]) for res in results])
-    assert results == {'test_1.png', 'test_2.png', 'test_3.png', 'test_4.png'}
+    results = set([str(res[0].name) for res in results])
+    expected = {'test_1.png', 'test_2.png', 'test_3.png', 'test_4.png'}
+    assert results == expected
 
 
 @pytest.mark.parametrize(('test_filename', 'test_ending'), (
@@ -183,10 +185,11 @@ def test_format_multiple_resources():
     ('😍💕✨' * 100, '_1.png'),
 ))
 def test_limit_filename_length(test_filename: str, test_ending: str):
-    result = FileNameFormatter._limit_file_name_length(test_filename, test_ending)
-    assert len(result) <= 255
-    assert len(result.encode('utf-8')) <= 255
-    assert isinstance(result, str)
+    result = FileNameFormatter._limit_file_name_length(test_filename, test_ending, Path('.'))
+    assert len(result.name) <= 255
+    assert len(result.name.encode('utf-8')) <= 255
+    assert len(str(result)) <= FileNameFormatter.find_max_path_length()
+    assert isinstance(result, Path)
 
 
 @pytest.mark.parametrize(('test_filename', 'test_ending', 'expected_end'), (
@@ -201,11 +204,11 @@ def test_limit_filename_length(test_filename: str, test_ending: str):
     ('😍💕✨' * 100 + '_aaa1aa', '_1.png', '_aaa1aa_1.png'),
 ))
 def test_preserve_id_append_when_shortening(test_filename: str, test_ending: str, expected_end: str):
-    result = FileNameFormatter._limit_file_name_length(test_filename, test_ending)
-    assert len(result) <= 255
-    assert len(result.encode('utf-8')) <= 255
-    assert isinstance(result, str)
-    assert result.endswith(expected_end)
+    result = FileNameFormatter._limit_file_name_length(test_filename, test_ending, Path('.'))
+    assert len(result.name) <= 255
+    assert len(result.name.encode('utf-8')) <= 255
+    assert result.name.endswith(expected_end)
+    assert len(str(result)) <= FileNameFormatter.find_max_path_length()
 
 
 def test_shorten_filenames(submission: MagicMock, tmp_path: Path):
@@ -295,7 +298,7 @@ def test_format_archive_entry_comment(
     test_formatter = FileNameFormatter(test_file_scheme, test_folder_scheme, 'ISO')
     test_entry = Resource(test_comment, '', '.json')
     result = test_formatter.format_path(test_entry, tmp_path)
-    assert do_test_string_equality(result.name, expected_name)
+    assert do_test_string_equality(result, expected_name)
 
 
 @pytest.mark.parametrize(('test_folder_scheme', 'expected'), (
@@ -364,3 +367,16 @@ def test_time_string_formats(test_time_format: str, expected: str):
     test_formatter = FileNameFormatter('{TITLE}', '', test_time_format)
     result = test_formatter._convert_timestamp(test_time.timestamp())
     assert result == expected
+
+
+def test_get_max_path_length():
+    result = FileNameFormatter.find_max_path_length()
+    assert result in (4096, 260, 1024)
+
+
+def test_windows_max_path(tmp_path: Path):
+    with unittest.mock.patch('platform.system', return_value='Windows'):
+        with unittest.mock.patch('bdfr.file_name_formatter.FileNameFormatter.find_max_path_length', return_value=260):
+            result = FileNameFormatter._limit_file_name_length('test' * 100, '_1.png', tmp_path)
+            assert len(str(result)) <= 260
+            assert len(result.name) <= (260 - len(str(tmp_path)))
