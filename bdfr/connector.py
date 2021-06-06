@@ -64,6 +64,8 @@ class RedditConnector(metaclass=ABCMeta):
 
         self.read_config()
 
+        self.parse_disabled_modules()
+
         self.download_filter = self.create_download_filter()
         logger.log(9, 'Created download filter')
         self.time_filter = self.create_time_filter()
@@ -99,9 +101,18 @@ class RedditConnector(metaclass=ABCMeta):
                 option = 'ISO'
             logger.debug(f'Setting datetime format string to {option}')
             self.args.time_format = option
+        if not self.args.disable_module:
+            self.args.disable_module = [self.cfg_parser.get('DEFAULT', 'disabled_modules', fallback='')]
         # Update config on disk
         with open(self.config_location, 'w') as file:
             self.cfg_parser.write(file)
+
+    def parse_disabled_modules(self):
+        disabled_modules = self.args.disable_module
+        disabled_modules = self.split_args_input(disabled_modules)
+        disabled_modules = set([name.strip().lower() for name in disabled_modules])
+        self.args.disable_module = disabled_modules
+        logger.debug(f'Disabling the following modules: {", ".join(self.args.disable_module)}')
 
     def create_reddit_instance(self):
         if self.args.authenticate:

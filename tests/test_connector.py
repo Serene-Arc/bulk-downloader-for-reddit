@@ -313,7 +313,9 @@ def test_sanitise_subreddit_name(test_name: str, expected: str):
     (['test1,test2', 'test3'], {'test1', 'test2', 'test3'}),
     (['test1, test2', 'test3'], {'test1', 'test2', 'test3'}),
     (['test1; test2', 'test3'], {'test1', 'test2', 'test3'}),
-    (['test1, test2', 'test1,test2,test3', 'test4'], {'test1', 'test2', 'test3', 'test4'})
+    (['test1, test2', 'test1,test2,test3', 'test4'], {'test1', 'test2', 'test3', 'test4'}),
+    ([''], {''}),
+    (['test'], {'test'}),
 ))
 def test_split_subreddit_entries(test_subreddit_entries: list[str], expected: set[str]):
     results = RedditConnector.split_args_input(test_subreddit_entries)

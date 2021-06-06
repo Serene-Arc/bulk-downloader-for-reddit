@@ -63,7 +63,9 @@ class RedditDownloader(RedditConnector):
         except errors.NotADownloadableLinkError as e:
             logger.error(f'Could not download submission {submission.id}: {e}')
             return
-
+        if downloader_class.__name__.lower() in self.args.disable_module:
+            logger.debug(f'Submission {submission.id} skipped due to disabled module {downloader_class.__name__}')
+            return
         try:
             content = downloader.find_resources(self.authenticator)
         except errors.SiteDownloaderError as e:

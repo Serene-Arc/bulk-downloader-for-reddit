@@ -71,6 +71,10 @@ The following options are common between both the `archive` and `download` comma
 - `--config`
   - If the path to a configuration file is supplied with this option, the BDFR will use the specified config
   - See [Configuration Files](#configuration) for more details
+- `--disable-module`
+  - Can be specified multiple times
+  - Disables certain modules from being used
+  - See [Disabling Modules](#disabling-modules) for more information and a list of module names
 - `--log`
   - This allows one to specify the location of the logfile
   - This must be done when running multiple instances of the BDFR, see [Multiple Instances](#multiple-instances) below
@@ -266,6 +270,7 @@ The following keys are optional, and defaults will be used if they cannot be fou
   - `backup_log_count`
   - `max_wait_time`
   - `time_format`
+  - `disabled_modules`
 
 All of these should not be modified unless you know what you're doing, as the default values will enable the BDFR to function just fine. A configuration is included in the BDFR when it is installed, and this will be placed in the configuration directory as the default.
 
@@ -276,6 +281,22 @@ Most of these values have to do with OAuth2 configuration and authorisation. The
 The option `time_format` will specify the format of the timestamp that replaces `{DATE}` in filename and folder name schemes. By default, this is the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format which is highly recommended due to its standardised nature. If you don't **need** to change it, it is recommended that you do not. However, you can specify it to anything required with this option. The `--time-format` option supersedes any specification in the configuration file
 
 The format can be specified through the [format codes](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior) that are standard in the Python `datetime` library.
+
+#### Disabling Modules
+
+The individual modules of the BDFR, used to download submissions from websites, can be disabled. This is helpful especially in the case of the fallback downloaders, since the `--skip-domain` option cannot be effectively used in these cases. For example, the Youtube-DL downloader can retrieve data from hundreds of websites and domains; thus the only way to fully disable it is via the `--disable-module` option.
+
+Modules can be disabled through the command line interface for the BDFR or more permanently in the configuration file via the `disabled_modules` option. The list of downloaders that can be disabled are the following. Note that they are case-insensitive.
+
+- `Direct`
+- `Erome`
+- `Gallery` (Reddit Image Galleries)
+- `Gfycat`
+- `Imgur`
+- `Redgifs`
+- `SelfPost` (Reddit Text Post)
+- `Youtube`
+- `YoutubeDlFallback`
 
 ### Rate Limiting
 
