@@ -123,6 +123,8 @@ The following options are common between both the `archive` and `download` comma
 - `-u, --user`
   - This specifies the user to scrape in concert with other options
   - When using `--authenticate`, `--user me` can be used to refer to the authenticated user
+  - Can be specified multiple times for multiple users
+    - If downloading a multireddit, only one user can be specified
 - `-v, --verbose`
   - Increases the verbosity of the program
   - Can be specified multiple times

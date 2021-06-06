@@ -26,7 +26,7 @@ _common_options = [
     click.option('--saved', is_flag=True, default=None),
     click.option('--search', default=None, type=str),
     click.option('--time-format', type=str, default=None),
-    click.option('-u', '--user', type=str, default=None),
+    click.option('-u', '--user', type=str, multiple=True, default=None),
     click.option('-t', '--time', type=click.Choice(('all', 'hour', 'day', 'week', 'month', 'year')), default=None),
     click.option('-S', '--sort', type=click.Choice(('hot', 'top', 'new',
                                                     'controversial', 'rising', 'relevance')), default=None),

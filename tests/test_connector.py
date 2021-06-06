@@ -34,7 +34,7 @@ def downloader_mock(args: Configuration):
     return downloader_mock
 
 
-def assert_all_results_are_submissions(result_limit: int, results: list[Iterator]):
+def assert_all_results_are_submissions(result_limit: int, results: list[Iterator]) -> list:
     results = [sub for res in results for sub in res]
     assert all([isinstance(res, praw.models.Submission) for res in results])
     if result_limit is not None:
@@ -232,7 +232,7 @@ def test_get_multireddits_public(
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
     downloader_mock.args.limit = limit
     downloader_mock.args.multireddit = test_multireddits
-    downloader_mock.args.user = test_user
+    downloader_mock.args.user = [test_user]
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.create_filtered_listing_generator.return_value = \
         RedditConnector.create_filtered_listing_generator(
@@ -257,7 +257,7 @@ def test_get_user_submissions(test_user: str, limit: int, downloader_mock: Magic
     downloader_mock.determine_sort_function.return_value = praw.models.Subreddit.hot
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
     downloader_mock.args.submitted = True
-    downloader_mock.args.user = test_user
+    downloader_mock.args.user = [test_user]
     downloader_mock.authenticated = False
     downloader_mock.reddit_instance = reddit_instance
     downloader_mock.create_filtered_listing_generator.return_value = \
@@ -284,11 +284,10 @@ def test_get_user_authenticated_lists(
 ):
     downloader_mock.args.__dict__[test_flag] = True
     downloader_mock.reddit_instance = authenticated_reddit_instance
-    downloader_mock.args.user = 'me'
     downloader_mock.args.limit = 10
     downloader_mock._determine_sort_function.return_value = praw.models.Subreddit.hot
     downloader_mock.sort_filter = RedditTypes.SortType.HOT
-    RedditConnector.resolve_user_name(downloader_mock)
+    downloader_mock.args.user = [RedditConnector.resolve_user_name(downloader_mock, 'me')]
     results = RedditConnector.get_user_data(downloader_mock)
     assert_all_results_are_submissions(10, results)
 

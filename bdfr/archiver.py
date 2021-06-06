@@ -14,7 +14,6 @@ from bdfr.archive_entry.base_archive_entry import BaseArchiveEntry
 from bdfr.archive_entry.comment_archive_entry import CommentArchiveEntry
 from bdfr.archive_entry.submission_archive_entry import SubmissionArchiveEntry
 from bdfr.configuration import Configuration
-from bdfr.downloader import RedditDownloader
 from bdfr.connector import RedditConnector
 from bdfr.exceptions import ArchiverError
 from bdfr.resource import Resource
@@ -47,8 +46,9 @@ class Archiver(RedditConnector):
         results = super(Archiver, self).get_user_data()
         if self.args.user and self.args.all_comments:
             sort = self.determine_sort_function()
-            logger.debug(f'Retrieving comments of user {self.args.user}')
-            results.append(sort(self.reddit_instance.redditor(self.args.user).comments, limit=self.args.limit))
+            for user in self.args.user:
+                logger.debug(f'Retrieving comments of user {user}')
+                results.append(sort(self.reddit_instance.redditor(user).comments, limit=self.args.limit))
         return results
 
     @staticmethod

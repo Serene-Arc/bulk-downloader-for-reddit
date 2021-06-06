@@ -35,7 +35,7 @@ class Configuration(Namespace):
         self.time: str = 'all'
         self.time_format = None
         self.upvoted: bool = False
-        self.user: Optional[str] = None
+        self.user: list[str] = []
         self.verbose: int = 0
         self.make_hard_links = False
 
