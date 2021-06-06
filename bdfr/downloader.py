@@ -42,19 +42,20 @@ class RedditDownloader(RedditConnector):
     def download(self):
         for generator in self.reddit_lists:
             for submission in generator:
-                if submission.id in self.excluded_submission_ids:
-                    logger.debug(f'Object {submission.id} in exclusion list, skipping')
-                    continue
-                elif submission.subreddit.display_name.lower() in self.args.skip_subreddit:
-                    logger.debug(f'Submission {submission.id} in {submission.subreddit.display_name} in skip list')
-                else:
-                    logger.debug(f'Attempting to download submission {submission.id}')
-                    self._download_submission(submission)
+                self._download_submission(submission)
 
     def _download_submission(self, submission: praw.models.Submission):
-        if not isinstance(submission, praw.models.Submission):
+        if submission.id in self.excluded_submission_ids:
+            logger.debug(f'Object {submission.id} in exclusion list, skipping')
+            return
+        elif submission.subreddit.display_name.lower() in self.args.skip_subreddit:
+            logger.debug(f'Submission {submission.id} in {submission.subreddit.display_name} in skip list')
+            return
+        elif not isinstance(submission, praw.models.Submission):
             logger.warning(f'{submission.id} is not a submission')
             return
+
+        logger.debug(f'Attempting to download submission {submission.id}')
         try:
             downloader_class = DownloadFactory.pull_lever(submission.url)
             downloader = downloader_class(submission)

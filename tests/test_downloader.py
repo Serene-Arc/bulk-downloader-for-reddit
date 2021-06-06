@@ -4,11 +4,12 @@
 import os
 import re
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import praw.models
 import pytest
 
+import bdfr.site_downloaders.download_factory
 from bdfr.__main__ import setup_logging
 from bdfr.configuration import Configuration
 from bdfr.connector import RedditConnector
@@ -37,17 +38,30 @@ def downloader_mock(args: Configuration):
     (('aaaaaa',), ('aaaaaa',), 0),
     ((), ('aaaaaa',), 0),
     (('aaaaaa', 'bbbbbb'), ('aaaaaa',), 1),
+    (('aaaaaa', 'bbbbbb', 'cccccc'), ('aaaaaa',), 2),
 ))
-def test_excluded_ids(test_ids: tuple[str], test_excluded: tuple[str], expected_len: int, downloader_mock: MagicMock):
+@patch('bdfr.site_downloaders.download_factory.DownloadFactory.pull_lever')
+def test_excluded_ids(
+        mock_function: MagicMock,
+        test_ids: tuple[str],
+        test_excluded: tuple[str],
+        expected_len: int,
+        downloader_mock: MagicMock,
+):
     downloader_mock.excluded_submission_ids = test_excluded
+    mock_function.return_value = MagicMock()
+    mock_function.return_value.__name__ = 'test'
     test_submissions = []
     for test_id in test_ids:
         m = MagicMock()
         m.id = test_id
+        m.subreddit.display_name.return_value = 'https://www.example.com/'
+        m.__class__ = praw.models.Submission
         test_submissions.append(m)
     downloader_mock.reddit_lists = [test_submissions]
-    RedditDownloader.download(downloader_mock)
-    assert downloader_mock._download_submission.call_count == expected_len
+    for submission in test_submissions:
+        RedditDownloader._download_submission(downloader_mock, submission)
+    assert mock_function.call_count == expected_len
 
 
 @pytest.mark.online

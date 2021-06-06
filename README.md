@@ -26,14 +26,22 @@ If you want to use the source code or make contributions, refer to [CONTRIBUTING
 
 The BDFR works by taking submissions from a variety of "sources" from Reddit and then parsing them to download. These sources might be a subreddit, multireddit, a user list, or individual links. These sources are combined and downloaded to disk, according to a naming and organisational scheme defined by the user.
 
-There are two modes to the BDFR: download, and archive. Each one has a command that performs similar but distinct functions. The `download` command will download the resource linked in the Reddit submission, such as the images, video, etc. The `archive` command will download the submission data itself and store it, such as the submission details, upvotes, text, statistics, as and all the comments on that submission. These can then be saved in a data markup language form, such as JSON, XML, or YAML.
+There are three modes to the BDFR: download, archive, and clone. Each one has a command that performs similar but distinct functions. The `download` command will download the resource linked in the Reddit submission, such as the images, video, etc. The `archive` command will download the submission data itself and store it, such as the submission details, upvotes, text, statistics, as and all the comments on that submission. These can then be saved in a data markup language form, such as JSON, XML, or YAML. Lastly, the `clone` command will perform both functions of the previous commands at once and is more efficient than running those commands sequentially.
+
+Note that the `clone` command is not a true, failthful clone of Reddit. It simply retrieves much of the raw data that Reddit provides. To get a true clone of Reddit, another tool such as HTTrack should be used.
 
 After installation, run the program from any directory as shown below:
+
 ```bash
 python3 -m bdfr download
 ```
+
 ```bash
 python3 -m bdfr archive
+```
+
+```bash
+python3 -m bdfr clone
 ```
 
 However, these commands are not enough. You should chain parameters in [Options](#options) according to your use case. Don't forget that some parameters can be provided multiple times. Some quick reference commands are:
@@ -183,6 +191,10 @@ The following options are for the `archive` command specifically.
     - `json` (default)
     - `xml`
     - `yaml`
+
+### Cloner Options
+
+The `clone` command can take all the options listed above for both the `archive` and `download` commands since it performs the functions of both.
 
 ## Authentication and Security
 
