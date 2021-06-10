@@ -104,6 +104,7 @@ class RedditDownloader(RedditConnector):
             except OSError as e:
                 logger.exception(e)
                 logger.error(f'Failed to write file to {destination} in submission {submission.id}: {e}')
+                return
             creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
             os.utime(destination, (creation_time, creation_time))
             self.master_hash_list[resource_hash] = destination
