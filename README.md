@@ -196,7 +196,7 @@ The following options are for the `archive` command specifically.
     - `json` (default)
     - `xml`
     - `yaml`
-- `--full-context`
+- `--comment-context`
   - This option will, instead of downloading an individual comment, download the submission that comment is a part of
   - May result in a longer run time as it retrieves much more data
 
