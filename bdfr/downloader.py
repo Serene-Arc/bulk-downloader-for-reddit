@@ -103,7 +103,7 @@ class RedditDownloader(RedditConnector):
                 logger.debug(f'Written file to {destination}')
             except OSError as e:
                 logger.exception(e)
-                logger.error(f'Failed to write file to {destination} in submission {submission.id}: {e}')
+                logger.error(f'Failed to write file in submission {submission.id} to {destination}: {e}')
                 return
             creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
             os.utime(destination, (creation_time, creation_time))
