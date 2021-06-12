@@ -1,0 +1,3 @@
+[2021-06-10 20:36:48,722 - bdfr.downloader - DEBUG] - Download filter removed nwfirr with URL https://www.youtube.com/watch?v=NVSiX0Tsees
+[2021-06-12 19:56:36,848 - bdfr.downloader - DEBUG] - Download filter removed nwfgcl with URL https://www.reddit.com/r/MaliciousCompliance/comments/nwfgcl/new_guy_decided_to_play_manager_alright/
+[2021-06-12 19:56:28,587 - bdfr.downloader - DEBUG] - Download filter removed nxuxjy with URL https://www.reddit.com/r/MaliciousCompliance/comments/nxuxjy/you_want_an_omelette_with_nothing_inside_okay/

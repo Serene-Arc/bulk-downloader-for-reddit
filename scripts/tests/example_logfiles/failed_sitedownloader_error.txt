@@ -1,0 +1,2 @@
+[2021-06-12 08:38:35,657 - bdfr.downloader - ERROR] - Site Gallery failed to download submission nxr7x9: No images found in Reddit gallery
+[2021-06-12 08:47:22,005 - bdfr.downloader - ERROR] - Site Gallery failed to download submission nxpn0h: Server responded with 503 to https://www.reddit.com/gallery/nxpkvh
