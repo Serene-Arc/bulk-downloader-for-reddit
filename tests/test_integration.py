@@ -254,6 +254,20 @@ def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--full-context', '--link', 'gxqapql'],
+))
+def test_cli_archive_full_context(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'Converting comment' in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
 @pytest.mark.slow
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
