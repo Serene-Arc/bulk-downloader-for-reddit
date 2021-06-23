@@ -14,7 +14,7 @@ from bdfr.site_downloaders.youtube import Youtube
 @pytest.mark.slow
 @pytest.mark.parametrize(('test_url', 'expected_hash'), (
     ('https://www.youtube.com/watch?v=uSm2VDgRIUs', 'f70b704b4b78b9bb5cd032bfc26e4971'),
-    ('https://www.youtube.com/watch?v=m-tKnjFwleU', '30314930d853afff8ebc7d8c36a5b833'),
+    ('https://www.youtube.com/watch?v=GcI7nxQj7HA', '2bfdbf434ed284623e46f3bf52c36166'),
 ))
 def test_find_resources_good(test_url: str, expected_hash: str):
     test_submission = MagicMock()
