@@ -54,6 +54,9 @@ class RedditDownloader(RedditConnector):
         elif not isinstance(submission, praw.models.Submission):
             logger.warning(f'{submission.id} is not a submission')
             return
+        elif not self.download_filter.check_url(submission.url):
+            logger.debug(f'Submission {submission.id} filtered due to URL {submission.url}')
+            return
 
         logger.debug(f'Attempting to download submission {submission.id}')
         try:
@@ -76,7 +79,7 @@ class RedditDownloader(RedditConnector):
                 logger.debug(f'File {destination} from submission {submission.id} already exists, continuing')
                 continue
             elif not self.download_filter.check_resource(res):
-                logger.debug(f'Download filter removed {submission.id} with URL {submission.url}')
+                logger.debug(f'Download filter removed {submission.id} file with URL {submission.url}')
                 continue
             try:
                 res.download(self.args.max_wait_time)
