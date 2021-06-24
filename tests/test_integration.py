@@ -270,7 +270,7 @@ def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--full-context', '--link', 'gxqapql'],
+    ['--comment-context', '--link', 'gxqapql'],
 ))
 def test_cli_archive_full_context(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
