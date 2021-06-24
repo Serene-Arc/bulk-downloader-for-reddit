@@ -170,7 +170,7 @@ def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--subreddit', 'python', '-L', 10, '--search-existing'],
+    ['--subreddit', 'python', '-L', 1, '--search-existing'],
 ))
 def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
     Path(tmp_path, 'test.txt').touch()
