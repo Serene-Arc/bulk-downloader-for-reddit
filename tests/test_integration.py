@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import re
+import shutil
 from pathlib import Path
 
 import pytest
@@ -12,22 +13,28 @@ from bdfr.__main__ import cli
 does_test_config_exist = Path('test_config.cfg').exists()
 
 
+def copy_test_config(tmp_path: Path):
+    shutil.copy(Path('test_config.cfg'), Path(tmp_path, 'test_config.cfg'))
+
+
 def create_basic_args_for_download_runner(test_args: list[str], tmp_path: Path):
+    copy_test_config(tmp_path)
     out = [
         'download', str(tmp_path),
         '-v',
-        '--config', 'test_config.cfg',
+        '--config', str(Path(tmp_path, 'test_config.cfg')),
         '--log', str(Path(tmp_path, 'test_log.txt')),
     ] + test_args
     return out
 
 
 def create_basic_args_for_archive_runner(test_args: list[str], tmp_path: Path):
+    copy_test_config(tmp_path)
     out = [
         'archive',
         str(tmp_path),
         '-v',
-        '--config', 'test_config.cfg',
+        '--config', str(Path(tmp_path, 'test_config.cfg')),
         '--log', str(Path(tmp_path, 'test_log.txt')),
     ] + test_args
     return out
