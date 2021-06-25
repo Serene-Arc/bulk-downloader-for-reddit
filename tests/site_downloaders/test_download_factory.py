@@ -13,6 +13,7 @@ from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import Youtub
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
+from bdfr.site_downloaders.pornhub import PornHub
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
 from bdfr.site_downloaders.youtube import Youtube
@@ -44,6 +45,7 @@ from bdfr.site_downloaders.youtube import Youtube
     ('https://streamable.com/dt46y', YoutubeDlFallback),
     ('https://vimeo.com/channels/31259/53576664', YoutubeDlFallback),
     ('http://video.pbs.org/viralplayer/2365173446/', YoutubeDlFallback),
+    ('https://www.pornhub.com/view_video.php?viewkey=ph5a2ee0461a8d0', PornHub),
 ))
 def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
     result = DownloadFactory.pull_lever(test_submission_url)
