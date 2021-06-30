@@ -394,7 +394,7 @@ class RedditConnector(metaclass=ABCMeta):
 
     @staticmethod
     def check_subreddit_status(subreddit: praw.models.Subreddit):
-        if subreddit.display_name == 'all':
+        if subreddit.display_name in ('all', 'friends'):
             return
         try:
             assert subreddit.id
