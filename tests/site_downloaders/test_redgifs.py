@@ -31,6 +31,7 @@ def test_get_link(test_url: str, expected: str):
     ('https://redgifs.com/watch/springgreendecisivetaruca', '8dac487ac49a1f18cc1b4dabe23f0869'),
     ('https://www.gifdeliverynetwork.com/maturenexthippopotamus', '9bec0a9e4163a43781368ed5d70471df'),
     ('https://www.gifdeliverynetwork.com/regalshoddyhorsechestnutleafminer', '8afb4e2c090a87140230f2352bf8beba'),
+    ('https://redgifs.com/watch/leafysaltydungbeetle', '076792c660b9c024c0471ef4759af8bd'),
 ))
 def test_download_resource(test_url: str, expected_hash: str):
     mock_submission = Mock()
