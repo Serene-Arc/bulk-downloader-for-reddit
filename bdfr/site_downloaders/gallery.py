@@ -21,7 +21,16 @@ class Gallery(BaseDownloader):
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
-        image_urls = self._get_links(self.post.gallery_data['items'])
+        try:
+            image_urls = self._get_links(self.post.gallery_data['items'])
+        except AttributeError:
+            try:
+                image_urls = self._get_links(self.post.crosspost_parent_list[0]['gallery_data']['items'])
+            except (AttributeError, IndexError):
+                logger.error(f'Could not find gallery data in submission {self.post.id}')
+                logger.exception('Gallery image find failure')
+                raise SiteDownloaderError('No images found in Reddit gallery')
+
         if not image_urls:
             raise SiteDownloaderError('No images found in Reddit gallery')
         return [Resource(self.post, url) for url in image_urls]
