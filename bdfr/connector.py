@@ -242,6 +242,9 @@ class RedditConnector(metaclass=ABCMeta):
         if self.args.subreddit:
             out = []
             for reddit in self.split_args_input(self.args.subreddit):
+                if reddit == 'friends' and self.authenticated is False:
+                    logger.error('Cannot read friends subreddit without an authenticated instance')
+                    continue
                 try:
                     reddit = self.reddit_instance.subreddit(reddit)
                     try:
@@ -394,7 +397,7 @@ class RedditConnector(metaclass=ABCMeta):
 
     @staticmethod
     def check_subreddit_status(subreddit: praw.models.Subreddit):
-        if subreddit.display_name == 'all':
+        if subreddit.display_name in ('all', 'friends'):
             return
         try:
             assert subreddit.id
