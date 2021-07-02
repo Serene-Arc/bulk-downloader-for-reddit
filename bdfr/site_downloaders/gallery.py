@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 import logging
-import re
 from typing import Optional
 
-import bs4
 import requests
 from praw.models import Submission
 

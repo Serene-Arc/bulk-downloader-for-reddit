@@ -2,14 +2,10 @@
 # coding=utf-8
 
 import logging
-import tempfile
-from pathlib import Path
 from typing import Optional
 
-import youtube_dl
 from praw.models import Submission
 
-from bdfr.exceptions import NotADownloadableLinkError, SiteDownloaderError
 from bdfr.resource import Resource
 from bdfr.site_authenticator import SiteAuthenticator
 from bdfr.site_downloaders.youtube import Youtube

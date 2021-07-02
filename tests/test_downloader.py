@@ -9,7 +9,6 @@ from unittest.mock import MagicMock, patch
 import praw.models
 import pytest
 
-import bdfr.site_downloaders.download_factory
 from bdfr.__main__ import setup_logging
 from bdfr.configuration import Configuration
 from bdfr.connector import RedditConnector
