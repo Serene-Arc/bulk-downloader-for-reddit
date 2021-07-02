@@ -210,7 +210,7 @@ class RedditConnector(metaclass=ABCMeta):
         if log_path.exists():
             try:
                 file_handler.doRollover()
-            except PermissionError as e:
+            except PermissionError:
                 logger.critical(
                     'Cannot rollover logfile, make sure this is the only '
                     'BDFR process or specify alternate logfile location')

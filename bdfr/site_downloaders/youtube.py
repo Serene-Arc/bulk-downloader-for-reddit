@@ -43,7 +43,6 @@ class Youtube(BaseDownloader):
             except youtube_dl.DownloadError as e:
                 raise SiteDownloaderError(f'Youtube download failed: {e}')
 
-            downloaded_file = None
             downloaded_files = list(download_path.iterdir())
             if len(downloaded_files) > 0:
                 downloaded_file = downloaded_files[0]
