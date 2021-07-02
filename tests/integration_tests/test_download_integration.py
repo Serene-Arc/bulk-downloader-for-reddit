@@ -214,6 +214,7 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
     ['--subreddit', 'submitters', '-L', 10],  # Private subreddit
     ['--subreddit', 'donaldtrump', '-L', 10],  # Banned subreddit
     ['--user', 'djnish', '--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10],
+    ['--subreddit', 'friends', '-L', 10],
 ))
 def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
     runner = CliRunner()

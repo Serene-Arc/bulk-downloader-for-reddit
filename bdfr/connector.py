@@ -242,6 +242,9 @@ class RedditConnector(metaclass=ABCMeta):
         if self.args.subreddit:
             out = []
             for reddit in self.split_args_input(self.args.subreddit):
+                if reddit == 'friends' and self.authenticated is False:
+                    logger.error('Cannot read friends subreddit without an authenticated instance')
+                    continue
                 try:
                     reddit = self.reddit_instance.subreddit(reddit)
                     try:
