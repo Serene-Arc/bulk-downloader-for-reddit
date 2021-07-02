@@ -28,8 +28,9 @@ def test_find_resources_good(test_url: str, expected_hash: str):
 
 
 @pytest.mark.online
-@pytest.mark.parametrize(('test_url'), (
-    ('https://www.polygon.com/disney-plus/2020/5/14/21249881/gargoyles-animated-series-disney-plus-greg-weisman-interview-oj-simpson-goliath-chronicles'),
+@pytest.mark.parametrize('test_url', (
+    'https://www.polygon.com/disney-plus/2020/5/14/21249881/gargoyles-animated-series-disney-plus-greg-weisman'
+    '-interview-oj-simpson-goliath-chronicles',
 ))
 def test_find_resources_bad(test_url: str):
     test_submission = MagicMock()
