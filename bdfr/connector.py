@@ -119,7 +119,7 @@ class RedditConnector(metaclass=ABCMeta):
             logger.debug('Using authenticated Reddit instance')
             if not self.cfg_parser.has_option('DEFAULT', 'user_token'):
                 logger.log(9, 'Commencing OAuth2 authentication')
-                scopes = self.cfg_parser.get('DEFAULT', 'scopes')
+                scopes = self.cfg_parser.get('DEFAULT', 'scopes', fallback='identity, history, read, save')
                 scopes = OAuth2Authenticator.split_scopes(scopes)
                 oauth2_authenticator = OAuth2Authenticator(
                     scopes,
