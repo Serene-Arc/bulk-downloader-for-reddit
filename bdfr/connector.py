@@ -94,7 +94,7 @@ class RedditConnector(metaclass=ABCMeta):
             logger.debug(f'Setting maximum download wait time to {self.args.max_wait_time} seconds')
         if self.args.time_format is None:
             option = self.cfg_parser.get('DEFAULT', 'time_format', fallback='ISO')
-            if re.match(r'^[ \'\"]*$', option):
+            if re.match(r'^[\s\'\"]*$', option):
                 option = 'ISO'
             logger.debug(f'Setting datetime format string to {option}')
             self.args.time_format = option
