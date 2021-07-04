@@ -90,10 +90,7 @@ class RedditConnector(metaclass=ABCMeta):
     def read_config(self):
         """Read any cfg values that need to be processed"""
         if self.args.max_wait_time is None:
-            if not self.cfg_parser.has_option('DEFAULT', 'max_wait_time'):
-                self.cfg_parser.set('DEFAULT', 'max_wait_time', '120')
-                logger.log(9, 'Wrote default download wait time download to config file')
-            self.args.max_wait_time = self.cfg_parser.getint('DEFAULT', 'max_wait_time')
+            self.args.max_wait_time = self.cfg_parser.getint('DEFAULT', 'max_wait_time', fallback=120)
             logger.debug(f'Setting maximum download wait time to {self.args.max_wait_time} seconds')
         if self.args.time_format is None:
             option = self.cfg_parser.get('DEFAULT', 'time_format', fallback='ISO')
