@@ -76,6 +76,10 @@ The following options are common between both the `archive` and `download` comma
   - Can be specified multiple times
   - Disables certain modules from being used
   - See [Disabling Modules](#disabling-modules) for more information and a list of module names
+- `--include-id-file`
+  - This will add any submission with the IDs in the files provided
+  - Can be specified multiple times
+  - Format is one ID per line
 - `--log`
   - This allows one to specify the location of the logfile
   - This must be done when running multiple instances of the BDFR, see [Multiple Instances](#multiple-instances) below
