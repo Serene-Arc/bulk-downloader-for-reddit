@@ -6,9 +6,9 @@ import sys
 import click
 
 from bdfr.archiver import Archiver
+from bdfr.cloner import RedditCloner
 from bdfr.configuration import Configuration
 from bdfr.downloader import RedditDownloader
-from bdfr.cloner import RedditCloner
 
 logger = logging.getLogger()
 
@@ -17,6 +17,7 @@ _common_options = [
     click.option('--authenticate', is_flag=True, default=None),
     click.option('--config', type=str, default=None),
     click.option('--disable-module', multiple=True, default=None, type=str),
+    click.option('--include-id-file', multiple=True, default=None),
     click.option('--log', type=str, default=None),
     click.option('--saved', is_flag=True, default=None),
     click.option('--search', default=None, type=str),
@@ -26,12 +27,12 @@ _common_options = [
     click.option('-L', '--limit', default=None, type=int),
     click.option('-l', '--link', multiple=True, default=None, type=str),
     click.option('-m', '--multireddit', multiple=True, default=None, type=str),
+    click.option('-S', '--sort', type=click.Choice(('hot', 'top', 'new', 'controversial', 'rising', 'relevance')),
+                 default=None),
     click.option('-s', '--subreddit', multiple=True, default=None, type=str),
-    click.option('-v', '--verbose', default=None, count=True),
-    click.option('-u', '--user', type=str, multiple=True, default=None),
     click.option('-t', '--time', type=click.Choice(('all', 'hour', 'day', 'week', 'month', 'year')), default=None),
-    click.option('-S', '--sort', type=click.Choice(('hot', 'top', 'new',
-                                                    'controversial', 'rising', 'relevance')), default=None),
+    click.option('-u', '--user', type=str, multiple=True, default=None),
+    click.option('-v', '--verbose', default=None, count=True),
 ]
 
 _downloader_options = [

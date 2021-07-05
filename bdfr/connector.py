@@ -3,6 +3,7 @@
 
 import configparser
 import importlib.resources
+import itertools
 import logging
 import logging.handlers
 import re
@@ -78,7 +79,12 @@ class RedditConnector(metaclass=ABCMeta):
         self.create_reddit_instance()
         self.args.user = list(filter(None, [self.resolve_user_name(user) for user in self.args.user]))
 
-        self.excluded_submission_ids = self.read_excluded_ids()
+        self.excluded_submission_ids = set.union(
+            self.read_id_files(self.args.exclude_id_file),
+            set(self.args.exclude_id),
+        )
+
+        self.args.link = list(itertools.chain(self.args.link, self.read_id_files(self.args.include_id_file)))
 
         self.master_hash_list = {}
         self.authenticator = self.create_authenticator()
@@ -403,13 +409,13 @@ class RedditConnector(metaclass=ABCMeta):
         except prawcore.Forbidden:
             raise errors.BulkDownloaderException(f'Source {subreddit.display_name} is private and cannot be scraped')
 
-    def read_excluded_ids(self) -> set[str]:
+    @staticmethod
+    def read_id_files(file_locations: list[str]) -> set[str]:
         out = []
-        out.extend(self.args.exclude_id)
-        for id_file in self.args.exclude_id_file:
+        for id_file in file_locations:
             id_file = Path(id_file).resolve().expanduser()
             if not id_file.exists():
-                logger.warning(f'ID exclusion file at {id_file} does not exist')
+                logger.warning(f'ID file at {id_file} does not exist')
                 continue
             with open(id_file, 'r') as file:
                 for line in file:

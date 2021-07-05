@@ -18,6 +18,7 @@ class Configuration(Namespace):
         self.exclude_id_file = []
         self.file_scheme: str = '{REDDITOR}_{TITLE}_{POSTID}'
         self.folder_scheme: str = '{SUBREDDIT}'
+        self.include_id_file = []
         self.limit: Optional[int] = None
         self.link: list[str] = []
         self.log: Optional[str] = None

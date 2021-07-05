@@ -330,11 +330,10 @@ def test_split_subreddit_entries(test_subreddit_entries: list[str], expected: se
     assert results == expected
 
 
-def test_read_excluded_submission_ids_from_file(downloader_mock: MagicMock, tmp_path: Path):
+def test_read_submission_ids_from_file(downloader_mock: MagicMock, tmp_path: Path):
     test_file = tmp_path / 'test.txt'
     test_file.write_text('aaaaaa\nbbbbbb')
-    downloader_mock.args.exclude_id_file = [test_file]
-    results = RedditConnector.read_excluded_ids(downloader_mock)
+    results = RedditConnector.read_id_files([str(test_file)])
     assert results == {'aaaaaa', 'bbbbbb'}
 
 
