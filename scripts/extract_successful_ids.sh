@@ -11,7 +11,7 @@ if [ -n "$2" ]; then
     output="$2"
     echo "Outputting IDs to $output"
 else
-    output="successful.txt"
+    output="./successful.txt"
 fi
 
 {

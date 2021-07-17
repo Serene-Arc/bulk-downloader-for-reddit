@@ -13,6 +13,7 @@ from bdfr.site_downloaders.fallback_downloaders.youtubedl_fallback import Youtub
 from bdfr.site_downloaders.gallery import Gallery
 from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
+from bdfr.site_downloaders.pornhub import PornHub
 from bdfr.site_downloaders.redgifs import Redgifs
 from bdfr.site_downloaders.self_post import SelfPost
 from bdfr.site_downloaders.youtube import Youtube
@@ -43,6 +44,8 @@ class DownloadFactory:
             return Youtube
         elif re.match(r'i\.redd\.it.*', sanitised_url):
             return Direct
+        elif re.match(r'pornhub\.com.*', sanitised_url):
+            return PornHub
         elif YoutubeDlFallback.can_handle_link(sanitised_url):
             return YoutubeDlFallback
         else:

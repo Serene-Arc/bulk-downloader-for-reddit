@@ -22,6 +22,7 @@ class BaseArchiveEntry(ABC):
             'id': in_comment.id,
             'score': in_comment.score,
             'subreddit': in_comment.subreddit.display_name,
+            'author_flair': in_comment.author_flair_text,
             'submission': in_comment.submission.id,
             'stickied': in_comment.stickied,
             'body': in_comment.body,

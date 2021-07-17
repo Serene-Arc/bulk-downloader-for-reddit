@@ -4,7 +4,6 @@ import json
 import re
 from typing import Optional
 
-from bs4 import BeautifulSoup
 from praw.models import Submission
 
 from bdfr.exceptions import SiteDownloaderError

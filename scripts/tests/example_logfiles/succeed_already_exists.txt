@@ -1,0 +1,3 @@
+[2021-06-12 08:41:51,464 - bdfr.downloader - DEBUG] - File /media/smaug/private/reddit/tumblr/nxry0l.jpg from submission nxry0l already exists, continuing
+[2021-06-12 08:41:51,469 - bdfr.downloader - DEBUG] - File /media/smaug/private/reddit/tumblr/nxrlgn.gif from submission nxrlgn already exists, continuing
+[2021-06-12 08:41:51,472 - bdfr.downloader - DEBUG] - File /media/smaug/private/reddit/tumblr/nxrq9g.png from submission nxrq9g already exists, continuing

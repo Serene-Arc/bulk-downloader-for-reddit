@@ -130,6 +130,18 @@ def test_imgur_extension_validation_bad(test_extension: str):
             'fb6c913d721c0bbb96aa65d7f560d385',
         ),
     ),
+    (
+        'https://i.imgur.com/lFJai6i.gifv',
+        ('01a6e79a30bec0e644e5da12365d5071',),
+    ),
+    (
+        'https://i.imgur.com/ywSyILa.gifv?',
+        ('56d4afc32d2966017c38d98568709b45',),
+    ),
+    (
+        'https://imgur.com/ubYwpbk.GIFV',
+        ('d4a774aac1667783f9ed3a1bd02fac0c',),
+    ),
 ))
 def test_find_resources(test_url: str, expected_hashes: list[str]):
     mock_download = Mock()

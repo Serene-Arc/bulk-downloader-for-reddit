@@ -61,6 +61,9 @@ class Archiver(RedditConnector):
             raise ArchiverError(f'Factory failed to classify item of type {type(praw_item).__name__}')
 
     def write_entry(self, praw_item: (praw.models.Submission, praw.models.Comment)):
+        if self.args.comment_context and isinstance(praw_item, praw.models.Comment):
+            logger.debug(f'Converting comment {praw_item.id} to submission {praw_item.submission.id}')
+            praw_item = praw_item.submission
         archive_entry = self._pull_lever_entry_factory(praw_item)
         if self.args.format == 'json':
             self._write_entry_json(archive_entry)

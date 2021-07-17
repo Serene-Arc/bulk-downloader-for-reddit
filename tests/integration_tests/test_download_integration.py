@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import re
+import shutil
 from pathlib import Path
 
 import pytest
@@ -9,37 +9,20 @@ from click.testing import CliRunner
 
 from bdfr.__main__ import cli
 
-does_test_config_exist = Path('test_config.cfg').exists()
+does_test_config_exist = Path('../test_config.cfg').exists()
 
 
-def create_basic_args_for_download_runner(test_args: list[str], tmp_path: Path):
+def copy_test_config(run_path: Path):
+    shutil.copy(Path('../test_config.cfg'), Path(run_path, '../test_config.cfg'))
+
+
+def create_basic_args_for_download_runner(test_args: list[str], run_path: Path):
+    copy_test_config(run_path)
     out = [
-        'download', str(tmp_path),
+        'download', str(run_path),
         '-v',
-        '--config', 'test_config.cfg',
-        '--log', str(Path(tmp_path, 'test_log.txt')),
-    ] + test_args
-    return out
-
-
-def create_basic_args_for_archive_runner(test_args: list[str], tmp_path: Path):
-    out = [
-        'archive',
-        str(tmp_path),
-        '-v',
-        '--config', 'test_config.cfg',
-        '--log', str(Path(tmp_path, 'test_log.txt')),
-    ] + test_args
-    return out
-
-
-def create_basic_args_for_cloner_runner(test_args: list[str], tmp_path: Path):
-    out = [
-        'clone',
-        str(tmp_path),
-        '-v',
-        '--config', 'test_config.cfg',
-        '--log', str(Path(tmp_path, 'test_log.txt')),
+        '--config', str(Path(run_path, '../test_config.cfg')),
+        '--log', str(Path(run_path, 'test_log.txt')),
     ] + test_args
     return out
 
@@ -67,6 +50,21 @@ def create_basic_args_for_cloner_runner(test_args: list[str], tmp_path: Path):
     ['-s', 'trollxchromosomes', '-L', 1, '--time', 'day', '--sort', 'new', '--search', 'women'],
 ))
 def test_cli_download_subreddits(test_args: list[str], tmp_path: Path):
+    runner = CliRunner()
+    test_args = create_basic_args_for_download_runner(test_args, tmp_path)
+    result = runner.invoke(cli, test_args)
+    assert result.exit_code == 0
+    assert 'Added submissions from subreddit ' in result.output
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.authenticated
+@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
+@pytest.mark.parametrize('test_args', (
+    ['--subreddit', 'friends', '-L', 10, '--authenticate'],
+))
+def test_cli_download_user_specific_subreddits(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
@@ -163,7 +161,7 @@ def test_cli_download_user_data_bad_me_unauthenticated(test_args: list[str], tmp
 @pytest.mark.reddit
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
-    ['--subreddit', 'python', '-L', 10, '--search-existing'],
+    ['--subreddit', 'python', '-L', 1, '--search-existing'],
 ))
 def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
     Path(tmp_path, 'test.txt').touch()
@@ -180,13 +178,14 @@ def test_cli_download_search_existing(test_args: list[str], tmp_path: Path):
 @pytest.mark.parametrize('test_args', (
     ['--subreddit', 'tumblr', '-L', '25', '--skip', 'png', '--skip', 'jpg'],
     ['--subreddit', 'MaliciousCompliance', '-L', '25', '--skip', 'txt'],
+    ['--subreddit', 'tumblr', '-L', '10', '--skip-domain', 'i.redd.it'],
 ))
 def test_cli_download_download_filters(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
     test_args = create_basic_args_for_download_runner(test_args, tmp_path)
     result = runner.invoke(cli, test_args)
     assert result.exit_code == 0
-    assert 'Download filter removed ' in result.output
+    assert any((string in result.output for string in ('Download filter removed ', 'filtered due to URL')))
 
 
 @pytest.mark.online
@@ -205,71 +204,6 @@ def test_cli_download_long(test_args: list[str], tmp_path: Path):
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
-@pytest.mark.parametrize('test_args', (
-    ['-l', 'gstd4hk'],
-    ['-l', 'm2601g', '-f', 'yaml'],
-    ['-l', 'n60t4c', '-f', 'xml'],
-))
-def test_cli_archive_single(test_args: list[str], tmp_path: Path):
-    runner = CliRunner()
-    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
-    result = runner.invoke(cli, test_args)
-    assert result.exit_code == 0
-    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
-@pytest.mark.parametrize('test_args', (
-    ['--subreddit', 'Mindustry', '-L', 25],
-    ['--subreddit', 'Mindustry', '-L', 25, '--format', 'xml'],
-    ['--subreddit', 'Mindustry', '-L', 25, '--format', 'yaml'],
-    ['--subreddit', 'Mindustry', '-L', 25, '--sort', 'new'],
-    ['--subreddit', 'Mindustry', '-L', 25, '--time', 'day'],
-    ['--subreddit', 'Mindustry', '-L', 25, '--time', 'day', '--sort', 'new'],
-))
-def test_cli_archive_subreddit(test_args: list[str], tmp_path: Path):
-    runner = CliRunner()
-    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
-    result = runner.invoke(cli, test_args)
-    assert result.exit_code == 0
-    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
-@pytest.mark.parametrize('test_args', (
-    ['--user', 'me', '--authenticate', '--all-comments', '-L', '10'],
-    ['--user', 'me', '--user', 'djnish', '--authenticate', '--all-comments', '-L', '10'],
-))
-def test_cli_archive_all_user_comments(test_args: list[str], tmp_path: Path):
-    runner = CliRunner()
-    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
-    result = runner.invoke(cli, test_args)
-    assert result.exit_code == 0
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.slow
-@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
-@pytest.mark.parametrize('test_args', (
-    ['--subreddit', 'all', '-L', 100],
-    ['--subreddit', 'all', '-L', 100, '--sort', 'new'],
-))
-def test_cli_archive_long(test_args: list[str], tmp_path: Path):
-    runner = CliRunner()
-    test_args = create_basic_args_for_archive_runner(test_args, tmp_path)
-    result = runner.invoke(cli, test_args)
-    assert result.exit_code == 0
-    assert re.search(r'Writing entry .*? to file in .*? format', result.output)
-
-
-@pytest.mark.online
-@pytest.mark.reddit
 @pytest.mark.slow
 @pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
 @pytest.mark.parametrize('test_args', (
@@ -279,6 +213,7 @@ def test_cli_archive_long(test_args: list[str], tmp_path: Path):
     ['--subreddit', 'submitters', '-L', 10],  # Private subreddit
     ['--subreddit', 'donaldtrump', '-L', 10],  # Banned subreddit
     ['--user', 'djnish', '--user', 'helen_darten', '-m', 'cuteanimalpics', '-L', 10],
+    ['--subreddit', 'friends', '-L', 10],
 ))
 def test_cli_download_soft_fail(test_args: list[str], tmp_path: Path):
     runner = CliRunner()
@@ -371,19 +306,3 @@ def test_cli_download_disable_modules(test_args: list[str], tmp_path: Path):
     assert result.exit_code == 0
     assert 'skipped due to disabled module' in result.output
     assert 'Downloaded submission' not in result.output
-
-
-@pytest.mark.online
-@pytest.mark.reddit
-@pytest.mark.skipif(not does_test_config_exist, reason='A test config file is required for integration tests')
-@pytest.mark.parametrize('test_args', (
-    ['-l', 'm2601g'],
-    ['-s', 'TrollXChromosomes/', '-L', 1],
-))
-def test_cli_scrape_general(test_args: list[str], tmp_path: Path):
-    runner = CliRunner()
-    test_args = create_basic_args_for_cloner_runner(test_args, tmp_path)
-    result = runner.invoke(cli, test_args)
-    assert result.exit_code == 0
-    assert 'Downloaded submission' in result.output
-    assert 'Record for entry item' in result.output

@@ -1,0 +1,1 @@
+[2021-06-11 17:33:02,118 - bdfr.downloader - INFO] - Resource hash aaaaaaaaaaaaaaaaaaaaaaa from submission n86jk8 downloaded elsewhere

@@ -90,14 +90,11 @@ class RedditConnector(metaclass=ABCMeta):
     def read_config(self):
         """Read any cfg values that need to be processed"""
         if self.args.max_wait_time is None:
-            if not self.cfg_parser.has_option('DEFAULT', 'max_wait_time'):
-                self.cfg_parser.set('DEFAULT', 'max_wait_time', '120')
-                logger.log(9, 'Wrote default download wait time download to config file')
-            self.args.max_wait_time = self.cfg_parser.getint('DEFAULT', 'max_wait_time')
+            self.args.max_wait_time = self.cfg_parser.getint('DEFAULT', 'max_wait_time', fallback=120)
             logger.debug(f'Setting maximum download wait time to {self.args.max_wait_time} seconds')
         if self.args.time_format is None:
             option = self.cfg_parser.get('DEFAULT', 'time_format', fallback='ISO')
-            if re.match(r'^[ \'\"]*$', option):
+            if re.match(r'^[\s\'\"]*$', option):
                 option = 'ISO'
             logger.debug(f'Setting datetime format string to {option}')
             self.args.time_format = option
@@ -119,7 +116,7 @@ class RedditConnector(metaclass=ABCMeta):
             logger.debug('Using authenticated Reddit instance')
             if not self.cfg_parser.has_option('DEFAULT', 'user_token'):
                 logger.log(9, 'Commencing OAuth2 authentication')
-                scopes = self.cfg_parser.get('DEFAULT', 'scopes')
+                scopes = self.cfg_parser.get('DEFAULT', 'scopes', fallback='identity, history, read, save')
                 scopes = OAuth2Authenticator.split_scopes(scopes)
                 oauth2_authenticator = OAuth2Authenticator(
                     scopes,
@@ -210,7 +207,7 @@ class RedditConnector(metaclass=ABCMeta):
         if log_path.exists():
             try:
                 file_handler.doRollover()
-            except PermissionError as e:
+            except PermissionError:
                 logger.critical(
                     'Cannot rollover logfile, make sure this is the only '
                     'BDFR process or specify alternate logfile location')
@@ -242,6 +239,9 @@ class RedditConnector(metaclass=ABCMeta):
         if self.args.subreddit:
             out = []
             for reddit in self.split_args_input(self.args.subreddit):
+                if reddit == 'friends' and self.authenticated is False:
+                    logger.error('Cannot read friends subreddit without an authenticated instance')
+                    continue
                 try:
                     reddit = self.reddit_instance.subreddit(reddit)
                     try:
@@ -394,7 +394,7 @@ class RedditConnector(metaclass=ABCMeta):
 
     @staticmethod
     def check_subreddit_status(subreddit: praw.models.Subreddit):
-        if subreddit.display_name == 'all':
+        if subreddit.display_name in ('all', 'friends'):
             return
         try:
             assert subreddit.id

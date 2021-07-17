@@ -1,0 +1,2 @@
+[2021-06-12 11:18:25,794 - bdfr.downloader - ERROR] - Failed to download resource https://i.redd.it/61fniokpjq471.jpg in submission nxv3dt with downloader Direct: Unrecoverable error requesting resource: HTTP Code 404
+
