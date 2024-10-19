@@ -20,6 +20,7 @@ from bdfr import exceptions as errors
 from bdfr.configuration import Configuration
 from bdfr.connector import RedditConnector
 from bdfr.site_downloaders.download_factory import DownloadFactory
+from bdfr.sqlite_manager import SqliteManager
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,8 @@ class RedditDownloader(RedditConnector):
         super(RedditDownloader, self).__init__(args, logging_handlers)
         if self.args.search_existing:
             self.master_hash_list = self.scan_existing_files(self.download_directory)
+        elif self.args.enable_downloads_db:
+            self.sqlite_manager = SqliteManager(self.args)
 
     def download(self):
         for generator in self.reddit_lists:
@@ -54,6 +57,9 @@ class RedditDownloader(RedditConnector):
                 logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
+
+        if self.args.enable_downloads_db:
+            self.sqlite_manager.close()
 
     def _download_submission(self, submission: praw.models.Submission):
         if submission.id in self.excluded_submission_ids:
@@ -125,7 +131,7 @@ class RedditDownloader(RedditConnector):
                 return
             resource_hash = res.hash.hexdigest()
             destination.parent.mkdir(parents=True, exist_ok=True)
-            if resource_hash in self.master_hash_list:
+            if self.resource_exists(resource_hash):
                 if self.args.no_dupes:
                     logger.info(f"Resource hash {resource_hash} from submission {submission.id} downloaded elsewhere")
                     return
@@ -150,6 +156,9 @@ class RedditDownloader(RedditConnector):
             creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
             os.utime(destination, (creation_time, creation_time))
             self.master_hash_list[resource_hash] = destination
+            if self.args.enable_downloads_db:
+                self.sqlite_manager.insert(submission.subreddit.display_name, destination.name, resource_hash,
+                                           len(res.content))
             logger.debug(f"Hash added to master list: {resource_hash}")
         logger.info(f"Downloaded submission {submission.id} from {submission.subreddit.display_name}")
 
@@ -166,3 +175,10 @@ class RedditDownloader(RedditConnector):
 
         hash_list = {res[1]: res[0] for res in results}
         return hash_list
+
+    def resource_exists(self, resource_hash):
+        if resource_hash in self.master_hash_list:
+            return True
+        if self.args.enable_downloads_db:
+            return self.sqlite_manager.select(resource_hash)
+        return False

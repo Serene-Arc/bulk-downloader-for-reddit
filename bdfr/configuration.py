@@ -59,6 +59,10 @@ class Configuration(Namespace):
         self.format = "json"
         self.comment_context: bool = False
 
+        # SQLite-specific options
+        self.enable_downloads_db = False
+        self.downloads_db_name = "downloads"
+
     def process_click_arguments(self, context: click.Context):
         if context.params.get("opts") is not None:
             self.parse_yaml_options(context.params["opts"])
