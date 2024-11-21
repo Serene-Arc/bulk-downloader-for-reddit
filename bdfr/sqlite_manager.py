@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-import sqlite3
-import os
 import logging.handlers
+import os
+import sqlite3
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ class SqliteManager:
         self.db = self.connect_to_db()
 
     def connect_to_db(self):
-        db_path = Path(self.args.directory, f'{self.args.downloads_db_name}.sqlite3')
+        db_path = Path(self.args.directory, f"{self.args.downloads_db_name}.sqlite3")
         db_exists = os.path.exists(db_path)
 
         conn = sqlite3.connect(db_path)
@@ -28,7 +28,8 @@ class SqliteManager:
 
     def create_table(self, conn):
         cursor = conn.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS downloads (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             subreddit TEXT NOT NULL,
@@ -37,43 +38,57 @@ class SqliteManager:
             file_size INTEGER NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        ''')
+        """
+        )
 
-        cursor.execute('''
+        cursor.execute(
+            """
             CREATE UNIQUE INDEX idx_file_hash ON downloads (file_hash)
-        ''')
+        """
+        )
         conn.commit()
         logger.debug("Created new table 'downloads' with unique index 'idx_file_hash' on 'file_hash'")
 
     def insert(self, subreddit, file_name, file_hash, file_size):
         cursor = self.db.cursor()
 
-        cursor.execute('''
+        cursor.execute(
+            """
             INSERT INTO downloads (subreddit, file_name, file_hash, file_size)
             VALUES (?, ?, ?, ?)
-        ''', (subreddit, file_name, file_hash, file_size))
+        """,
+            (subreddit, file_name, file_hash, file_size),
+        )
         self.db.commit()
         logger.debug(f"Inserted {file_name} into downloads table")
 
     def select(self, file_hash):
         cursor = self.db.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             SELECT * FROM downloads WHERE file_hash = ?
-        ''', (file_hash,))
+        """,
+            (file_hash,),
+        )
         return cursor.fetchone()
 
     def delete(self, file_hash):
         cursor = self.db.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             DELETE FROM downloads WHERE file_hash = ?
-        ''', (file_hash,))
+        """,
+            (file_hash,),
+        )
         self.db.commit()
 
     def delete_all(self):
         cursor = self.db.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             DELETE FROM downloads
-        ''')
+        """
+        )
         self.db.commit()
 
     def close(self):
