@@ -33,6 +33,7 @@ class Archiver(RedditConnector):
         for generator in self.reddit_lists:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b5cecfb (Resync)
             for submission in generator:
@@ -64,6 +65,8 @@ class Archiver(RedditConnector):
                             raise
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
             for retry in range(5):
                 try:
                     for submission in generator:
@@ -88,9 +91,12 @@ class Archiver(RedditConnector):
                     logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
                     logger.debug("Waiting 60 seconds to continue")
                     sleep(60)
+<<<<<<< HEAD
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
 >>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []

@@ -364,6 +364,7 @@ class RedditConnector(metaclass=ABCMeta):
             for user in self.args.user:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 for retry in range(self.args.max_wait_time//self.args.wait_time_interval):
 =======
                 for retry in range(5):
@@ -371,6 +372,9 @@ class RedditConnector(metaclass=ABCMeta):
 =======
                 for retry in range(self.args.max_wait_time//self.args.wait_time_interval):
 >>>>>>> b5cecfb (Resync)
+=======
+                for retry in range(5):
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
                     try:
                         try:
                             self.check_user_existence(user)
@@ -398,6 +402,7 @@ class RedditConnector(metaclass=ABCMeta):
                         logger.error(f"User {user} failed to be retrieved due to a PRAW exception: {e}")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                         logger.debug(f"Waiting {self.wait_time_interval.max_wait_time} seconds to continue")
                         sleep(self.args.wait_time_interval)
 =======
@@ -408,6 +413,10 @@ class RedditConnector(metaclass=ABCMeta):
                         logger.debug(f"Waiting {self.wait_time_interval.max_wait_time} seconds to continue")
                         sleep(self.args.wait_time_interval)
 >>>>>>> b5cecfb (Resync)
+=======
+                        logger.debug("Waiting 60 seconds to continue")
+                        sleep(60)
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
             return generators
         else:
             return []
