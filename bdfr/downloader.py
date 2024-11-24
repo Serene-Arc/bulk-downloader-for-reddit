@@ -48,6 +48,7 @@ class RedditDownloader(RedditConnector):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b5cecfb (Resync)
 =======
@@ -72,6 +73,8 @@ class RedditDownloader(RedditConnector):
 =======
 =======
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
             for retry in range(5):
                 try:
                     for submission in generator:
@@ -85,6 +88,7 @@ class RedditDownloader(RedditConnector):
                     logger.debug("Waiting 60 seconds to continue")
                     sleep(60)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
 >>>>>>> b5cecfb (Resync)
@@ -92,6 +96,8 @@ class RedditDownloader(RedditConnector):
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
 >>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 
     def _download_submission(self, submission: praw.models.Submission):
         if submission.id in self.excluded_submission_ids:
