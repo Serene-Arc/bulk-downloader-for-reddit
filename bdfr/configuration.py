@@ -53,6 +53,7 @@ class Configuration(Namespace):
         self.upvoted: bool = False
         self.user: list[str] = []
         self.verbose: int = 0
+        self.stop_on_exist: bool = False
 
         # Archiver-specific options
         self.all_comments = False

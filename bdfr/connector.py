@@ -61,6 +61,7 @@ class RedditConnector(metaclass=ABCMeta):
         self._apply_logging_handlers(itertools.chain(logging_handlers, [file_log]))
         self.run_time = datetime.now().isoformat()
         self._setup_internal_objects()
+        self.existcount=0
 
         self.reddit_lists = self.retrieve_reddit_lists()
 
@@ -350,6 +351,8 @@ class RedditConnector(metaclass=ABCMeta):
 
     def create_filtered_listing_generator(self, reddit_source) -> Iterator:
         sort_function = self.determine_sort_function()
+        if self.args.stop_on_exist and sort_function != praw.models.Subreddit.new:
+            logger.warning("Stopping downloads when an old duplicate is encountered works best when sorted by new.")
         if self.sort_filter in (RedditTypes.SortType.TOP, RedditTypes.SortType.CONTROVERSIAL):
             return sort_function(reddit_source, limit=self.args.limit, time_filter=self.time_filter.value)
         else:
