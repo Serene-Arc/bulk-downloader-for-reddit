@@ -61,7 +61,7 @@ class RedditConnector(metaclass=ABCMeta):
         self._apply_logging_handlers(itertools.chain(logging_handlers, [file_log]))
         self.run_time = datetime.now().isoformat()
         self._setup_internal_objects()
-        self.existcount=0
+        self.existcount = 0
 
         self.reddit_lists = self.retrieve_reddit_lists()
 
