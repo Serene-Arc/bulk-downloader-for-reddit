@@ -32,7 +32,7 @@ def test_resource_get_extension(test_url: str, expected: str):
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("test_url", "expected_hash"),
-    (("https://www.iana.org/_img/2013.1/iana-logo-header.svg", "426b3ac01d3584c820f3b7f5985d6623"),),
+    (("https://www.iana.org/_img/2025.01/iana-logo-header.svg", "426b3ac01d3584c820f3b7f5985d6623"),),
 )
 def test_download_online_resource(test_url: str, expected_hash: str):
     test_resource = Resource(MagicMock(), test_url, Resource.retry_download(test_url))

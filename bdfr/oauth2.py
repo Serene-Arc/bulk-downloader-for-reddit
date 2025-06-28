@@ -10,6 +10,7 @@ from pathlib import Path
 
 import praw
 import requests
+from praw.util.token_manager import BaseTokenManager
 
 from bdfr.exceptions import BulkDownloaderException, RedditAuthenticationError
 
@@ -87,7 +88,7 @@ class OAuth2Authenticator:
         client.close()
 
 
-class OAuth2TokenManager(praw.reddit.BaseTokenManager):
+class OAuth2TokenManager(BaseTokenManager):
     def __init__(self, config: configparser.ConfigParser, config_location: Path):
         super(OAuth2TokenManager, self).__init__()
         self.config = config
