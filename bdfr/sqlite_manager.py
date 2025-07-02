@@ -22,7 +22,7 @@ class SqliteManager:
 
         if not db_exists:
             self.create_table(conn)
-            logger.debug(f"Created new database at {db_path}")
+            logger.info(f"Created new database at {db_path}")
 
         return conn
 
@@ -51,16 +51,20 @@ class SqliteManager:
 
     def insert(self, subreddit, file_name, file_hash, file_size):
         cursor = self.db.cursor()
-
-        cursor.execute(
+        try:
+            cursor.execute(
             """
             INSERT INTO downloads (subreddit, file_name, file_hash, file_size)
             VALUES (?, ?, ?, ?)
-        """,
+            """,
             (subreddit, file_name, file_hash, file_size),
-        )
-        self.db.commit()
-        logger.debug(f"Inserted {file_name} into downloads table")
+            )
+            self.db.commit()
+            logger.debug(f"Inserted {file_name} into downloads table")
+        except sqlite3.IntegrityError as e:
+            logger.warning(f"Failed to insert {file_name}: {e}")
+        except Exception as e:
+            logger.error(f"Unexpected error inserting {file_name}: {e}")
 
     def select(self, file_hash):
         cursor = self.db.cursor()
