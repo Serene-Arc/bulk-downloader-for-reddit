@@ -53,11 +53,11 @@ class SqliteManager:
         cursor = self.db.cursor()
         try:
             cursor.execute(
-            """
+                """
             INSERT INTO downloads (subreddit, file_name, file_hash, file_size)
             VALUES (?, ?, ?, ?)
             """,
-            (subreddit, file_name, file_hash, file_size),
+                (subreddit, file_name, file_hash, file_size),
             )
             self.db.commit()
             logger.debug(f"Inserted {file_name} into downloads table")

@@ -157,15 +157,16 @@ class RedditDownloader(RedditConnector):
             os.utime(destination, (creation_time, creation_time))
             self.master_hash_list[resource_hash] = destination
             if self.args.enable_downloads_db:
-                self.sqlite_manager.insert(submission.subreddit.display_name, destination.name, resource_hash,
-                                           len(res.content))
+                self.sqlite_manager.insert(
+                    submission.subreddit.display_name, destination.name, resource_hash, len(res.content)
+                )
             logger.debug(f"Hash added to master list: {resource_hash}")
         logger.info(f"Downloaded submission {submission.id} from {submission.subreddit.display_name}")
 
     @staticmethod
     def scan_existing_files(directory: Path) -> dict[str, Path]:
         files = []
-        for (dirpath, _dirnames, filenames) in os.walk(directory):
+        for dirpath, _dirnames, filenames in os.walk(directory):
             files.extend([Path(dirpath, file) for file in filenames])
         logger.info(f"Calculating hashes for {len(files)} files")
 
