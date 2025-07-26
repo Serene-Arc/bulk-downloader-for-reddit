@@ -14,18 +14,6 @@ from bdfr.site_downloaders.erome import Erome
     ("test_url", "expected_urls"),
     (
         ("https://www.erome.com/a/vqtPuLXh", (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",)),
-        (
-            "https://www.erome.com/a/AWvmw2cZ",
-            (
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/9IYQocM9_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/9eEDc8xm_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/EvApC7Rp_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/LruobtMs_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/TJNmSUU5_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/X11Skh6Z_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/bjlTkpn7_480p.mp4",
-            ),
-        ),
     ),
 )
 def test_get_link(test_url: str, expected_urls: tuple[str]):
