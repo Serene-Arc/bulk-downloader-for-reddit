@@ -42,9 +42,9 @@ def test_info_extraction_bad(test_url: str):
         ("https://streamable.com/t8sem", "49b2d1220c485455548f1edbc05d4ecf"),
         (
             "https://www.reddit.com/r/specializedtools/comments/n2nw5m/bamboo_splitter/",
-            "6c6ff46e04b4e33a755ae2a9b5a45ac5",
+            "8f3706bbd29e95f71c4644d36a399b71",
         ),
-        ("https://v.redd.it/9z1dnk3xr5k61", "226cee353421c7aefb05c92424cc8cdd"),
+        ("https://v.redd.it/9z1dnk3xr5k61", "cb3de5a26ebcb2873e841c35cef92514"),
     ),
 )
 def test_find_resources(test_url: str, expected_hash: str):
