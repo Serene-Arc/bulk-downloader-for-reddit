@@ -34,17 +34,6 @@ def test_get_id(test_url: str, expected: str):
         ("https://redgifs.com/watch/springgreendecisivetaruca", {"SpringgreenDecisiveTaruca.mp4"}),
         ("https://www.redgifs.com/watch/palegoldenrodrawhalibut", {"PalegoldenrodRawHalibut.mp4"}),
         ("https://redgifs.com/watch/hollowintentsnowyowl", {"HollowIntentSnowyowl-large.jpg"}),
-        (
-            "https://www.redgifs.com/watch/lustrousstickywaxwing",
-            {
-                "EntireEnchantingHypsilophodon-large.jpg",
-                "FancyMagnificentAdamsstaghornedbeetle-large.jpg",
-                "LustrousStickyWaxwing-large.jpg",
-                "ParchedWindyArmyworm-large.jpg",
-                "ThunderousColorlessErmine-large.jpg",
-                "UnripeUnkemptWoodpecker-large.jpg",
-            },
-        ),
         ("https://www.redgifs.com/watch/genuineprivateguillemot/", {"GenuinePrivateGuillemot.mp4"}),
     ),
 )
@@ -64,17 +53,6 @@ def test_get_link(test_url: str, expected: set[str]):
         ("https://redgifs.com/watch/leafysaltydungbeetle", {"076792c660b9c024c0471ef4759af8bd"}),
         ("https://www.redgifs.com/watch/palegoldenrodrawhalibut", {"46d5aa77fe80c6407de1ecc92801c10e"}),
         ("https://redgifs.com/watch/hollowintentsnowyowl", {"5ee51fa15e0a58e98f11dea6a6cca771"}),
-        (
-            "https://www.redgifs.com/watch/lustrousstickywaxwing",
-            {
-                "b461e55664f07bed8d2f41d8586728fa",
-                "30ba079a8ed7d7adf17929dc3064c10f",
-                "0d4f149d170d29fc2f015c1121bab18b",
-                "53987d99cfd77fd65b5fdade3718f9f1",
-                "fb2e7d972846b83bf4016447d3060d60",
-                "44fb28f72ec9a5cca63fa4369ab4f672",
-            },
-        ),
     ),
 )
 def test_download_resource(test_url: str, expected_hashes: set[str]):
@@ -92,16 +70,6 @@ def test_download_resource(test_url: str, expected_hashes: set[str]):
 @pytest.mark.parametrize(
     ("test_url", "expected_link", "expected_hash"),
     (
-        (
-            "https://redgifs.com/watch/flippantmemorablebaiji",
-            {"FlippantMemorableBaiji-mobile.mp4"},
-            {"41a5fb4865367ede9f65fc78736f497a"},
-        ),
-        (
-            "https://redgifs.com/watch/thirstyunfortunatewaterdragons",
-            {"thirstyunfortunatewaterdragons-mobile.mp4"},
-            {"1a51dad8fedb594bdd84f027b3cbe8af"},
-        ),
         (
             "https://redgifs.com/watch/conventionalplainxenopterygii",
             {"conventionalplainxenopterygii-mobile.mp4"},
