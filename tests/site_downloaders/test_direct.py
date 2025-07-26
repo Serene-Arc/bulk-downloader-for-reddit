@@ -15,8 +15,8 @@ from bdfr.site_downloaders.direct import Direct
     (
         ("https://i.redd.it/q6ebualjxzea1.jpg", "6ec154859c777cb401132bb991cb3635"),
         (
-            "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
-            "3caa342e241ddb7d76fd24a834094101",
+            "https://file-examples.com/wp-content/storage/2017/11/file_example_MP3_700KB.mp3",
+            "3aa05e5b50931c728abe9a248ab2fc38",
         ),
     ),
 )

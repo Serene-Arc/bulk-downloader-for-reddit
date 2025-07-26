@@ -114,11 +114,11 @@ def test_check_format_string_validity(test_string: str, expected: bool):
     ("test_format_string", "expected"),
     (
         ("{SUBREDDIT}", "formula1"),
-        ("{REDDITOR}", "Kirsty-Blue"),
+        ("{REDDITOR}", "DELETED"),
         ("{POSTID}", "w22m5l"),
         ("{FLAIR}", "Social Media rall"),
         ("{SUBREDDIT}_{TITLE}", "formula1_George Russel acknowledges the Twitter trend about him"),
-        ("{REDDITOR}_{TITLE}_{POSTID}", "Kirsty-Blue_George Russel acknowledges the Twitter trend about him_w22m5l"),
+        ("{REDDITOR}_{TITLE}_{POSTID}", "DELETED_George Russel acknowledges the Twitter trend about him_w22m5l"),
     ),
 )
 def test_format_name_real(
@@ -152,7 +152,7 @@ def test_format_name_real(
         (
             "{SUBREDDIT}",
             "{REDDITOR}_{TITLE}_{POSTID}",
-            "test/formula1/Kirsty-Blue_George Russel acknowledges the Twitter trend about him_w22m5l.png",
+            "test/formula1/DELETED_George Russel acknowledges the Twitter trend about him_w22m5l.png",
         ),
     ),
 )

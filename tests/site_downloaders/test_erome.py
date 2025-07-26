@@ -15,7 +15,7 @@ from bdfr.site_downloaders.erome import Erome
     (
         ("https://www.erome.com/a/vqtPuLXh", (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",)),
         (
-            "https://www.erome.com/a/ORhX0FZz",
+            "https://www.erome.com/a/AWvmw2cZ",
             (
                 r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/9IYQocM9_480p.mp4",
                 r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/9eEDc8xm_480p.mp4",
