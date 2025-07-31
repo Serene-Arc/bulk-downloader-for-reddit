@@ -12,9 +12,7 @@ from bdfr.site_downloaders.erome import Erome
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("test_url", "expected_urls"),
-    (
-        ("https://www.erome.com/a/vqtPuLXh", (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",)),
-    ),
+    (("https://www.erome.com/a/vqtPuLXh", (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",)),),
 )
 def test_get_link(test_url: str, expected_urls: tuple[str]):
     result = Erome._get_links(test_url)
