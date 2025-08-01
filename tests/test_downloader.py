@@ -81,12 +81,14 @@ def test_mark_hard_link(
     downloader_mock.args.folder_scheme = ""
     downloader_mock.args.file_scheme = "{POSTID}"
     downloader_mock.file_name_formatter = RedditConnector.create_file_name_formatter(downloader_mock)
+    downloader_mock.resource_exists.return_value = False
     submission = downloader_mock.reddit_instance.submission(id=test_submission_id)
     original = Path(tmp_path, f"{test_submission_id}.png")
 
     RedditDownloader._download_submission(downloader_mock, submission)
     assert original.exists()
 
+    downloader_mock.resource_exists.return_value = True
     downloader_mock.args.file_scheme = "test2_{POSTID}"
     downloader_mock.file_name_formatter = RedditConnector.create_file_name_formatter(downloader_mock)
     RedditDownloader._download_submission(downloader_mock, submission)
