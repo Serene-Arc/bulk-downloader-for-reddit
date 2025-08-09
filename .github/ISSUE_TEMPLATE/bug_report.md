@@ -7,9 +7,10 @@ assignees: ''
 
 ---
 
+- [ ] I have read the [Opening an issue](https://github.com/aliparlakci/bulk-downloader-for-reddit/blob/master/docs/CONTRIBUTING.md#opening-an-issue)
 - [ ] I am reporting a bug.
 - [ ] I am running the latest version of BDfR
-- [ ] I have read the [Opening an issue](https://github.com/aliparlakci/bulk-downloader-for-reddit/blob/master/docs/CONTRIBUTING.md#opening-an-issue)
+- [ ] I am not asking a question about the BDFR (please use Discussions for this)
 
 ## Description
 
@@ -27,6 +28,8 @@ Paste here the command(s) that causes the bug
 - Python version: [e.g. 3.9.4]
 
 ## Logs
+
+These are my **unaltered** logs:
 
 ```text
 Paste the log output here.

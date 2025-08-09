@@ -1,0 +1,29 @@
+name: Scripts Test
+
+on:
+  push:
+    paths:
+      - "scripts/*.sh"
+      - "scripts/*.ps1"
+  pull_request:
+    paths:
+      - "scripts/*.sh"
+      - "scripts/*.ps1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+    - name: Bats tests
+      run: |
+        cd scripts/tests/
+        bats/bin/bats *.bats
+
+    - name: Pester tests
+      shell: pwsh
+      run: |
+        cd scripts/tests/
+        Invoke-Pester -CI -PassThru .

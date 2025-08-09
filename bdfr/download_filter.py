@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 import re
+from typing import Optional
 
 from bdfr.resource import Resource
 
@@ -10,7 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 class DownloadFilter:
-    def __init__(self, excluded_extensions: list[str] = None, excluded_domains: list[str] = None):
+    def __init__(
+        self,
+        excluded_extensions: Optional[list[str]] = None,
+        excluded_domains: Optional[list[str]] = None,
+    ) -> None:
         self.excluded_extensions = excluded_extensions
         self.excluded_domains = excluded_domains
 
@@ -34,9 +38,9 @@ class DownloadFilter:
         if not self.excluded_extensions:
             return True
         combined_extensions = "|".join(self.excluded_extensions)
-        pattern = re.compile(r".*({})$".format(combined_extensions))
+        pattern = re.compile(rf".*({combined_extensions})$")
         if re.match(pattern, resource_extension):
-            logger.log(9, f'Url "{resource_extension}" matched with "{pattern}"')
+            logger.log(9, f"Url {resource_extension!r} matched with {pattern!r}")
             return False
         else:
             return True
@@ -45,9 +49,9 @@ class DownloadFilter:
         if not self.excluded_domains:
             return True
         combined_domains = "|".join(self.excluded_domains)
-        pattern = re.compile(r"https?://.*({}).*".format(combined_domains))
+        pattern = re.compile(rf"https?://.*({combined_domains}).*")
         if re.match(pattern, url):
-            logger.log(9, f'Url "{url}" matched with "{pattern}"')
+            logger.log(9, f"Url {url!r} matched with {pattern!r}")
             return False
         else:
             return True

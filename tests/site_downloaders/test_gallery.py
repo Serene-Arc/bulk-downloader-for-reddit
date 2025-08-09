@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import praw
 import pytest
@@ -62,12 +61,10 @@ def test_gallery_get_links(test_ids: list[dict], expected: set[str]):
             },
         ),
         (
-            "ljyy27",
+            "w22m5l",
             {
-                "359c203ec81d0bc00e675f1023673238",
-                "79262fd46bce5bfa550d878a3b898be4",
-                "808c35267f44acb523ce03bfa5687404",
-                "ec8b65bdb7f1279c4b3af0ea2bbb30c3",
+                "26aa07eed6dd0bd0ec871a9dcdd572ef",
+                "7e8d2dc005b1270947a0cef4cd64238f",
             },
         ),
         (

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import configparser
 import importlib.resources
 import itertools
 import logging
 import logging.handlers
+import platform
 import re
 import shutil
-import socket
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable, Iterable, Iterator
 from datetime import datetime
 from enum import Enum, auto
 from pathlib import Path
 from time import sleep
+from typing import Union
 
 import appdirs
 import praw
@@ -22,6 +22,7 @@ import praw.exceptions
 import praw.models
 import prawcore
 
+from bdfr import __version__
 from bdfr import exceptions as errors
 from bdfr.configuration import Configuration
 from bdfr.download_filter import DownloadFilter
@@ -51,7 +52,7 @@ class RedditTypes:
 
 
 class RedditConnector(metaclass=ABCMeta):
-    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()):
+    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
         self.args = args
         self.config_directories = appdirs.AppDirs("bdfr", "BDFR")
         self.determine_directories()
@@ -64,8 +65,7 @@ class RedditConnector(metaclass=ABCMeta):
 
         self.reddit_lists = self.retrieve_reddit_lists()
 
-    def _setup_internal_objects(self):
-
+    def _setup_internal_objects(self) -> None:
         self.parse_disabled_modules()
 
         self.download_filter = self.create_download_filter()
@@ -77,6 +77,7 @@ class RedditConnector(metaclass=ABCMeta):
         self.file_name_formatter = self.create_file_name_formatter()
         logger.log(9, "Create file name formatter")
 
+        self.user_agent = praw.const.USER_AGENT_FORMAT.format(":".join([platform.uname()[0], __package__, __version__]))
         self.create_reddit_instance()
         self.args.user = list(filter(None, [self.resolve_user_name(user) for user in self.args.user]))
 
@@ -95,12 +96,12 @@ class RedditConnector(metaclass=ABCMeta):
         self.args.skip_subreddit = {sub.lower() for sub in self.args.skip_subreddit}
 
     @staticmethod
-    def _apply_logging_handlers(handlers: Iterable[logging.Handler]):
+    def _apply_logging_handlers(handlers: Iterable[logging.Handler]) -> None:
         main_logger = logging.getLogger()
         for handler in handlers:
             main_logger.addHandler(handler)
 
-    def read_config(self):
+    def read_config(self) -> None:
         """Read any cfg values that need to be processed"""
         if self.args.max_wait_time is None:
             self.args.max_wait_time = self.cfg_parser.getint("DEFAULT", "max_wait_time", fallback=120)
@@ -117,29 +118,40 @@ class RedditConnector(metaclass=ABCMeta):
             self.args.filename_restriction_scheme = self.cfg_parser.get(
                 "DEFAULT", "filename_restriction_scheme", fallback=None
             )
-            logger.debug(f"Setting filename restriction scheme to '{self.args.filename_restriction_scheme}'")
+            logger.debug(f"Setting filename restriction scheme to {self.args.filename_restriction_scheme!r}")
         # Update config on disk
         with Path(self.config_location).open(mode="w") as file:
             self.cfg_parser.write(file)
 
-    def parse_disabled_modules(self):
+    def parse_disabled_modules(self) -> None:
         disabled_modules = self.args.disable_module
         disabled_modules = self.split_args_input(disabled_modules)
         disabled_modules = {name.strip().lower() for name in disabled_modules}
         self.args.disable_module = disabled_modules
-        logger.debug(f'Disabling the following modules: {", ".join(self.args.disable_module)}')
+        logger.debug(f"Disabling the following modules: {', '.join(self.args.disable_module)}")
 
-    def create_reddit_instance(self):
+    def create_reddit_instance(self) -> None:
         if self.args.authenticate:
             logger.debug("Using authenticated Reddit instance")
+            client_id = self.cfg_parser.get("DEFAULT", "client_id")
+            client_secret = self.cfg_parser.get("DEFAULT", "client_secret", fallback=None)
+            if client_id == "U-6gk4ZCh3IeNQ":
+                logger.warning(
+                    "You are using the default app ID for the BDFR; this will result in you sharing a request quota"
+                    " with every other user. It is recommended to create your own app and put the ID and secret"
+                    " in the configuration file"
+                )
+            if client_secret and client_secret.lower() == "none":
+                client_secret = None
             if not self.cfg_parser.has_option("DEFAULT", "user_token"):
                 logger.log(9, "Commencing OAuth2 authentication")
                 scopes = self.cfg_parser.get("DEFAULT", "scopes", fallback="identity, history, read, save")
                 scopes = OAuth2Authenticator.split_scopes(scopes)
                 oauth2_authenticator = OAuth2Authenticator(
-                    scopes,
-                    self.cfg_parser.get("DEFAULT", "client_id"),
-                    self.cfg_parser.get("DEFAULT", "client_secret"),
+                    wanted_scopes=scopes,
+                    client_id=client_id,
+                    client_secret=client_secret,
+                    user_agent=self.user_agent,
                 )
                 token = oauth2_authenticator.retrieve_new_token()
                 self.cfg_parser["DEFAULT"]["user_token"] = token
@@ -149,18 +161,26 @@ class RedditConnector(metaclass=ABCMeta):
 
             self.authenticated = True
             self.reddit_instance = praw.Reddit(
-                client_id=self.cfg_parser.get("DEFAULT", "client_id"),
-                client_secret=self.cfg_parser.get("DEFAULT", "client_secret"),
-                user_agent=socket.gethostname(),
+                client_id=client_id,
+                client_secret=client_secret,
+                user_agent=self.user_agent,
                 token_manager=token_manager,
+                ratelimit_seconds=120,
             )
         else:
             logger.debug("Using unauthenticated Reddit instance")
+            logger.warning(
+                "Using an unauthenticated app like this will result in Reddit limiting queries to 10 requests a minute"
+            )
             self.authenticated = False
+            client_secret = self.cfg_parser.get("DEFAULT", "client_secret", fallback=None)
+            if client_secret and client_secret.lower() == "none":
+                client_secret = None
             self.reddit_instance = praw.Reddit(
                 client_id=self.cfg_parser.get("DEFAULT", "client_id"),
-                client_secret=self.cfg_parser.get("DEFAULT", "client_secret"),
-                user_agent=socket.gethostname(),
+                client_secret=client_secret,
+                user_agent=self.user_agent,
+                ratelimit_seconds=120,
             )
 
     def retrieve_reddit_lists(self) -> list[praw.models.ListingGenerator]:
@@ -175,14 +195,14 @@ class RedditConnector(metaclass=ABCMeta):
         logger.log(9, "Retrieved submissions for given links")
         return master_list
 
-    def determine_directories(self):
+    def determine_directories(self) -> None:
         self.download_directory = Path(self.args.directory).resolve().expanduser()
         self.config_directory = Path(self.config_directories.user_config_dir)
 
         self.download_directory.mkdir(exist_ok=True, parents=True)
         self.config_directory.mkdir(exist_ok=True, parents=True)
 
-    def load_config(self):
+    def load_config(self) -> None:
         self.cfg_parser = configparser.ConfigParser()
         if self.args.config:
             if (cfg_path := Path(self.args.config)).exists():
@@ -241,7 +261,7 @@ class RedditConnector(metaclass=ABCMeta):
         pattern = re.compile(r"^(?:https://www\.reddit\.com/)?(?:r/)?(.*?)/?$")
         match = re.match(pattern, subreddit)
         if not match:
-            raise errors.BulkDownloaderException(f"Could not find subreddit name in string {subreddit}")
+            raise errors.BulkDownloaderException(f"Could not find subreddit name in string {subreddit!r}")
         return match.group(1)
 
     @staticmethod
@@ -287,7 +307,7 @@ class RedditConnector(metaclass=ABCMeta):
                             )
                         )
                         logger.debug(
-                            f'Added submissions from subreddit {reddit} with the search term "{self.args.search}"'
+                            f"Added submissions from subreddit {reddit} with the search term {self.args.search!r}"
                         )
                     else:
                         out.append(self.create_filtered_listing_generator(reddit))
@@ -303,7 +323,7 @@ class RedditConnector(metaclass=ABCMeta):
                 logger.log(9, f"Resolved user to {resolved_name}")
                 return resolved_name
             else:
-                logger.warning('To use "me" as a user, an authenticated Reddit instance must be used')
+                logger.warning("To use 'me' as a user, an authenticated Reddit instance must be used")
         else:
             return in_name
 
@@ -348,7 +368,9 @@ class RedditConnector(metaclass=ABCMeta):
         else:
             return []
 
-    def create_filtered_listing_generator(self, reddit_source) -> Iterator:
+    def create_filtered_listing_generator(
+        self, reddit_source: Union[praw.models.Subreddit, praw.models.Multireddit, praw.models.Redditor.submissions]
+    ) -> Iterator:
         sort_function = self.determine_sort_function()
         if self.sort_filter in (RedditTypes.SortType.TOP, RedditTypes.SortType.CONTROVERSIAL):
             return sort_function(reddit_source, limit=self.args.limit, time_filter=self.time_filter.value)
@@ -356,7 +378,7 @@ class RedditConnector(metaclass=ABCMeta):
             return sort_function(reddit_source, limit=self.args.limit)
 
     def get_user_data(self) -> list[Iterator]:
-        if any([self.args.submitted, self.args.upvoted, self.args.saved]):
+        if any([self.args.downvoted, self.args.saved, self.args.submitted, self.args.upvoted]):
             if not self.args.user:
                 logger.warning("At least one user must be supplied to download user data")
                 return []
@@ -375,7 +397,7 @@ class RedditConnector(metaclass=ABCMeta):
                                 self.reddit_instance.redditor(user).submissions,
                             )
                         )
-                    if not self.authenticated and any((self.args.upvoted, self.args.saved)):
+                    if not self.authenticated and any((self.args.downvoted, self.args.saved, self.args.upvoted)):
                         logger.warning("Accessing user lists requires authentication")
                     else:
                         if self.args.upvoted:
@@ -384,6 +406,9 @@ class RedditConnector(metaclass=ABCMeta):
                         if self.args.saved:
                             logger.debug(f"Retrieving saved posts of user {user}")
                             generators.append(self.reddit_instance.redditor(user).saved(limit=self.args.limit))
+                        if self.args.downvoted:
+                            logger.debug(f"Retrieving downvoted posts of user {user}")
+                            generators.append(self.reddit_instance.redditor(user).downvoted(limit=self.args.limit))
                 except prawcore.PrawcoreException as e:
                     logger.error(f"User {user} failed to be retrieved due to a PRAW exception: {e}")
                     logger.debug("Waiting 60 seconds to continue")
@@ -392,7 +417,7 @@ class RedditConnector(metaclass=ABCMeta):
         else:
             return []
 
-    def check_user_existence(self, name: str):
+    def check_user_existence(self, name: str) -> None:
         user = self.reddit_instance.redditor(name=name)
         try:
             if user.id:
@@ -427,15 +452,16 @@ class RedditConnector(metaclass=ABCMeta):
         return SiteAuthenticator(self.cfg_parser)
 
     @abstractmethod
-    def download(self):
+    def download(self) -> None:
         pass
 
     @staticmethod
-    def check_subreddit_status(subreddit: praw.models.Subreddit):
+    def check_subreddit_status(subreddit: praw.models.Subreddit) -> None:
         if subreddit.display_name in ("all", "friends"):
             return
         try:
-            assert subreddit.id
+            if subreddit.id:
+                return
         except prawcore.NotFound:
             raise errors.BulkDownloaderException(f"Source {subreddit.display_name} cannot be found")
         except prawcore.Redirect:

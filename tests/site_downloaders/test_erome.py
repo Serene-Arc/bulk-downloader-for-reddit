@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import re
 from unittest.mock import MagicMock
@@ -24,8 +23,9 @@ def test_get_link(test_url: str, expected_urls: tuple[str]):
 @pytest.mark.parametrize(
     ("test_url", "expected_hashes_len"),
     (
-        ("https://www.erome.com/a/vqtPuLXh", 1),
-        ("https://www.erome.com/a/4tP3KI6F", 1),
+        ("https://www.erome.com/a/vqtPuLXh", 1),  # Video
+        ("https://www.erome.com/a/4tP3KI6F", 1),  # Video
+        ("https://www.erome.com/a/9E50Xkb6", 10),  # Image album
     ),
 )
 def test_download_resource(test_url: str, expected_hashes_len: int):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 import tempfile
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class Youtube(BaseDownloader):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:

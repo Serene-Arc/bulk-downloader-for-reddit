@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import shutil
 from pathlib import Path
@@ -28,7 +27,8 @@ def create_basic_args_for_cloner_runner(test_args: list[str], tmp_path: Path):
         str(Path(tmp_path, "test_config.cfg")),
         "--log",
         str(Path(tmp_path, "test_log.txt")),
-    ] + test_args
+        *test_args,
+    ]
     return out
 
 

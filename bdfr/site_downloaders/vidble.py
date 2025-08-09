@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import itertools
 import logging
@@ -7,7 +6,6 @@ import re
 from typing import Optional
 
 import bs4
-import requests
 from praw.models import Submission
 
 from bdfr.exceptions import SiteDownloaderError
@@ -19,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class Vidble(BaseDownloader):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
@@ -37,7 +35,7 @@ class Vidble(BaseDownloader):
         if not re.search(r"vidble.com/(show/|album/|watch\?v)", url):
             url = re.sub(r"/(\w*?)$", r"/show/\1", url)
 
-        page = requests.get(url)
+        page = Vidble.retrieve_url(url)
         soup = bs4.BeautifulSoup(page.text, "html.parser")
         content_div = soup.find("div", attrs={"id": "ContentPlaceHolder1_divContent"})
         images = content_div.find_all("img")

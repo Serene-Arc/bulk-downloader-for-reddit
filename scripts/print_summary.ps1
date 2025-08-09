@@ -1,17 +1,9 @@
-if (Test-Path -Path $args[0] -PathType Leaf) {
-    $file=$args[0]
-}
-else {
+if (($args[0] -eq $null) -or -Not (Test-Path -Path $args[0] -PathType Leaf)) {
     Write-Host "CANNOT FIND LOG FILE"
     Exit 1
 }
-
-if ($null -ne $args[1]) {
-    $output=$args[1]
-    Write-Host "Outputting IDs to $output"
-}
-else {
-    $output="./successful.txt"
+elseif (Test-Path -Path $args[0] -PathType Leaf) {
+    $file=$args[0]
 }
 
 Write-Host -NoNewline "Downloaded submissions: "
