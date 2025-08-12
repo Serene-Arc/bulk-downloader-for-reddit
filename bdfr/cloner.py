@@ -25,6 +25,7 @@ class RedditCloner(RedditDownloader, Archiver):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             for retry in range(self.args.max_wait_retry or 1):
 =======
             for retry in range(5):
@@ -41,6 +42,9 @@ class RedditCloner(RedditDownloader, Archiver):
 =======
             for retry in range(5):
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+            for retry in range(self.args.max_wait_retry or 1):
+>>>>>>> b5cecfb (Resync)
                 try:
                     for submission in generator:
                         try:
@@ -56,6 +60,7 @@ class RedditCloner(RedditDownloader, Archiver):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     logger.debug(f"Waiting {self.args.max_wait_time} seconds to continue")
                     sleep(self.args.max_wait_time)
 =======
@@ -78,3 +83,7 @@ class RedditCloner(RedditDownloader, Archiver):
                     logger.debug("Waiting 60 seconds to continue")
                     sleep(60)
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+                    logger.debug(f"Waiting {self.args.max_wait_time} seconds to continue")
+                    sleep(self.args.max_wait_time)
+>>>>>>> b5cecfb (Resync)

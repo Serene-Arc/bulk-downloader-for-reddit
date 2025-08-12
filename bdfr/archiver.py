@@ -31,8 +31,9 @@ class Archiver(RedditConnector):
 
     def download(self):
         for generator in self.reddit_lists:
-            try:
-                for submission in generator:
+            for submission in generator:
+                current_wait_time = 0
+                while True:
                     try:
                         if (submission.author and submission.author.name in self.args.ignore_user) or (
                             submission.author is None and "DELETED" in self.args.ignore_user
@@ -41,18 +42,22 @@ class Archiver(RedditConnector):
                                 f"Submission {submission.id} in {submission.subreddit.display_name} skipped due to"
                                 f" {submission.author.name if submission.author else 'DELETED'} being an ignored user"
                             )
-                            continue
+                            break
                         if submission.id in self.excluded_submission_ids:
                             logger.debug(f"Object {submission.id} in exclusion list, skipping")
-                            continue
+                            break
                         logger.debug(f"Attempting to archive submission {submission.id}")
                         self.write_entry(submission)
+                        break
                     except prawcore.PrawcoreException as e:
-                        logger.error(f"Submission {submission.id} failed to be archived due to a PRAW exception: {e}")
-            except prawcore.PrawcoreException as e:
-                logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
-                logger.debug("Waiting 60 seconds to continue")
-                sleep(60)
+                        logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
+                        if current_wait_time < self.args.max_wait_time:
+                            current_wait_time += self.args.wait_time_interval
+                            logger.debug(f"Waiting {current_wait_time} seconds to continue")
+                            sleep(current_wait_time)
+                        else:
+                            logger.error(f"Max wait time exceeded for submission {submission.id}")
+                            raise
 
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
