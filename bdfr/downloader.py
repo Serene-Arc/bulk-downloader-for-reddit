@@ -45,6 +45,9 @@ class RedditDownloader(RedditConnector):
     def download(self):
         for generator in self.reddit_lists:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b5cecfb (Resync)
             for submission in generator:
                 current_wait_time = 0
                 while True:
@@ -60,6 +63,7 @@ class RedditDownloader(RedditConnector):
                         else:
                             logger.error(f"Max wait time exceeded for submission {submission.id}")
                             raise
+<<<<<<< HEAD
 =======
             for retry in range(5):
                 try:
@@ -74,6 +78,8 @@ class RedditDownloader(RedditConnector):
                     logger.debug("Waiting 60 seconds to continue")
                     sleep(60)
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+>>>>>>> b5cecfb (Resync)
 
     def _download_submission(self, submission: praw.models.Submission):
         if submission.id in self.excluded_submission_ids:
