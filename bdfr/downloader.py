@@ -44,18 +44,21 @@ class RedditDownloader(RedditConnector):
 
     def download(self):
         for generator in self.reddit_lists:
-            for retry in range(5):
-                try:
-                    for submission in generator:
-                        try:
-                            self._download_submission(submission)
-                        except prawcore.PrawcoreException as e:
-                            logger.error(f"Submission {submission.id} failed to download due to a PRAW exception: {e}")
-                    break
-                except prawcore.PrawcoreException as e:
-                    logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
-                    logger.debug("Waiting 60 seconds to continue")
-                    sleep(60)
+            for submission in generator:
+                current_wait_time = 0
+                while True:
+                    try:
+                        self._download_submission(submission)
+                        break
+                    except prawcore.PrawcoreException as e:
+                        logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
+                        if current_wait_time < self.args.max_wait_time:
+                            current_wait_time += self.args.wait_time_interval
+                            logger.debug(f"Waiting {current_wait_time} seconds to continue")
+                            sleep(current_wait_time)
+                        else:
+                            logger.error(f"Max wait time exceeded for submission {submission.id}")
+                            raise
 
     def _download_submission(self, submission: praw.models.Submission):
         if submission.id in self.excluded_submission_ids:
@@ -118,7 +121,7 @@ class RedditDownloader(RedditConnector):
                 logger.debug(f"Download filter removed {submission.id} file with URL {submission.url}")
                 continue
             try:
-                res.download({"max_wait_time": self.args.max_wait_time})
+                res.download({"max_wait_time": self.args.max_wait_time, "wait_time_interval": self.args.wait_time_interval})
             except errors.BulkDownloaderException as e:
                 logger.error(
                     f"Failed to download resource {res.url} in submission {submission.id} "

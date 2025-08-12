@@ -20,7 +20,7 @@ class RedditCloner(RedditDownloader, Archiver):
 
     def download(self):
         for generator in self.reddit_lists:
-            for retry in range(5):
+            for retry in range(self.args.max_wait_retry or 1):
                 try:
                     for submission in generator:
                         try:
@@ -31,5 +31,5 @@ class RedditCloner(RedditDownloader, Archiver):
                     break
                 except prawcore.PrawcoreException as e:
                     logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
-                    logger.debug("Waiting 60 seconds to continue")
-                    sleep(60)
+                    logger.debug(f"Waiting {self.args.max_wait_time} seconds to continue")
+                    sleep(self.args.max_wait_time)
