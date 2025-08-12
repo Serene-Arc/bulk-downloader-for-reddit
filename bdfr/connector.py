@@ -362,7 +362,7 @@ class RedditConnector(metaclass=ABCMeta):
                 return []
             generators = []
             for user in self.args.user:
-                for retry in range(5):
+                for retry in range(self.args.max_wait_time//self.args.wait_time_interval):
                     try:
                         try:
                             self.check_user_existence(user)
@@ -388,8 +388,8 @@ class RedditConnector(metaclass=ABCMeta):
                         break
                     except prawcore.PrawcoreException as e:
                         logger.error(f"User {user} failed to be retrieved due to a PRAW exception: {e}")
-                        logger.debug("Waiting 60 seconds to continue")
-                        sleep(60)
+                        logger.debug(f"Waiting {self.wait_time_interval.max_wait_time} seconds to continue")
+                        sleep(self.args.wait_time_interval)
             return generators
         else:
             return []
