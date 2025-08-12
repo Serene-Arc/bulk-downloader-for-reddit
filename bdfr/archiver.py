@@ -34,6 +34,9 @@ class Archiver(RedditConnector):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b5cecfb (Resync)
 =======
 >>>>>>> b5cecfb (Resync)
             for submission in generator:
@@ -63,6 +66,7 @@ class Archiver(RedditConnector):
                         else:
                             logger.error(f"Max wait time exceeded for submission {submission.id}")
                             raise
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -97,6 +101,8 @@ class Archiver(RedditConnector):
 >>>>>>> b5cecfb (Resync)
 =======
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+>>>>>>> b5cecfb (Resync)
 
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
