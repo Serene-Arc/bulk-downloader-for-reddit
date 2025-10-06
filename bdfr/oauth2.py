@@ -9,7 +9,9 @@ import socket
 from pathlib import Path
 
 import praw
+import prawcore
 import requests
+from praw.util.token_manager import BaseTokenManager
 
 from bdfr.exceptions import BulkDownloaderException, RedditAuthenticationError
 
@@ -87,13 +89,13 @@ class OAuth2Authenticator:
         client.close()
 
 
-class OAuth2TokenManager(praw.reddit.BaseTokenManager):
+class OAuth2TokenManager(BaseTokenManager):
     def __init__(self, config: configparser.ConfigParser, config_location: Path):
         super(OAuth2TokenManager, self).__init__()
         self.config = config
         self.config_location = config_location
 
-    def pre_refresh_callback(self, authorizer: praw.reddit.Authorizer):
+    def pre_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         if authorizer.refresh_token is None:
             if self.config.has_option("DEFAULT", "user_token"):
                 authorizer.refresh_token = self.config.get("DEFAULT", "user_token")
@@ -101,7 +103,7 @@ class OAuth2TokenManager(praw.reddit.BaseTokenManager):
             else:
                 raise RedditAuthenticationError("No auth token loaded in configuration")
 
-    def post_refresh_callback(self, authorizer: praw.reddit.Authorizer):
+    def post_refresh_callback(self, authorizer: prawcore.auth.BaseAuthorizer):
         self.config.set("DEFAULT", "user_token", authorizer.refresh_token)
         with Path(self.config_location).open(mode="w") as file:
             self.config.write(file, True)
