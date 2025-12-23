@@ -41,7 +41,7 @@ class RedditDownloader(RedditConnector):
         super().__init__(args, logging_handlers)
         if self.args.search_existing:
             self.master_hash_list = self.scan_existing_files(self.download_directory)
-        elif self.args.enable_downloads_db:
+        elif self.args.downloads_db_name is not None and self.args.downloads_db_name.strip():
             self.sqlite_manager = SqliteManager(self.args)
 
     def download(self) -> None:
@@ -57,7 +57,7 @@ class RedditDownloader(RedditConnector):
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
 
-        if self.args.enable_downloads_db:
+        if self.args.downloads_db_name is not None and self.args.downloads_db_name.strip():
             self.sqlite_manager.close()
 
     def _download_submission(self, submission: praw.models.Submission) -> None:
@@ -141,7 +141,7 @@ class RedditDownloader(RedditConnector):
                         f" in submission {submission.id}"
                     )
                     return
-                elif self.args.no_dupes or self.args.enable_downloads_db:
+                elif self.args.no_dupes or (self.args.downloads_db_name is not None and self.args.downloads_db_name.strip()):
                     logger.info(f"Resource hash {resource_hash} from submission {submission.id} downloaded elsewhere")
                     return
 
@@ -156,7 +156,7 @@ class RedditDownloader(RedditConnector):
             creation_time = time.mktime(datetime.fromtimestamp(submission.created_utc).timetuple())
             os.utime(destination, (creation_time, creation_time))
             self.master_hash_list[resource_hash] = destination
-            if self.args.enable_downloads_db:
+            if self.args.downloads_db_name is not None and self.args.downloads_db_name.strip():
                 self.sqlite_manager.insert(
                     submission.subreddit.display_name, destination.name, resource_hash, len(res.content)
                 )
@@ -180,6 +180,6 @@ class RedditDownloader(RedditConnector):
     def resource_exists(self, resource_hash):
         if resource_hash in self.master_hash_list:
             return True
-        if self.args.enable_downloads_db:
+        if self.args.downloads_db_name is not None and self.args.downloads_db_name.strip():
             return self.sqlite_manager.select(resource_hash)
         return False

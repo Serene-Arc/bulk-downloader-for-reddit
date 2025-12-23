@@ -63,8 +63,7 @@ class Configuration(Namespace):
         self.skip_comments = False
 
         # SQLite-specific options
-        self.enable_downloads_db = False
-        self.downloads_db_name = "downloads"
+        self.downloads_db_name = None
 
 
     def process_click_arguments(self, context: click.Context) -> None:

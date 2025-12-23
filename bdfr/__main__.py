@@ -15,6 +15,13 @@ from bdfr.downloader import RedditDownloader
 
 logger = logging.getLogger()
 
+def validate_db_name(ctx, param, value):
+    if value is not None and not value.strip():
+        raise click.BadParameter('Database name cannot be empty or whitespace')
+    elif value.startswith('-'):
+        raise click.BadParameter('No value provided for database name')
+    return value
+
 _common_options = [
     click.argument("directory", type=str),
     click.option("--authenticate", is_flag=True, default=None),
@@ -60,8 +67,7 @@ _downloader_options = [
     click.option("--max-score", type=int, default=None),
     click.option("--min-score-ratio", type=float, default=None),
     click.option("--max-score-ratio", type=float, default=None),
-    click.option("--enable-downloads-db", is_flag=True, default=None),
-    click.option("--downloads-db-name", type=str, default=None),
+    click.option("--downloads-db-name", type=str, default=None, callback=validate_db_name),
 ]
 
 _archiver_options = [
@@ -217,7 +223,6 @@ def make_console_logging_handler(verbosity: int) -> logging.StreamHandler:
     else:
         stream.setLevel(9)
     return stream
-
 
 def silence_module_loggers() -> None:
     logging.getLogger("praw").setLevel(logging.CRITICAL)
