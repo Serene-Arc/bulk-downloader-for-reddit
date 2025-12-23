@@ -31,21 +31,15 @@ class SqliteManager:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS downloads (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
             subreddit TEXT NOT NULL,
             file_name TEXT NOT NULL,
-            file_hash TEXT NOT NULL,
+            file_hash TEXT PRIMARY KEY,
             file_size INTEGER NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """
         )
 
-        cursor.execute(
-            """
-            CREATE UNIQUE INDEX idx_file_hash ON downloads (file_hash)
-        """
-        )
         conn.commit()
         logger.debug("Created new table 'downloads' with unique index 'idx_file_hash' on 'file_hash'")
 
