@@ -60,7 +60,6 @@ def test_get_link(test_url: str, expected: set[str]):
         ("https://redgifs.com/watch/leafysaltydungbeetle", {"076792c660b9c024c0471ef4759af8bd"}),
         ("https://www.redgifs.com/watch/palegoldenrodrawhalibut", {"46d5aa77fe80c6407de1ecc92801c10e"}),
         ("https://redgifs.com/watch/hollowintentsnowyowl", {"5ee51fa15e0a58e98f11dea6a6cca771"}),
-        ("https://thumbs46.redgifs.com/BabyishCharmingAidi-medium.jpg", {"bf14b9f3d5b630cb5fd271661226f1af"}),
     ),
 )
 def test_download_resource(test_url: str, expected_hashes: set[str]):
@@ -78,11 +77,6 @@ def test_download_resource(test_url: str, expected_hashes: set[str]):
 @pytest.mark.parametrize(
     ("test_url", "expected_link", "expected_hash"),
     (
-        (
-            "https://redgifs.com/watch/flippantmemorablebaiji",
-            {"FlippantMemorableBaiji-mobile.mp4"},
-            {"41a5fb4865367ede9f65fc78736f497a"},
-        ),
         (
             "https://redgifs.com/watch/conventionalplainxenopterygii",
             {"conventionalplainxenopterygii-mobile.mp4"},

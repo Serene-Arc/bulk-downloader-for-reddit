@@ -62,6 +62,10 @@ class Configuration(Namespace):
         self.comment_context: bool = False
         self.skip_comments = False
 
+        # SQLite-specific options
+        self.downloads_db_name = None
+
+
     def process_click_arguments(self, context: click.Context) -> None:
         if context.params.get("opts") is not None:
             self.parse_yaml_options(context.params["opts"])

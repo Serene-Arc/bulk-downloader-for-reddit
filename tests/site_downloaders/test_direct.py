@@ -13,7 +13,10 @@ from bdfr.site_downloaders.direct import Direct
     ("test_url", "expected_hash"),
     (
         ("https://i.redd.it/q6ebualjxzea1.jpg", "6ec154859c777cb401132bb991cb3635"),
-        ("https://filesamples.com/samples/audio/mp3/sample3.mp3", "d30a2308f188cbb11d74cf20c357891c"),
+        (
+            "https://file-examples.com/wp-content/storage/2017/11/file_example_MP3_700KB.mp3",
+            "3aa05e5b50931c728abe9a248ab2fc38",
+        ),
     ),
 )
 def test_download_resource(test_url: str, expected_hash: str):

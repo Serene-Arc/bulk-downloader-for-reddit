@@ -14,8 +14,8 @@ from bdfr.site_downloaders.youtube import Youtube
 @pytest.mark.parametrize(
     ("test_url", "expected_hash"),
     (
-        ("https://www.youtube.com/watch?v=uSm2VDgRIUs", "2d60b54582df5b95ec72bb00b580d2ff"),
-        ("https://www.youtube.com/watch?v=NcA_j23HuDU", "26e6ca4849267e600ff474f4260c3b5b"),
+        ("https://www.youtube.com/watch?v=_-1E_U0JQkc", "236f01090d5bbb246422df417f388cde"),
+        ("https://www.youtube.com/watch?v=_6-UUisQczE", "12f7f30feae276c9fe1039a8266a3a8e"),
     ),
 )
 def test_find_resources_good(test_url: str, expected_hash: str):

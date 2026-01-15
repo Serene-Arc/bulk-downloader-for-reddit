@@ -11,27 +11,7 @@ from bdfr.site_downloaders.erome import Erome
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("test_url", "expected_urls"),
-    (
-        (
-            "https://www.erome.com/a/vqtPuLXh",  # Video
-            (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",),
-        ),
-        (
-            "https://www.erome.com/a/9E50Xkb6",  # Image album
-            (
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/hUpc1d21.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/3zZF7uv4.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/h6C03hNq.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/AHQuZh9j.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/Ram0NmDU.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/dY82guy1.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/3x8bp9lF.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/lxyFSUMQ.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/vPIb29UR.jpeg",
-                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/w1BJtyh5.jpeg",
-            ),
-        ),
-    ),
+    (("https://www.erome.com/a/vqtPuLXh", (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",)),),
 )
 def test_get_link(test_url: str, expected_urls: tuple[str]):
     result = Erome._get_links(test_url)

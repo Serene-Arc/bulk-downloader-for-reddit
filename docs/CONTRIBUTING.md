@@ -90,7 +90,7 @@ There are additional Python packages that are required to develop the BDFR. Thes
 command:
 
 ```bash
-python3 -m pip install -e .[dev]
+python -m pip install -e .[dev]
 ```
 
 ### Tools
