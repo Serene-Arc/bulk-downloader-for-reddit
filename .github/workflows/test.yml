@@ -22,11 +22,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: [3.9]
+        python-version: [3.10]
         ext: [.sh]
         include:
         - os: windows-latest
-          python-version: 3.9
+          python-version: 3.10
           ext: .ps1
     steps:
     - uses: actions/checkout@v3
