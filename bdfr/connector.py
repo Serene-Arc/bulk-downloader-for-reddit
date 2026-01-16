@@ -157,6 +157,7 @@ class RedditConnector(metaclass=ABCMeta):
                 self.cfg_parser["DEFAULT"]["user_token"] = token
                 with Path(self.config_location).open(mode="w") as file:
                     self.cfg_parser.write(file, True)
+                oauth2_authenticator._check_scopes(scopes, self.user_agent)
             token_manager = OAuth2TokenManager(self.cfg_parser, self.config_location)
 
             self.authenticated = True
