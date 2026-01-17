@@ -97,5 +97,4 @@ line-length = 120
 per-file-ignores={"tests/*"=["ANN","S101","S105","S106"], "scripts/*"=["INP","S105","S106"]}
 select = ["ANN","B","BLE","E","ERA","F","I","ICN","INP","ISC","N","PT","PTH","Q","RUF","S","TID","UP","W","YTT"]
 show-fixes = true
-show-source = true
 target-version = "py39"
