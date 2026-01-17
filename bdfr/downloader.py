@@ -114,8 +114,8 @@ class RedditDownloader(RedditConnector):
                 if self.args.stop_on_exist and not submission.stickied:
                     self.existcount += 1
                 if self.existcount >= 5:
-                        logger.warning("Prevously-downloaded threshold met, exiting")
-                        exit(0)
+                    logger.warning("Prevously-downloaded threshold met, exiting")
+                    exit(0)
                 continue
             elif not self.download_filter.check_resource(res):
                 logger.debug(f"Download filter removed {submission.id} file with URL {submission.url}")
@@ -162,7 +162,7 @@ class RedditDownloader(RedditConnector):
     @staticmethod
     def scan_existing_files(directory: Path) -> dict[str, Path]:
         files = []
-        for (dirpath, _dirnames, filenames) in os.walk(directory):
+        for dirpath, _dirnames, filenames in os.walk(directory):
             files.extend([Path(dirpath, file) for file in filenames])
         logger.info(f"Calculating hashes for {len(files)} files")
 
