@@ -368,6 +368,9 @@ class RedditConnector(metaclass=ABCMeta):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
                 for retry in range(self.args.max_wait_time//self.args.wait_time_interval):
 =======
                 for retry in range(5):
@@ -381,12 +384,15 @@ class RedditConnector(metaclass=ABCMeta):
 =======
                 for retry in range(self.args.max_wait_time//self.args.wait_time_interval):
 >>>>>>> b5cecfb (Resync)
+<<<<<<< HEAD
 =======
                 for retry in range(5):
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
                 for retry in range(self.args.max_wait_time//self.args.wait_time_interval):
 >>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
                     try:
                         try:
                             self.check_user_existence(user)
@@ -418,6 +424,9 @@ class RedditConnector(metaclass=ABCMeta):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
                         logger.debug(f"Waiting {self.wait_time_interval.max_wait_time} seconds to continue")
                         sleep(self.args.wait_time_interval)
 =======
@@ -436,6 +445,7 @@ class RedditConnector(metaclass=ABCMeta):
                         logger.debug(f"Waiting {self.wait_time_interval.max_wait_time} seconds to continue")
                         sleep(self.args.wait_time_interval)
 >>>>>>> b5cecfb (Resync)
+<<<<<<< HEAD
 =======
                         logger.debug("Waiting 60 seconds to continue")
                         sleep(60)
@@ -444,6 +454,8 @@ class RedditConnector(metaclass=ABCMeta):
                         logger.debug(f"Waiting {self.wait_time_interval.max_wait_time} seconds to continue")
                         sleep(self.args.wait_time_interval)
 >>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
             return generators
         else:
             return []

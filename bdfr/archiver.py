@@ -31,6 +31,17 @@ class Archiver(RedditConnector):
 
     def download(self):
         for generator in self.reddit_lists:
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> b5cecfb (Resync)
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
             for submission in generator:
                 current_wait_time = 0
                 while True:
@@ -58,6 +69,46 @@ class Archiver(RedditConnector):
                         else:
                             logger.error(f"Max wait time exceeded for submission {submission.id}")
                             raise
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+            for retry in range(5):
+                try:
+                    for submission in generator:
+                        try:
+                            if (submission.author and submission.author.name in self.args.ignore_user) or (
+                                submission.author is None and "DELETED" in self.args.ignore_user
+                            ):
+                                logger.debug(
+                                    f"Submission {submission.id} in {submission.subreddit.display_name} skipped due to"
+                                    f" {submission.author.name if submission.author else 'DELETED'} being an ignored user"
+                                )
+                                continue
+                            if submission.id in self.excluded_submission_ids:
+                                logger.debug(f"Object {submission.id} in exclusion list, skipping")
+                                continue
+                            logger.debug(f"Attempting to archive submission {submission.id}")
+                            self.write_entry(submission)
+                        except prawcore.PrawcoreException as e:
+                            logger.error(f"Submission {submission.id} failed to be archived due to a PRAW exception: {e}")
+                    break
+                except prawcore.PrawcoreException as e:
+                    logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
+                    logger.debug("Waiting 60 seconds to continue")
+                    sleep(60)
+<<<<<<< HEAD
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+>>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+>>>>>>> b5cecfb (Resync)
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
 
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []

@@ -50,8 +50,11 @@ class RedditDownloader(RedditConnector):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b5cecfb (Resync)
+=======
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
 =======
 >>>>>>> b5cecfb (Resync)
 =======
@@ -74,11 +77,17 @@ class RedditDownloader(RedditConnector):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+=======
+=======
+=======
+>>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
             for retry in range(5):
                 try:
                     for submission in generator:
@@ -93,10 +102,13 @@ class RedditDownloader(RedditConnector):
                     sleep(60)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
 >>>>>>> b5cecfb (Resync)
 =======
+=======
+>>>>>>> 4e45d695a08b27ca914744316a7c224ed5297cd2
 >>>>>>> d33a9b6 (Retry the current action 5x every 60s pause instead of skipping to the next)
 =======
 >>>>>>> b5cecfb (Resync)
