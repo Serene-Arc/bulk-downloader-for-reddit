@@ -10,4 +10,4 @@ jobs:
         steps:
         -  name: Check if the pull request is mergeable to master
            run: |
-               if [[ "$GITHUB_HEAD_REF" == 'development' && "$GITHUB_REPOSITORY" == 'aliparlakci/bulk-downloader-for-reddit'  ]]; then exit 0; else exit 1; fi;
+               if [[ "$GITHUB_HEAD_REF" == 'development' && "$GITHUB_REPOSITORY" == 'Serene-Arc/bulk-downloader-for-reddit'  ]]; then exit 0; else exit 1; fi;
