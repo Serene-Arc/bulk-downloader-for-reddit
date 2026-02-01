@@ -7,8 +7,13 @@ teardown() {
     rm -f failed.txt
 }
 
-@test "fail run no logfile" {
+@test "fail run no args" {
     run ../extract_failed_ids.sh
+    assert_failure
+}
+
+@test "fail run no logfile" {
+    run ../extract_failed_ids.sh ./missing.txt
     assert_failure
 }
 

@@ -2,24 +2,34 @@
 # See https://pre-commit.com/hooks.html for more hooks
 
 repos:
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.13
+    hooks:
+      - id: validate-pyproject
+        name: validate-pyproject
+
   - repo: https://github.com/psf/black
-    rev: 22.12.0
+    rev: 23.3.0
     hooks:
       - id: black
+        name: black
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.11.4
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.1.13
     hooks:
-      - id: isort
-        name: isort (python)
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
-        additional_dependencies: [Flake8-pyproject]
+      - id: ruff
+        name: ruff
+        args: ["--fixable=I","--fix"]
 
   - repo: https://github.com/markdownlint/markdownlint
     rev: v0.12.0
     hooks:
       - id: markdownlint
+        name: markdownlint
+
+  - repo: https://github.com/adamchainz/blacken-docs
+    rev: 1.13.0
+    hooks:
+      - id: blacken-docs
+        name: blacken-docs
+        additional_dependencies: [black>=23.1.0]

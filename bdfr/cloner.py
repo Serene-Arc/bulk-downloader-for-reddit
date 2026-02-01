@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 from collections.abc import Iterable
@@ -15,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class RedditCloner(RedditDownloader, Archiver):
-    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()):
-        super(RedditCloner, self).__init__(args, logging_handlers)
+    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
+        super().__init__(args, logging_handlers)
 
-    def download(self):
+    def download(self) -> None:
         for generator in self.reddit_lists:
             try:
                 for submission in generator:

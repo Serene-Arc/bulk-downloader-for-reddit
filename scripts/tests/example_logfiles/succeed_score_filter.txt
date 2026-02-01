@@ -1,2 +1,2 @@
 [2022-07-23 14:04:14,095 - bdfr.downloader - DEBUG] - Submission ljyy27 filtered due to score 15 < [50]
-[2022-07-23 14:04:14,104 - bdfr.downloader - DEBUG] - Submission ljyy27 filtered due to score 16 > [1]
+[2022-07-23 14:04:14,104 - bdfr.downloader - DEBUG] - Submission ljyz27 filtered due to score 16 > [1]

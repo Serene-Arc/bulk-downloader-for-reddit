@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import hashlib
 import logging.handlers
@@ -24,9 +23,9 @@ from bdfr.site_downloaders.download_factory import DownloadFactory
 logger = logging.getLogger(__name__)
 
 
-def _calc_hash(existing_file: Path):
+def _calc_hash(existing_file: Path) -> tuple[Path, str]:
     chunk_size = 1024 * 1024
-    md5_hash = hashlib.md5()
+    md5_hash = hashlib.md5(usedforsecurity=False)
     with existing_file.open("rb") as file:
         chunk = file.read(chunk_size)
         while chunk:
@@ -37,12 +36,12 @@ def _calc_hash(existing_file: Path):
 
 
 class RedditDownloader(RedditConnector):
-    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()):
-        super(RedditDownloader, self).__init__(args, logging_handlers)
+    def __init__(self, args: Configuration, logging_handlers: Iterable[logging.Handler] = ()) -> None:
+        super().__init__(args, logging_handlers)
         if self.args.search_existing:
             self.master_hash_list = self.scan_existing_files(self.download_directory)
 
-    def download(self):
+    def download(self) -> None:
         for generator in self.reddit_lists:
             try:
                 for submission in generator:
@@ -55,7 +54,7 @@ class RedditDownloader(RedditConnector):
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
 
-    def _download_submission(self, submission: praw.models.Submission):
+    def _download_submission(self, submission: praw.models.Submission) -> None:
         if submission.id in self.excluded_submission_ids:
             logger.debug(f"Object {submission.id} in exclusion list, skipping")
             return
@@ -67,7 +66,7 @@ class RedditDownloader(RedditConnector):
         ):
             logger.debug(
                 f"Submission {submission.id} in {submission.subreddit.display_name} skipped"
-                f' due to {submission.author.name if submission.author else "DELETED"} being an ignored user'
+                f" due to {submission.author.name if submission.author else 'DELETED'} being an ignored user"
             )
             return
         elif self.args.min_score and submission.score < self.args.min_score:
@@ -130,12 +129,12 @@ class RedditDownloader(RedditConnector):
                 )
                 return
             resource_hash = res.hash.hexdigest()
-            destination.parent.mkdir(parents=True, exist_ok=True)
             if resource_hash in self.master_hash_list:
                 if self.args.no_dupes:
                     logger.info(f"Resource hash {resource_hash} from submission {submission.id} downloaded elsewhere")
                     return
                 elif self.args.make_hard_links:
+                    destination.parent.mkdir(parents=True, exist_ok=True)
                     try:
                         destination.hardlink_to(self.master_hash_list[resource_hash])
                     except AttributeError:
@@ -145,6 +144,7 @@ class RedditDownloader(RedditConnector):
                         f" in submission {submission.id}"
                     )
                     return
+            destination.parent.mkdir(parents=True, exist_ok=True)
             try:
                 with destination.open("wb") as file:
                     file.write(res.content)

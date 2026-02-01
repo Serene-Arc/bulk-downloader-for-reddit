@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 import sys
@@ -20,10 +19,11 @@ _common_options = [
     click.argument("directory", type=str),
     click.option("--authenticate", is_flag=True, default=None),
     click.option("--config", type=str, default=None),
-    click.option("--disable-module", multiple=True, default=None, type=str),
-    click.option("--exclude-id", default=None, multiple=True),
-    click.option("--exclude-id-file", default=None, multiple=True),
-    click.option("--file-scheme", default=None, type=str),
+    click.option("--disable-module", type=str, multiple=True, default=None),
+    click.option("--downvoted", is_flag=True, default=None),
+    click.option("--exclude-id", type=str, multiple=True, default=None),
+    click.option("--exclude-id-file", type=str, multiple=True, default=None),
+    click.option("--file-scheme", type=str, default=None),
     click.option("--filename-restriction-scheme", type=click.Choice(("linux", "windows")), default=None),
     click.option("--folder-scheme", default=None, type=str),
     click.option("--ignore-user", type=str, multiple=True, default=None),
@@ -66,12 +66,13 @@ _downloader_options = [
 _archiver_options = [
     click.option("--all-comments", is_flag=True, default=None),
     click.option("--comment-context", is_flag=True, default=None),
-    click.option("-f", "--format", type=click.Choice(("xml", "json", "yaml")), default=None),
+    click.option("-f", "--format", type=click.Choice(("xml", "json", "yaml")), default=None, multiple=True),
+    click.option("--skip-comments", is_flag=True, default=None),
 ]
 
 
-def _add_options(opts: list):
-    def wrap(func):
+def _add_options(opts: list):  # noqa: ANN202
+    def wrap(func):  # noqa: ANN001,ANN202
         for opt in opts:
             func = opt(func)
         return func
@@ -79,12 +80,16 @@ def _add_options(opts: list):
     return wrap
 
 
-def _check_version(context, param, value):
+def _check_version(context: click.core.Context, _param, value: bool) -> None:
     if not value or context.resilient_parsing:
         return
     current = __version__
-    latest = requests.get("https://pypi.org/pypi/bdfr/json").json()["info"]["version"]
-    print(f"You are currently using v{current} the latest is v{latest}")
+    try:
+        latest = requests.get("https://pypi.org/pypi/bdfr/json", timeout=10).json()["info"]["version"]
+        print(f"You are currently using v{current} the latest is v{latest}")
+    except TimeoutError:
+        logger.exception(f"Timeout reached fetching current version from Pypi - BDFR v{current}")
+        raise
     context.exit()
 
 
@@ -98,7 +103,7 @@ def _check_version(context, param, value):
     callback=_check_version,
     help="Check version and exit.",
 )
-def cli():
+def cli() -> None:
     """BDFR is used to download and archive content from Reddit."""
     pass
 
@@ -108,7 +113,7 @@ def cli():
 @_add_options(_downloader_options)
 @click.help_option("-h", "--help")
 @click.pass_context
-def cli_download(context: click.Context, **_):
+def cli_download(context: click.Context, **_) -> None:
     """Used to download content posted to Reddit."""
     config = Configuration()
     config.process_click_arguments(context)
@@ -118,10 +123,10 @@ def cli_download(context: click.Context, **_):
         reddit_downloader = RedditDownloader(config, [stream])
         reddit_downloader.download()
     except Exception:
-        logger.exception("Downloader exited unexpectedly")
+        logger.exception(f"Downloader exited unexpectedly - BDFR Downloader v{__version__}")
         raise
     else:
-        logger.info("Program complete")
+        logger.info(f"Program complete - BDFR Downloader v{__version__}")
 
 
 @cli.command("archive")
@@ -129,7 +134,7 @@ def cli_download(context: click.Context, **_):
 @_add_options(_archiver_options)
 @click.help_option("-h", "--help")
 @click.pass_context
-def cli_archive(context: click.Context, **_):
+def cli_archive(context: click.Context, **_) -> None:
     """Used to archive post data from Reddit."""
     config = Configuration()
     config.process_click_arguments(context)
@@ -139,10 +144,10 @@ def cli_archive(context: click.Context, **_):
         reddit_archiver = Archiver(config, [stream])
         reddit_archiver.download()
     except Exception:
-        logger.exception("Archiver exited unexpectedly")
+        logger.exception(f"Archiver exited unexpectedly - BDFR Archiver v{__version__}")
         raise
     else:
-        logger.info("Program complete")
+        logger.info(f"Program complete - BDFR Archiver v{__version__}")
 
 
 @cli.command("clone")
@@ -151,7 +156,7 @@ def cli_archive(context: click.Context, **_):
 @_add_options(_downloader_options)
 @click.help_option("-h", "--help")
 @click.pass_context
-def cli_clone(context: click.Context, **_):
+def cli_clone(context: click.Context, **_) -> None:
     """Combines archive and download commands."""
     config = Configuration()
     config.process_click_arguments(context)
@@ -161,17 +166,17 @@ def cli_clone(context: click.Context, **_):
         reddit_scraper = RedditCloner(config, [stream])
         reddit_scraper.download()
     except Exception:
-        logger.exception("Scraper exited unexpectedly")
+        logger.exception(f"Scraper exited unexpectedly - BDFR Scraper v{__version__}")
         raise
     else:
-        logger.info("Program complete")
+        logger.info(f"Program complete - BDFR Cloner v{__version__}")
 
 
-@cli.command("completion")
+@cli.command("completions")
 @click.argument("shell", type=click.Choice(("all", "bash", "fish", "zsh"), case_sensitive=False), default="all")
 @click.help_option("-h", "--help")
 @click.option("-u", "--uninstall", is_flag=True, default=False, help="Uninstall completion")
-def cli_completion(shell: str, uninstall: bool):
+def cli_completion(shell: str, uninstall: bool) -> None:
     """\b
     Installs shell completions for BDFR.
     Options: all, bash, fish, zsh
@@ -184,7 +189,7 @@ def cli_completion(shell: str, uninstall: bool):
         Completion(shell).uninstall()
         return
     if shell not in ("all", "bash", "fish", "zsh"):
-        print(f"{shell} is not a valid option.")
+        print(f"{shell!r} is not a valid option.")
         print("Options: all, bash, fish, zsh")
         return
     if click.confirm(f"Would you like to install {shell} completions for BDFR"):
@@ -213,7 +218,7 @@ def make_console_logging_handler(verbosity: int) -> logging.StreamHandler:
     return stream
 
 
-def silence_module_loggers():
+def silence_module_loggers() -> None:
     logging.getLogger("praw").setLevel(logging.CRITICAL)
     logging.getLogger("prawcore").setLevel(logging.CRITICAL)
     logging.getLogger("urllib3").setLevel(logging.CRITICAL)

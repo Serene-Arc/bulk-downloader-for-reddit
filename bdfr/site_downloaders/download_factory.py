@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import re
 import urllib.parse
 
 from bdfr.exceptions import NotADownloadableLinkError
 from bdfr.site_downloaders.base_downloader import BaseDownloader
+from bdfr.site_downloaders.catbox import Catbox
+from bdfr.site_downloaders.chevereto import Chevereto
 from bdfr.site_downloaders.delay_for_reddit import DelayForReddit
 from bdfr.site_downloaders.direct import Direct
 from bdfr.site_downloaders.erome import Erome
 from bdfr.site_downloaders.fallback_downloaders.ytdlp_fallback import YtdlpFallback
+from bdfr.site_downloaders.flickr import Flickr
 from bdfr.site_downloaders.gallery import Gallery
-from bdfr.site_downloaders.gfycat import Gfycat
+from bdfr.site_downloaders.imgchest import Imgchest
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.pornhub import PornHub
 from bdfr.site_downloaders.redgifs import Redgifs
@@ -27,22 +29,28 @@ class DownloadFactory:
         sanitised_url = DownloadFactory.sanitise_url(url).lower()
         if re.match(r"(i\.|m\.|o\.)?imgur", sanitised_url):
             return Imgur
-        elif re.match(r"(i\.|thumbs\d\.|v\d\.)?(redgifs|gifdeliverynetwork)", sanitised_url):
+        elif re.match(r"(i\.|thumbs\d{1,2}\.|v\d\.)?(redgifs|gifdeliverynetwork)", sanitised_url):
             return Redgifs
-        elif re.match(r"(thumbs\.|giant\.)?gfycat\.", sanitised_url):
-            return Gfycat
         elif re.match(r".*/.*\.[a-zA-Z34]{3,4}(\?[\w;&=]*)?$", sanitised_url) and not DownloadFactory.is_web_resource(
             sanitised_url
         ):
             return Direct
         elif re.match(r"erome\.com.*", sanitised_url):
             return Erome
+        elif re.match(r"catbox\.moe", sanitised_url):
+            return Catbox
+        elif re.match(r"lensdump\.com", sanitised_url) or re.match(r"nsfw\.pics", sanitised_url):
+            return Chevereto
         elif re.match(r"delayforreddit\.com", sanitised_url):
             return DelayForReddit
+        elif re.match(r"flickr\.com", sanitised_url) or re.match(r"flic\.kr", sanitised_url):
+            return Flickr
         elif re.match(r"reddit\.com/gallery/.*", sanitised_url):
             return Gallery
         elif re.match(r"patreon\.com.*", sanitised_url):
             return Gallery
+        elif re.match(r"imgchest\.com/p/", sanitised_url):
+            return Imgchest
         elif re.match(r"reddit\.com/r/", sanitised_url):
             return SelfPost
         elif re.match(r"(m\.)?youtu\.?be", sanitised_url):
@@ -83,7 +91,7 @@ class DownloadFactory:
             "php3",
             "xhtml",
         )
-        if re.match(rf'(?i).*/.*\.({"|".join(web_extensions)})$', url):
+        if re.match(rf"(?i).*/.*\.({'|'.join(web_extensions)})$", url):
             return True
         else:
             return False
