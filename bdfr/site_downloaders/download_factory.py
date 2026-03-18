@@ -64,6 +64,8 @@ class DownloadFactory:
     def sanitise_url(url: str) -> str:
         beginning_regex = re.compile(r"\s*(www\.?)?")
         split_url = urllib.parse.urlsplit(url)
+        if not split_url.netloc and split_url.path.startswith("/r/"):
+            split_url = urllib.parse.urlsplit("https://reddit.com" + url)
         split_url = split_url.netloc + split_url.path
         split_url = re.sub(beginning_regex, "", split_url)
         return split_url
