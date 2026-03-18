@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import praw.models
+import prawcore.exceptions
 import pytest
 
 from bdfr.__main__ import make_console_logging_handler
@@ -288,3 +289,19 @@ def test_download_submission_max_score_above(
     RedditDownloader._download_submission(downloader_mock, submission)
     output = capsys.readouterr()
     assert "filtered due to score" in output.out
+
+
+@pytest.mark.parametrize("test_exception", (prawcore.exceptions.TooManyRequests(MagicMock()),))
+def test_download_handles_praw_exception_before_first_submission(
+    test_exception: Exception,
+    downloader_mock: MagicMock,
+):
+    """Test that a PRAW exception raised before any submission is yielded does not cause an UnboundLocalError."""
+
+    def _raise_immediately():
+        raise test_exception
+        yield  # noqa: unreachable - makes this a generator
+
+    downloader_mock.reddit_lists = [_raise_immediately()]
+    # Should not raise UnboundLocalError
+    RedditDownloader.download(downloader_mock)

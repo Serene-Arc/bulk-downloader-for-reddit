@@ -52,6 +52,7 @@ from bdfr.site_downloaders.youtube import Youtube
         ("http://video.pbs.org/viralplayer/2365173446/", YtdlpFallback),
         ("https://www.pornhub.com/view_video.php?viewkey=ph5a2ee0461a8d0", PornHub),
         ("https://www.patreon.com/posts/minecart-track-59346560", Gallery),
+        ("/r/JoySuzanna/comments/1on8q6m/hey_my_loves_ive_got_some_amazing_news_just_for/", SelfPost),
     ),
 )
 def test_factory_lever_good(test_submission_url: str, expected_class: BaseDownloader, reddit_instance: praw.Reddit):
@@ -83,6 +84,7 @@ def test_factory_lever_bad(test_url: str):
         ("www.test.com/test.png?test_value=random", "test.com/test.png"),
         ("https://youtube.com/watch?v=Gv8Wz74FjVA", "youtube.com/watch"),
         ("https://i.imgur.com/BuzvZwb.gifv", "i.imgur.com/BuzvZwb.gifv"),
+        ("/r/test/comments/abc123/some_title/", "reddit.com/r/test/comments/abc123/some_title/"),
     ),
 )
 def test_sanitise_url(test_url: str, expected: str):
