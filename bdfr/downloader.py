@@ -44,6 +44,7 @@ class RedditDownloader(RedditConnector):
 
     def download(self):
         for generator in self.reddit_lists:
+            submission = None
             try:
                 for submission in generator:
                     try:
@@ -51,7 +52,8 @@ class RedditDownloader(RedditConnector):
                     except prawcore.PrawcoreException as e:
                         logger.error(f"Submission {submission.id} failed to download due to a PRAW exception: {e}")
             except prawcore.PrawcoreException as e:
-                logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
+                last_id = submission.id if submission else "N/A"
+                logger.error(f"The submission after {last_id} failed to download due to a PRAW exception: {e}")
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
 
