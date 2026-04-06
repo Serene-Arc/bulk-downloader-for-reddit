@@ -89,24 +89,3 @@ class OAuth2Authenticator:
     def send_message(client: socket.socket, message: str = "") -> None:
         client.send(f"HTTP/1.1 200 OK\r\n\r\n{message}".encode())
         client.close()
-
-
-class OAuth2TokenManager(praw.reddit.BaseTokenManager):
-    def __init__(self, config: configparser.ConfigParser, config_location: Path) -> None:
-        super().__init__()
-        self.config = config
-        self.config_location = config_location
-
-    def pre_refresh_callback(self, authorizer: praw.reddit.Authorizer) -> None:
-        if authorizer.refresh_token is None:
-            if self.config.has_option("DEFAULT", "user_token"):
-                authorizer.refresh_token = self.config.get("DEFAULT", "user_token")
-                logger.log(9, "Loaded OAuth2 token for authoriser")
-            else:
-                raise RedditAuthenticationError("No auth token loaded in configuration")
-
-    def post_refresh_callback(self, authorizer: praw.reddit.Authorizer) -> None:
-        self.config.set("DEFAULT", "user_token", authorizer.refresh_token)
-        with Path(self.config_location).open(mode="w") as file:
-            self.config.write(file, True)
-        logger.log(9, f"Written OAuth2 token from authoriser to {self.config_location}")
