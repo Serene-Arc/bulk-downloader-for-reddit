@@ -163,6 +163,7 @@ class RedditConnector(metaclass=ABCMeta):
                 client_id=client_id,
                 client_secret=client_secret,
                 user_agent=self.user_agent,
+                refresh_token=self.cfg_parser.get("DEFAULT", "user_token"),
                 ratelimit_seconds=120,
             )
         else:
