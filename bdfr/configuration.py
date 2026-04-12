@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 from argparse import Namespace
@@ -13,13 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 class Configuration(Namespace):
-    def __init__(self):
-        super(Configuration, self).__init__()
+    def __init__(self) -> None:
+        super().__init__()
         self.authenticate = False
         self.config = None
         self.opts: Optional[str] = None
         self.directory: str = "."
         self.disable_module: list[str] = []
+        self.downvoted: bool = False
         self.exclude_id = []
         self.exclude_id_file = []
         self.file_scheme: str = "{REDDITOR}_{TITLE}_{POSTID}"
@@ -53,18 +53,22 @@ class Configuration(Namespace):
         self.upvoted: bool = False
         self.user: list[str] = []
         self.verbose: int = 0
+        self.stop_on_exist: bool = False
 
         # Archiver-specific options
         self.all_comments = False
-        self.format = "json"
+        self.format = [
+            "json",
+        ]
         self.comment_context: bool = False
+        self.skip_comments = False
 
-    def process_click_arguments(self, context: click.Context):
+    def process_click_arguments(self, context: click.Context) -> None:
         if context.params.get("opts") is not None:
             self.parse_yaml_options(context.params["opts"])
         for arg_key in context.params.keys():
             if not hasattr(self, arg_key):
-                logger.warning(f"Ignoring an unknown CLI argument: {arg_key}")
+                logger.warning(f"Ignoring an unknown CLI argument: {arg_key!r}")
                 continue
             val = context.params[arg_key]
             if val is None or val == ():
@@ -72,7 +76,7 @@ class Configuration(Namespace):
                 continue
             setattr(self, arg_key, val)
 
-    def parse_yaml_options(self, file_path: str):
+    def parse_yaml_options(self, file_path: str) -> None:
         yaml_file_loc = Path(file_path)
         if not yaml_file_loc.exists():
             logger.error(f"No YAML file found at {yaml_file_loc}")
@@ -85,6 +89,6 @@ class Configuration(Namespace):
                 return
         for arg_key, val in opts.items():
             if not hasattr(self, arg_key):
-                logger.warning(f"Ignoring an unknown YAML argument: {arg_key}")
+                logger.warning(f"Ignoring an unknown YAML argument: {arg_key!r}")
                 continue
             setattr(self, arg_key, val)

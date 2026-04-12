@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import configparser
 
 
 class SiteAuthenticator:
-    def __init__(self, cfg: configparser.ConfigParser):
+    def __init__(self, cfg: configparser.ConfigParser) -> None:
         self.imgur_authentication = None

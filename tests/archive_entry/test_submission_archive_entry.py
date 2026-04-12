@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import praw
 import pytest
@@ -15,6 +14,16 @@ def test_get_comments(test_submission_id: str, min_comments: int, reddit_instanc
     test_archive_entry = SubmissionArchiveEntry(test_submission)
     results = test_archive_entry._get_comments()
     assert len(results) >= min_comments
+
+
+@pytest.mark.online
+@pytest.mark.reddit
+@pytest.mark.parametrize(("test_submission_id", "min_comments"), (("m3reby", 27),))
+def test_skip_comments(test_submission_id: str, min_comments: int, reddit_instance: praw.Reddit):
+    test_submission = reddit_instance.submission(id=test_submission_id)
+    test_archive_entry = SubmissionArchiveEntry(test_submission, False)
+    results = test_archive_entry.compile()
+    assert len(results["comments"]) == 0
 
 
 @pytest.mark.online

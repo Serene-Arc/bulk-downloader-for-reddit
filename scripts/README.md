@@ -2,11 +2,11 @@
 
 Due to the verboseness of the logs, a great deal of information can be gathered quite easily from the BDFR's logfiles. In this folder, there is a selection of scripts that parse these logs, scraping useful bits of information. Since the logfiles are recurring patterns of strings, it is a fairly simple matter to write scripts that utilise tools included on most Linux systems.
 
-  - [Script to extract all successfully downloaded IDs](#extract-all-successfully-downloaded-ids)
-  - [Script to extract all failed download IDs](#extract-all-failed-ids)
-  - [Timestamp conversion](#converting-bdfrv1-timestamps-to-bdfrv2-timestamps)
-  - [Printing summary statistics for a run](#printing-summary-statistics)
-  - [Unsaving posts from your account after downloading](#unsave-posts-after-downloading)
+- [Script to extract all successfully downloaded IDs](#extract-all-successfully-downloaded-ids)
+- [Script to extract all failed download IDs](#extract-all-failed-ids)
+- [Timestamp conversion](#converting-bdfrv1-timestamps-to-bdfrv2-timestamps)
+- [Printing summary statistics for a run](#printing-summary-statistics)
+- [Unsaving posts from your account after downloading](#unsave-posts-after-downloading)
 
 ## Extract all Successfully Downloaded IDs
 
@@ -15,7 +15,7 @@ This script is contained [here](extract_successful_ids.sh) and will result in a 
 The script can be used with the following signature:
 
 ```bash
-./extract_successful_ids.sh LOGFILE_LOCATION <OUTPUT_FILE>
+./extract_successful_ids.sh LOGFILE_LOCATION >> <OUTPUT_FILE>
 ```
 
 By default, if the second argument is not supplied, the script will write the results to `successful.txt`.
@@ -32,7 +32,7 @@ An example of the script being run on a Linux machine is the following:
 The script can be used with the following signature:
 
 ```bash
-./extract_failed_ids.sh LOGFILE_LOCATION <OUTPUT_FILE>
+./extract_failed_ids.sh LOGFILE_LOCATION >> <OUTPUT_FILE>
 ```
 
 By default, if the second argument is not supplied, the script will write the results to `failed.txt`.
@@ -72,19 +72,20 @@ Submissions from excluded subreddits: 0
 ## Unsave Posts After Downloading
 
 [This script](unsaveposts.py) takes a list of submission IDs from a file named `successfulids` created with the `extract_successful_ids.sh` script and unsaves them from your account. To make it work you will need to make a user script in your reddit profile like this:
- - Fill in the username and password fields in the script. Make sure you keep the quotes around the fields.  
- - Go to https://old.reddit.com/prefs/apps/
- - Click on `Develop an app` at the bottom.
- - Make sure you select a `script` not a `web app`.
- - Name it `Unsave Posts`.
- - Fill in the `Redirect URI` field with `127.0.0.0`.
- - Save it.
- - Fill in the `client_id` and `client_secret` fields on the script. The client ID is the 14 character string under the name you gave your script. .It'll look like a bunch of random characters like this: pspYLwDoci9z_A. The client secret is the longer string next to "secret". Again keep the quotes around the fields.
+
+- Fill in the username and password fields in the script. Make sure you keep the quotes around the fields.
+- Go to <https://old.reddit.com/prefs/apps/>
+- Click on `Develop an app` at the bottom.
+- Make sure you select a `script` not a `web app`.
+- Name it `Unsave Posts`.
+- Fill in the `Redirect URI` field with `127.0.0.0`.
+- Save it.
+- Fill in the `client_id` and `client_secret` fields on the script. The client ID is the 14 character string under the name you gave your script. .It'll look like a bunch of random characters like this: pspYLwDoci9z_A. The client secret is the longer string next to "secret". Again keep the quotes around the fields.
 
 Now the script is ready tu run. Just execute it like this:
 
 ```bash
-python3.9 -m bdfr download DOWNLOAD_DIR --authenticate --user me --saved --log LOGFILE_LOCATION
+bdfr download DOWNLOAD_DIR --authenticate --user me --saved --log LOGFILE_LOCATION
 ./extract_successful_ids.sh LOGFILE_LOCATION > successfulids
 ./unsaveposts.py
 ```

@@ -7,6 +7,16 @@ teardown() {
     rm -f successful.txt
 }
 
+@test "fail run no args" {
+    run ../extract_successful_ids.sh
+    assert_failure
+}
+
+@test "fail run no logfile" {
+    run ../extract_successful_ids.sh ./missing.txt
+    assert_failure
+}
+
 @test "success downloaded submission" {
     run ../extract_successful_ids.sh ./example_logfiles/succeed_downloaded_submission.txt
     echo "$output" > successful.txt

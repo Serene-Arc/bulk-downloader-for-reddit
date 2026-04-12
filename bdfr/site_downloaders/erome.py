@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 import re
@@ -18,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class Erome(BaseDownloader):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
 
     def find_resources(self, authenticator: Optional[SiteAuthenticator] = None) -> list[Resource]:
@@ -38,7 +37,7 @@ class Erome(BaseDownloader):
     def _get_links(url: str) -> set[str]:
         page = Erome.retrieve_url(url)
         soup = bs4.BeautifulSoup(page.text, "html.parser")
-        front_images = soup.find_all("img", attrs={"class": "lasyload"})
+        front_images = soup.find_all("img", attrs={"class": "img-front"})
         out = [im.get("data-src") for im in front_images]
 
         videos = soup.find_all("source")

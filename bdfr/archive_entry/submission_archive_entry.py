@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import logging
 
@@ -11,17 +10,21 @@ logger = logging.getLogger(__name__)
 
 
 class SubmissionArchiveEntry(BaseArchiveEntry):
-    def __init__(self, submission: praw.models.Submission):
-        super(SubmissionArchiveEntry, self).__init__(submission)
+    def __init__(self, submission: praw.models.Submission, include_comments: bool = True) -> None:
+        super().__init__(submission)
+        self._include_comments = include_comments
 
     def compile(self) -> dict:
-        comments = self._get_comments()
+        if self._include_comments:
+            comments = self._get_comments()
+        else:
+            comments = []
         self._get_post_details()
         out = self.post_details
         out["comments"] = comments
         return out
 
-    def _get_post_details(self):
+    def _get_post_details(self) -> None:
         self.post_details = {
             "title": self.source.title,
             "name": self.source.name,

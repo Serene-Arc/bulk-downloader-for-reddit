@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import hashlib
 import logging
@@ -19,7 +18,13 @@ logger = logging.getLogger(__name__)
 
 
 class Resource:
-    def __init__(self, source_submission: Submission, url: str, download_function: Callable, extension: str = None):
+    def __init__(
+        self,
+        source_submission: Submission,
+        url: str,
+        download_function: Callable,
+        extension: Optional[str] = None,
+    ) -> None:
         self.source_submission = source_submission
         self.content: Optional[bytes] = None
         self.url = url
@@ -33,7 +38,7 @@ class Resource:
     def retry_download(url: str) -> Callable:
         return lambda global_params: Resource.http_download(url, global_params)
 
-    def download(self, download_parameters: Optional[dict] = None):
+    def download(self, download_parameters: Optional[dict] = None) -> None:
         if download_parameters is None:
             download_parameters = {}
         if not self.content:
@@ -48,8 +53,8 @@ class Resource:
         if not self.hash and self.content:
             self.create_hash()
 
-    def create_hash(self):
-        self.hash = hashlib.md5(self.content)
+    def create_hash(self) -> None:
+        self.hash = hashlib.md5(self.content, usedforsecurity=False)
 
     def _determine_extension(self) -> Optional[str]:
         extension_pattern = re.compile(r".*(\..{3,5})$")
@@ -68,7 +73,7 @@ class Resource:
             max_wait_time = 300
         while True:
             try:
-                response = requests.get(url, headers=headers)
+                response = requests.get(url, headers=headers, timeout=10)
                 if re.match(r"^2\d{2}", str(response.status_code)) and response.content:
                     return response.content
                 elif response.status_code in (408, 429):

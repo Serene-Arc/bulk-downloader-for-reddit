@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import json
 import re
@@ -14,7 +13,7 @@ from bdfr.site_downloaders.base_downloader import BaseDownloader
 
 
 class Imgur(BaseDownloader):
-    def __init__(self, post: Submission):
+    def __init__(self, post: Submission) -> None:
         super().__init__(post)
         self.raw_data = {}
 
@@ -36,18 +35,20 @@ class Imgur(BaseDownloader):
         return out
 
     @staticmethod
-    def _get_data(link: str) -> dict:
+    def _get_id(link: str) -> str:
         try:
-            if link.endswith("/"):
-                link = link.removesuffix("/")
-            if re.search(r".*/(.*?)(gallery/|a/)", link):
-                imgur_id = re.match(r".*/(?:gallery/|a/)(.*?)(?:/.*)?$", link).group(1)
-                link = f"https://api.imgur.com/3/album/{imgur_id}"
-            else:
-                imgur_id = re.match(r".*/(.*?)(?:_d)?(?:\..{0,})?$", link).group(1)
-                link = f"https://api.imgur.com/3/image/{imgur_id}"
+            imgur_id = re.search(r"imgur\.com/(?:a/|gallery/)?([a-zA-Z0-9]+)", link).group(1)
         except AttributeError:
             raise SiteDownloaderError(f"Could not extract Imgur ID from {link}")
+        return imgur_id
+
+    @staticmethod
+    def _get_data(link: str) -> dict:
+        imgur_id = Imgur._get_id(link)
+        if re.search(r"/(gallery|a)/", link):
+            api = f"https://api.imgur.com/3/album/{imgur_id}"
+        else:
+            api = f"https://api.imgur.com/3/image/{imgur_id}"
 
         headers = {
             "referer": "https://imgur.com/",
@@ -55,7 +56,7 @@ class Imgur(BaseDownloader):
             "content-type": "application/json",
             "Authorization": "Client-ID 546c25a59c58ad7",
         }
-        res = Imgur.retrieve_url(link, headers=headers)
+        res = Imgur.retrieve_url(api, headers=headers)
 
         try:
             image_dict = json.loads(res.text)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import configparser
 from pathlib import Path
@@ -34,7 +33,7 @@ def example_config() -> configparser.ConfigParser:
     ),
 )
 def test_check_scopes(test_scopes: set[str]):
-    OAuth2Authenticator._check_scopes(test_scopes)
+    OAuth2Authenticator._check_scopes(test_scopes, "fetch-scopes test")
 
 
 @pytest.mark.parametrize(
@@ -68,7 +67,7 @@ def test_split_scopes(test_scopes: str, expected: set[str]):
 )
 def test_check_scopes_bad(test_scopes: set[str]):
     with pytest.raises(BulkDownloaderException):
-        OAuth2Authenticator._check_scopes(test_scopes)
+        OAuth2Authenticator._check_scopes(test_scopes, "fetch-scopes test")
 
 
 def test_token_manager_read(example_config: configparser.ConfigParser):

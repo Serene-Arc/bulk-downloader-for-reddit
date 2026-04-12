@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import praw
 import pytest
@@ -11,7 +10,6 @@ from bdfr.site_downloaders.download_factory import DownloadFactory
 from bdfr.site_downloaders.erome import Erome
 from bdfr.site_downloaders.fallback_downloaders.ytdlp_fallback import YtdlpFallback
 from bdfr.site_downloaders.gallery import Gallery
-from bdfr.site_downloaders.gfycat import Gfycat
 from bdfr.site_downloaders.imgur import Imgur
 from bdfr.site_downloaders.pornhub import PornHub
 from bdfr.site_downloaders.redgifs import Redgifs
@@ -36,7 +34,6 @@ from bdfr.site_downloaders.youtube import Youtube
         ("https://imgur.com/a/MkxAzeg", Imgur),
         ("https://m.imgur.com/a/py3RW0j", Imgur),
         ("https://www.reddit.com/gallery/lu93m7", Gallery),
-        ("https://gfycat.com/concretecheerfulfinwhale", Gfycat),
         ("https://www.erome.com/a/NWGw0F09", Erome),
         ("https://youtube.com/watch?v=Gv8Wz74FjVA", Youtube),
         ("https://redgifs.com/watch/courageousimpeccablecanvasback", Redgifs),

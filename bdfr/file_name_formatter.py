@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import datetime
 import logging
@@ -36,9 +35,9 @@ class FileNameFormatter:
         directory_format_string: str,
         time_format_string: str,
         restriction_scheme: Optional[str] = None,
-    ):
+    ) -> None:
         if not self.validate_string(file_format_string):
-            raise BulkDownloaderException(f'"{file_format_string}" is not a valid format string')
+            raise BulkDownloaderException(f"{file_format_string!r} is not a valid format string")
         self.file_format_string = file_format_string
         self.directory_format_string: list[str] = directory_format_string.split("/")
         self.time_format_string = time_format_string
@@ -154,6 +153,7 @@ class FileNameFormatter:
         max_path_length = max_path - len(ending) - len(str(root)) - 1
 
         out = Path(root, filename + ending)
+        safe_ending = re.match(r".*\..*", ending)
         while any(
             [
                 len(filename) > max_file_part_length_chars,
@@ -162,6 +162,8 @@ class FileNameFormatter:
             ]
         ):
             filename = filename[:-1]
+            if not safe_ending and filename[-1] != ".":
+                filename = filename[:-1] + "."
             out = Path(root, filename + ending)
 
         return out
@@ -169,7 +171,7 @@ class FileNameFormatter:
     @staticmethod
     def find_max_path_length() -> int:
         try:
-            return int(subprocess.check_output(["getconf", "PATH_MAX", "/"]))
+            return int(subprocess.check_output(["getconf", "PATH_MAX", "/"]))  # noqa: S603, S607
         except (ValueError, subprocess.CalledProcessError, OSError):
             if platform.system() == "Windows":
                 return FileNameFormatter.WINDOWS_MAX_PATH_LENGTH

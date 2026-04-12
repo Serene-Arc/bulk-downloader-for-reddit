@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import re
 from unittest.mock import MagicMock
@@ -13,17 +12,23 @@ from bdfr.site_downloaders.erome import Erome
 @pytest.mark.parametrize(
     ("test_url", "expected_urls"),
     (
-        ("https://www.erome.com/a/vqtPuLXh", (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",)),
         (
-            "https://www.erome.com/a/ORhX0FZz",
+            "https://www.erome.com/a/vqtPuLXh",  # Video
+            (r"https://[a-z]\d+.erome.com/\d{3}/vqtPuLXh/KH2qBT99_480p.mp4",),
+        ),
+        (
+            "https://www.erome.com/a/9E50Xkb6",  # Image album
             (
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/9IYQocM9_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/9eEDc8xm_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/EvApC7Rp_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/LruobtMs_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/TJNmSUU5_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/X11Skh6Z_480p.mp4",
-                r"https://[a-z]\d+.erome.com/\d{3}/ORhX0FZz/bjlTkpn7_480p.mp4",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/hUpc1d21.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/3zZF7uv4.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/h6C03hNq.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/AHQuZh9j.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/Ram0NmDU.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/dY82guy1.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/3x8bp9lF.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/lxyFSUMQ.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/vPIb29UR.jpeg",
+                r"https://[a-z]\d+.erome.com/\d{4}/9E50Xkb6/w1BJtyh5.jpeg",
             ),
         ),
     ),
@@ -38,8 +43,9 @@ def test_get_link(test_url: str, expected_urls: tuple[str]):
 @pytest.mark.parametrize(
     ("test_url", "expected_hashes_len"),
     (
-        ("https://www.erome.com/a/vqtPuLXh", 1),
-        ("https://www.erome.com/a/4tP3KI6F", 1),
+        ("https://www.erome.com/a/vqtPuLXh", 1),  # Video
+        ("https://www.erome.com/a/4tP3KI6F", 1),  # Video
+        ("https://www.erome.com/a/9E50Xkb6", 10),  # Image album
     ),
 )
 def test_download_resource(test_url: str, expected_hashes_len: int):

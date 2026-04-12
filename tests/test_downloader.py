@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import logging
 import re
 from pathlib import Path
@@ -175,7 +174,7 @@ def test_download_submission_file_exists(
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(("test_submission_id", "expected_files_len"), (("ljyy27", 4),))
+@pytest.mark.parametrize(("test_submission_id", "expected_files_len"), (("w22m5l", 2),))
 def test_download_submission(
     test_submission_id: str,
     expected_files_len: int,
@@ -196,7 +195,7 @@ def test_download_submission(
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(("test_submission_id", "min_score"), (("ljyy27", 1),))
+@pytest.mark.parametrize(("test_submission_id", "min_score"), (("w22m5l", 1),))
 def test_download_submission_min_score_above(
     test_submission_id: str,
     min_score: int,
@@ -220,7 +219,7 @@ def test_download_submission_min_score_above(
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(("test_submission_id", "min_score"), (("ljyy27", 25),))
+@pytest.mark.parametrize(("test_submission_id", "min_score"), (("w22m5l", 50000),))
 def test_download_submission_min_score_below(
     test_submission_id: str,
     min_score: int,
@@ -244,7 +243,7 @@ def test_download_submission_min_score_below(
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(("test_submission_id", "max_score"), (("ljyy27", 25),))
+@pytest.mark.parametrize(("test_submission_id", "max_score"), (("w22m5l", 50000),))
 def test_download_submission_max_score_below(
     test_submission_id: str,
     max_score: int,
@@ -268,7 +267,7 @@ def test_download_submission_max_score_below(
 
 @pytest.mark.online
 @pytest.mark.reddit
-@pytest.mark.parametrize(("test_submission_id", "max_score"), (("ljyy27", 1),))
+@pytest.mark.parametrize(("test_submission_id", "max_score"), (("w22m5l", 1),))
 def test_download_submission_max_score_above(
     test_submission_id: str,
     max_score: int,
