@@ -19,6 +19,7 @@ from bdfr.archive_entry.submission_archive_entry import SubmissionArchiveEntry
 from bdfr.configuration import Configuration
 from bdfr.connector import RedditConnector
 from bdfr.exceptions import ArchiverError
+from bdfr.progress_bar import Progress
 from bdfr.resource import Resource
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,9 @@ class Archiver(RedditConnector):
         super().__init__(args, logging_handlers)
 
     def download(self) -> None:
+        progress = Progress(self.args.progress_bar, len(self.reddit_lists))
         for generator in self.reddit_lists:
+            progress.subreddit_new(generator)
             try:
                 for submission in generator:
                     try:
@@ -40,18 +43,22 @@ class Archiver(RedditConnector):
                                 f"Submission {submission.id} in {submission.subreddit.display_name} skipped due to"
                                 f" {submission.author.name if submission.author else 'DELETED'} being an ignored user"
                             )
+                            progress.post_done(submission, False)
                             continue
                         if submission.id in self.excluded_submission_ids:
                             logger.debug(f"Object {submission.id} in exclusion list, skipping")
+                            progress.post_done(submission, False)
                             continue
                         logger.debug(f"Attempting to archive submission {submission.id}")
                         self.write_entry(submission)
+                        progress.post_done(submission, True)
                     except prawcore.PrawcoreException as e:
                         logger.error(f"Submission {submission.id} failed to be archived due to a PRAW exception: {e}")
             except prawcore.PrawcoreException as e:
                 logger.error(f"The submission after {submission.id} failed to download due to a PRAW exception: {e}")
                 logger.debug("Waiting 60 seconds to continue")
                 sleep(60)
+            progress.subreddit_done()
 
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []

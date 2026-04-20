@@ -39,6 +39,7 @@ _common_options = [
     click.option("-L", "--limit", default=None, type=int),
     click.option("-l", "--link", multiple=True, default=None, type=str),
     click.option("-m", "--multireddit", multiple=True, default=None, type=str),
+    click.option("-p", "--progress-bar", is_flag=True, default=None),
     click.option(
         "-S", "--sort", type=click.Choice(("hot", "top", "new", "controversial", "rising", "relevance")), default=None
     ),

@@ -110,6 +110,8 @@ bdfr archive ./path/to/output --user reddituser --submitted --all-comments --com
 bdfr archive ./path/to/output --subreddit all --format yaml -L 500 --folder-scheme ""
 ```
 
+### YAML options
+
 Alternatively, you can pass options through a YAML file.
 
 ```bash
@@ -128,16 +130,40 @@ subreddit:
   - CityPorn
 ```
 
-would be equilavent to (take note that in YAML there is `file_scheme` instead of `file-scheme`):
+would be equivalent to:
 
 ```bash
 bdfr download ./path/to/output --skip mp4 --skip avi --file-scheme "{UPVOTES}_{REDDITOR}_{POSTID}_{DATE}" -L 10 -S top --subreddit EarthPorn --subreddit CityPorn
 ```
 
 Any option that can be specified multiple times should be formatted like subreddit is above.
+In case when the same option is specified both in the YAML file and as a command line argument, the command line
+argument takes priority.
 
-In case when the same option is specified both in the YAML file and in as a command line argument, the command line
-argument takes priority
+### Progress bar
+
+When you run BDFR manually from your Terminal, if you pass `--progress-bar`,
+you will get a progress bar with a live summary of the results.
+Each downloaded image comes with its status (❌ or ✅),
+the number of upvotes, and title. For example:
+
+```bash
+python -m bdfr download ./example -S top -L 50 -s DataIsBeautiful --progress-bar
+```
+
+```text
+✅ 162712🔼 [OC] Trending Google Searches by State Between 2018 and 2020
+✅ 122725🔼 I analysed 70 years of baby names in the US to decide what t...
+✅ 120972🔼 For everyone asking why i didn't include the Spanish Flu and...
+✅ 111357🔼 Let's hear it for the lurkers! The vast majority of Reddit u...
+❌ 109991🔼 US College Tuition & Fees vs. Overall Inflation [OC]
+✅ 106921🔼 A wish for election night data visualization [OC]
+✅ 104746🔼 [OC] u/IHateTheLetterF is a mad lad
+✅ 104517🔼 Area of land burnt in Australia and area of smoke coverage s...
+✅ 101616🔼 Light Speed – fast, but slow [OC]
+Subreddits:   0%|                            | 0/2 [00:39<?, ?subreddit/s]
+dataisbeautiful/top:  18%|███▊           | 9/50 [00:39<01:56,  2.84s/post]
+```
 
 ## Options
 
@@ -176,6 +202,9 @@ The following options are common between both the `archive` and `download` comma
 - `--log`
     - This allows one to specify the location of the logfile
     - This must be done when running multiple instances of the BDFR, see [Multiple Instances](#multiple-instances) below
+- `--progress-bar`
+    - Displays a progress bar in the terminal
+    - Prints a simplified log for each downloaded image (status, upvotes, title)
 - `--saved`
     - This option will make the BDFR use the supplied user's saved posts list as a download source
     - This requires an authenticated Reddit instance, using the `--authenticate` flag, as well as `--user` set to `me`
