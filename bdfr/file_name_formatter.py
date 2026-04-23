@@ -221,6 +221,7 @@ class FileNameFormatter:
         for char in invalid_characters:
             input_string = input_string.replace(char, "")
         input_string = FileNameFormatter._strip_emojis(input_string)
+        input_string = "".join(ch for ch in input_string if ord(ch) > 31 and ord(ch) != 127)
         return input_string
 
     @staticmethod
