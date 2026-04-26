@@ -8,6 +8,7 @@ import socket
 from pathlib import Path
 
 import praw
+import praw.util.token_manager
 import requests
 
 from bdfr.exceptions import BulkDownloaderException, RedditAuthenticationError
@@ -16,11 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 class OAuth2Authenticator:
-    def __init__(self, wanted_scopes: set[str], client_id: str, client_secret: str, user_agent: str) -> None:
+    def __init__(self, wanted_scopes: set[str], client_id: str, client_secret: str, user_agent: str = "obtain_refresh_token for BDFR"):
         self._check_scopes(wanted_scopes, user_agent)
         self.scopes = wanted_scopes
         self.client_id = client_id
         self.client_secret = client_secret
+        self.user_agent = user_agent
 
     @staticmethod
     def _check_scopes(wanted_scopes: set[str], user_agent: str) -> None:
@@ -30,9 +32,11 @@ class OAuth2Authenticator:
                 headers={"User-Agent": user_agent},
                 timeout=10,
             )
-        except TimeoutError:
-            raise BulkDownloaderException("Reached timeout fetching scopes")
-        known_scopes = [scope for scope, data in response.json().items()]
+            response.raise_for_status()
+            known_scopes = [scope for scope, data in response.json().items()]
+        except requests.exceptions.RequestException:
+            logger.warning("Could not retrieve Reddit scope list for validation; skipping scope check")
+            return
         known_scopes.append("*")
         for scope in wanted_scopes:
             if scope not in known_scopes:
@@ -46,7 +50,7 @@ class OAuth2Authenticator:
     def retrieve_new_token(self) -> str:
         reddit = praw.Reddit(
             redirect_uri="http://localhost:7634",
-            user_agent="obtain_refresh_token for BDFR",
+            user_agent=self.user_agent,
             client_id=self.client_id,
             client_secret=self.client_secret,
         )
@@ -87,11 +91,11 @@ class OAuth2Authenticator:
 
     @staticmethod
     def send_message(client: socket.socket, message: str = "") -> None:
-        client.send(f"HTTP/1.1 200 OK\r\n\r\n{message}".encode())
+        client.send(f"HTTP/1.1 200 OK\r\n\r\n{message}".encode("utf-8"))
         client.close()
 
 
-class OAuth2TokenManager(praw.reddit.BaseTokenManager):
+class OAuth2TokenManager(praw.util.token_manager.BaseTokenManager):
     def __init__(self, config: configparser.ConfigParser, config_location: Path) -> None:
         super().__init__()
         self.config = config
