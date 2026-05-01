@@ -56,7 +56,7 @@ class Archiver(RedditConnector):
     def get_submissions_from_link(self) -> list[list[praw.models.Submission]]:
         supplied_submissions = []
         for sub_id in self.args.link:
-            if len(sub_id) == 6:
+            if len(sub_id) in (6, 7):
                 supplied_submissions.append(self.reddit_instance.submission(id=sub_id))
             elif re.match(r"^\w{7}$", sub_id):
                 supplied_submissions.append(self.reddit_instance.comment(id=sub_id))
